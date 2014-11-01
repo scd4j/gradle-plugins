@@ -1,0 +1,4 @@
+boolean pre() {
+	println get("favlang")
+  return "aaaaaa".equals(get("favlang"));
+}
