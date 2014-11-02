@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.datamaio.fwk.io.FileUtils;
+import com.datamaio.scd4j.util.io.FileUtils;
 
 public abstract class Command {
 	public static final String OS_LINUX = "Linux";

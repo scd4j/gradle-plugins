@@ -26,9 +26,9 @@ package com.datamaio.scd4j.util;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.datamaio.fwk.io.FileUtils;
-import com.datamaio.fwk.io.PathUtils;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 public class BackupHelper {
 	private final Path dir;

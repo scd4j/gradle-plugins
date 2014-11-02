@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.datamaio.fwk.io.PathUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 public class Configuration {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

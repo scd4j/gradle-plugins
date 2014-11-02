@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 
-import com.datamaio.fwk.io.FileUtils;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.util.io.FileUtils;
 
 public abstract class HookEvaluator {
 	private Path groovyPath;

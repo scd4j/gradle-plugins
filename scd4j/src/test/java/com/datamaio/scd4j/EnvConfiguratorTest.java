@@ -45,9 +45,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.datamaio.fwk.io.FileUtils;
-import com.datamaio.fwk.io.PathUtils;
 import com.datamaio.scd4j.EnvConfigurator;
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 
 public class EnvConfiguratorTest {

@@ -12,10 +12,43 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '0.1'
 
+bintray {
+	user = bintray_user
+	key = bintray_api_key
+	configurations = ['archives']
+	publish = true
+	pkg {
+		repo = 'maven'
+		name = 'SCD4J'
+		desc = 'Simple Continuous Delivery for Java and Groovy Developer'
+		websiteUrl = 'https://github.com/scd4j/gradle-plugins'
+		issueTrackerUrl = 'https://github.com/scd4j/gradle-plugins/issues'
+		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
+		attributes= ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
+		licenses = ['MIT']
+		labels = ['Continuous Delivery', 'Java', 'Grovy', 'Gradle', 'DevOps']
+		publicDownloadNumbers = true
+		
+		version {
+			desc = 'SCD4J'
+			released  = new java.util.Date()
+			attributes = ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
+		}
+	}
+}
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'SCD$J', 'Implementation-Version': version
     }
+}
+
+project.task('sourceJar', type:Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+project.artifacts {
+	archives sourceJar
 }
 
 repositories {

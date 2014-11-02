@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.datamaio.fwk.io.PathUtils;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.HookEvaluator;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 
 public class ModuleHookEvaluator extends HookEvaluator {

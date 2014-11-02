@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.datamaio.fwk.io;
+package com.datamaio.scd4j.util.io;
 
 import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.exists;
@@ -36,6 +36,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import org.junit.Test;
+
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 public class FileUtilsTest {
 	

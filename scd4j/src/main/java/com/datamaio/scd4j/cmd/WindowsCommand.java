@@ -29,7 +29,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-import com.datamaio.fwk.io.ZipUtils;
+import com.datamaio.scd4j.util.io.ZipUtils;
 
 public class WindowsCommand extends Command {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

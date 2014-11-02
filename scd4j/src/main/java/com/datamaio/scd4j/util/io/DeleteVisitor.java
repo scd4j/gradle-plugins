@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.fwk.io;
+package com.datamaio.scd4j.util.io;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;

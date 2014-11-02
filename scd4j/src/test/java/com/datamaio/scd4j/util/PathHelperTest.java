@@ -36,8 +36,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datamaio.fwk.io.PathUtils;
 import com.datamaio.scd4j.util.PathHelper;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 public class PathHelperTest {
 	Map<String, String> conf;

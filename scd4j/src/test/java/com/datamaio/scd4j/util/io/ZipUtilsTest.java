@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.datamaio.fwk.io;
+package com.datamaio.scd4j.util.io;
 
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.endsWith;
@@ -38,6 +38,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
+import com.datamaio.scd4j.util.io.ZipUtils;
 
 public class ZipUtilsTest {
 	@Test

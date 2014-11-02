@@ -21,27 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.fwk.util;
+package com.datamaio.scd4j.util.io;
 
-import java.text.DecimalFormat;
+import static java.util.stream.Collectors.toList;
 
-public class IntegerUtils {
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
+public final class PathUtils {
 	
-	public static String toText(Integer value, Integer size) {
-		return StringUtils.leftPad(Integer.toString(value), '0', size);
-	}
-
-	public static Integer toInteger(String str) {
-		str = str.trim();
-		if (StringUtils.isEmpty(str) || !StringUtils.isNumeric(str)) {
-			return null;
-		} else {
-			return Integer.parseInt(str);
-		}
+	private PathUtils(){}
+	
+	/** Delegate para @link {@link Paths#get(String, String...)} */
+	public static Path get(String first, String... more) {
+		return Paths.get(first, more);
 	}
 	
-	public static String format(final Integer value, final DecimalFormat df) {
-		return value == null ? "" : df.format(value);
-	}	
+	/** Método helper para pegar o caminho de um arquivo */
+	public static Path get(Path dir, Path... more) {
+		String[] moreStr = Arrays.stream(more)
+							.map(p -> p.toString())
+							.collect(toList())
+							.toArray(new String[]{});
+		return get(dir, moreStr);
+	}
 	
+	/** Método helper para pegar o caminho de um arquivo */
+	public static Path get(Path dir, String... more) {
+		return Paths.get(dir.toString(), more);
+	}
+	
+	/** Método helper para resolver o caminho de um arquivo em um destino */
+	public static Path resolve(Path file, Path srcDir, Path destDir) {
+		return destDir.resolve(srcDir.relativize(file));
+	}
 }

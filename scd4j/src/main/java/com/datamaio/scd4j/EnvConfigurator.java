@@ -43,9 +43,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.datamaio.fwk.io.CopyVisitor;
-import com.datamaio.fwk.io.DeleteVisitor;
-import com.datamaio.fwk.io.FileUtils;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.file.FileHookEvaluator;
@@ -53,6 +50,9 @@ import com.datamaio.scd4j.hooks.module.ModuleHookEvaluator;
 import com.datamaio.scd4j.util.BackupHelper;
 import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.PathHelper;
+import com.datamaio.scd4j.util.io.CopyVisitor;
+import com.datamaio.scd4j.util.io.DeleteVisitor;
+import com.datamaio.scd4j.util.io.FileUtils;
 
 /**
  * OBS: Esta classe não é thread safe devido aos FileHookEmbeddedGroovy. 
@@ -61,28 +61,6 @@ import com.datamaio.scd4j.util.PathHelper;
  * @author Fernando Rubbo
  */
 public class EnvConfigurator {
-	// TODO: acertar outros comandos que da para usar DSL. Por exemplo unzip(pack, toDir)
-	// TODO: WindowsCommand dar erro quando executa comando linux específico ou ele passa reto. Tipo chmod
-	// TODO: testes para tudo. testar todas as possibilidades de backup
-	// TODO: revisar tudo. rever todos TODOS
-	// TODO: usar aqui o EncodingHelper para copiar, mergear os arquivos
-	// TODO: multi language e doc em inglês
-	// TODO: permitir lista de modulos. cuidado. impacta validacao do gradle
-	// TODO: as informações setadas no gradle não estão sendo impressas no log de arquivo
-	// TODO: se colocar um diretório vazio na instalação o instalador não está criando.. deveria!?!?
-	// TODO: Futuramente fazer o master que informa os ips e roda.. ai ele faz tipo um map reduce usando ssh
-	// 			usar https://plugins.gradle.org/plugin/org.hidetake.ssh ?!?!?!
-	// TODO: permitir rodar com sudo? no zaffari não usavamos, no tecnocred sim.. qual seria a melhor opção?
-	//            colocar a prop usesudo=true. default=false na configuração
-	/*
-	 *  TODO(s):
-	 *  - Gradle
-	 *  	3) config do eclipse para ficar bonitinho
-	 *  - Outros
-	 *  	1) comparar FWKUtils ultima versão com a minha.. arrumar método a método. Melhorar testes
-	 *
-	 */
-	
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	private Configuration conf;
