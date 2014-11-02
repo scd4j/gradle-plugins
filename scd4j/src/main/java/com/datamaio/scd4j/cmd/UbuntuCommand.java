@@ -32,14 +32,15 @@ public class UbuntuCommand extends LinuxCommand {
 	public static final String DIST_NAME = "Ubuntu";
 	
 	public void uninstall(String pack) {
-		LOGGER.info("\t********** Removing package " + pack);
-		run( "apt-get -y purge " + pack);
+		LOGGER.info("\t********** Removing package " + pack + " and dependencies");
+		run("apt-get -y purge " + pack);
 		run("apt-get -y autoremove");
 	}
 	
 	@Override
-	protected List<String> buildInstallCommand(String pack) {
-		return Arrays.asList(new String[] { "apt-get", "-y", "install", pack });
+	protected List<String> buildInstallCommand(String pack, String version) {
+		String fullpack = pack + (version!=null? "=" + version : "");
+		return Arrays.asList(new String[] { "apt-get", "-y", "install", fullpack });
 	}
 	
 	@Override	
@@ -57,6 +58,6 @@ public class UbuntuCommand extends LinuxCommand {
 	@Override
 	public void addRepository(String repository) {
 		run("add-apt-repository -y " + repository);
-		run("apt-get update");
+		run("apt-get update", false);
 	}
 }

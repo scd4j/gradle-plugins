@@ -1,6 +1,18 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+boolean pre() {
+	set temporary: "my_temporary_property", with: "my_string_value"	
+	set permanent: "my_permanent_property", with: true
+	
+	return true
+}
+
 void post() {
   Files.createFile(Paths.get(target + ".postexecuted"));
+    
+  if( !contains("my_temporary_property") )
+  	throw new RuntimeException("my_transient_property should be set")
+  if( !contains("my_permanent_property") )
+  	throw new RuntimeException("my_persistent_property should be set")
 }

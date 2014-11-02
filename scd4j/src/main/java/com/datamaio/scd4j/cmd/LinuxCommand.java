@@ -46,12 +46,13 @@ public abstract class LinuxCommand extends Command {
 	public void execute(String file) {
 		Path path = Paths.get(file);
 		try {
-			String oldPosix = PosixFilePermissions.toString(Files.getPosixFilePermissions(path));			
+			String oldPosix = PosixFilePermissions.toString(Files.getPosixFilePermissions(path));		
 			Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxrwxrwx"));
-			
-			run(file);
-			
-			Files.setPosixFilePermissions(path, PosixFilePermissions.fromString(oldPosix));
+			try {
+				run(file);
+			} finally {			
+				Files.setPosixFilePermissions(path, PosixFilePermissions.fromString(oldPosix));
+			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}			
@@ -74,11 +75,11 @@ public abstract class LinuxCommand extends Command {
 		if (file.endsWith(".sh")) {
 			// executa este cara apenas para garantir que se alguem salvou no windows
 			// este arquivo possa ser executado no Linux
-			dos2unix(file);
+			normalizeTextContent(file);
 		}
 	}
 
-	public void dos2unix(String file) {
+	public void normalizeTextContent(String file) {
 		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
 			install("dos2unix");
 		}
@@ -182,11 +183,15 @@ public abstract class LinuxCommand extends Command {
 
 	
 	public void install(String pack) {
-		LOGGER.info("\t********** Installing package " + pack);
-		run(buildInstallCommand(pack));
+		install(pack, null);
+	}
+	
+	public void install(String pack, String version) {
+		LOGGER.info("\t********** Installing package " + pack + (version!=null? " ("+version+")" : ""));
+		run(buildInstallCommand(pack, version));
 	}
 
-	protected abstract List<String> buildInstallCommand(String pack);
+	protected abstract List<String> buildInstallCommand(String pack, String version);
 
 	
 }

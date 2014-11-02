@@ -70,6 +70,10 @@ public class WindowsCommand extends Command {
 		run(pack);
 	}
 
+	public void install(String pack, String version) {
+		throw new RuntimeException("Function 'install' with version not implemented for windows");
+	}
+	
 	public void uninstall(String pack) {
 		throw new RuntimeException("Function 'uninstall' not implemented for windows");
 	}
@@ -85,7 +89,7 @@ public class WindowsCommand extends Command {
 	}
 
 	@Override
-	public void dos2unix(String file) {
+	public void normalizeTextContent(String file) {
 		// do nothing
 	}
 

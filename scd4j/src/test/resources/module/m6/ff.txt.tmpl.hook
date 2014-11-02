@@ -1,3 +1,9 @@
 void post() {
   renameTo(target + ".postexecuted");
+  
+  if( contains("my_temporary_property") )
+  	throw new RuntimeException("my_transient_property should not be set: " + get("my_transient_property")) 
+  if( !contains("my_permanent_property") )
+  	throw new RuntimeException("my_persistent_property should be set")
+
 }

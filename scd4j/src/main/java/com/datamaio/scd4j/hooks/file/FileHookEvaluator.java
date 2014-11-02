@@ -61,8 +61,7 @@ public class FileHookEvaluator extends HookEvaluator {
 	
 	public void post(){
 		LOGGER.info(" :POST");
-		super.post();
-		LOGGER.info("--------------------------" );
+		super.post();		
 	}
 	
 	private static Map<String, Object> buildBinding(final Path src, final Path target) {

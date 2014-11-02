@@ -111,11 +111,11 @@ public abstract class Command {
 	public abstract void execute(String file);
 	public abstract void addRepository(String repository);
 	public abstract void install(String pack);
+	public abstract void install(String pack, String version);
 	public abstract void installFromLocalPath(String path);
 	public abstract void uninstall(String pack);
 	public abstract void unzip(String from, String toDir);
-	// TODO: mudar o nome para convert file to current platform. assim pode ser usado no windows também	
-	public abstract void dos2unix(String file);
+	public abstract void normalizeTextContent(String file);
 	
 	public abstract void groupadd(final String group);
 	public abstract void groupadd(final String group, final String options);

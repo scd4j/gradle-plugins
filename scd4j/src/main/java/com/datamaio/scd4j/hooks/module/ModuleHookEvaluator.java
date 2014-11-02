@@ -62,6 +62,7 @@ public class ModuleHookEvaluator extends HookEvaluator {
 		LOGGER.info("#############################################################################################################");
 		LOGGER.info("######## BEGIN MODULE ############# " + relativize() + " ############ BEGIN MODULE #########");
 		LOGGER.info("#############################################################################################################");
+		LOGGER.info(":PRE MODULE");
 		boolean pre = super.pre();
 		LOGGER.info("--------------------------" );
 		return pre;
@@ -74,6 +75,7 @@ public class ModuleHookEvaluator extends HookEvaluator {
 
 	@Override
 	public void post() {
+		LOGGER.info(":POST MODULE");
 		super.post();		
 	}
 

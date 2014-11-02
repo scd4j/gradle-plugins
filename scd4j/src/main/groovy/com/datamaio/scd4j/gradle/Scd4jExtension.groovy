@@ -27,9 +27,9 @@ class Scd4jExtension {
 }
 
 class EnvNestedExtension{
-	String[] ipsProd = []
-	String[] ipsHom  = []
-	String[] ipsTst  = []
+	String[] prod = []
+	String[] hom  = []
+	String[] tst  = []
 }
 
 class InstallNestedExtension{

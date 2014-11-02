@@ -51,6 +51,7 @@ public class Configuration {
 	private Path configPath;
 	/** all the properties allowed to be used during installaiton. Includes, config file and system properties */
 	private final Map<String, String> properties;
+	private final Map<String, String> temporaryProperties = new HashMap<>();	
 	/** Module directory */
 	private Path moduleDir;
 	/** The environments IPs */
@@ -92,6 +93,10 @@ public class Configuration {
 
 	public Map<String, String> getProperties() {
 		return properties;
+	}
+	
+	public Map<String, String> getTemporaryProperties() {
+		return temporaryProperties;
 	}
 
 	public Path getModuleDir() {

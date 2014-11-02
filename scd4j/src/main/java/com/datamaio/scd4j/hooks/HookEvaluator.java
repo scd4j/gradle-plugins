@@ -29,6 +29,7 @@ import groovy.lang.GroovyShell;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 
@@ -36,6 +37,8 @@ import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.util.io.FileUtils;
 
 public abstract class HookEvaluator {
+	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	
 	private Path groovyPath;
 	private GroovyShell shell;
 	protected String script;
@@ -50,8 +53,6 @@ public abstract class HookEvaluator {
 
 	private Map<String, Object> buildBinding(Map<String, Object> binds, Configuration conf) {
 		binds.put("conf", conf);
-		binds.put("envs", conf.getEnvironments());
-		binds.put("props", conf.getProperties());
 		return binds;
 	}
 
@@ -85,6 +86,7 @@ public abstract class HookEvaluator {
 		if(exists()) {
 			evaluate("finish");
 		}
+		LOGGER.info("--------------------------" );
 	}
 	
 	private boolean exists() {

@@ -122,16 +122,17 @@ public class EnvConfigurator {
 				
 				final Path target = pathHelper.getTargetWithoutSuffix(source, DELETE_SUFFIX);
 				hook = new FileHookEvaluator(source, target, conf);
-				if( super.mustDelete(source) ) {
-					boolean exists = exists(target);
-					boolean pre = hook.pre();
-					if ( !exists ) {
-						LOGGER.info("\tFile " + target + " does not exists.");
-						LOGGER.info("\tNothing to do!");
+
+				boolean mustDelete = super.mustDelete(source);
+				boolean fileExists = exists(target);
+				boolean pre = true;
+				try {						
+					return mustDelete && fileExists && (pre = hook.pre());
+				} finally {
+					if(!pre) {
+						hook.finish();
 					}
-					return exists && pre;
 				}
-				return false; 
 			}
 			
 			@Override /** Deleta o target e não source */ 
@@ -168,7 +169,16 @@ public class EnvConfigurator {
 				
 				final Path target = pathHelper.getTargetWithoutSuffix(source, TEMPLATE_SUFFIX);
 				hook = new FileHookEvaluator(source, target, conf);
-				return !matcher.matches(source.getFileName()) && hook.pre();
+				
+				boolean mustCopy = !matcher.matches(source.getFileName());
+				boolean pre = true;
+				try {
+					return mustCopy && (pre = hook.pre());
+				} finally {
+					if(!pre){
+						hook.finish();
+					}
+				}				
 			}
 			
 			@Override /** Copia OU faz o merge do template */

@@ -41,9 +41,9 @@ class Scd4jTask  extends DefaultTask {
 				
         println "==================== Running scd4j =============================="
 		println "====== Environment Configuration ======"
-        println "IP PROD LIST  : " + env.ipsProd
-        println "IP HOM  LIST  : " + env.ipsHom
-        println "IP TST  LIST  : " + env.ipsTst
+        println "IP PROD LIST  : " + env.prod
+        println "IP HOM  LIST  : " + env.hom
+        println "IP TST  LIST  : " + env.tst
 		println "IP DES  LIST  : [ANY OTHER]"
 		println "====== Instalation Configuration ======"
         println "CONFIG FILE   : " + config 
@@ -51,13 +51,12 @@ class Scd4jTask  extends DefaultTask {
 		println "====================================================================="
 		
 		if( Input.validate(module, config) ) {
-			println "aqui"
 			def console = System.console()
 			if (console) {
 				def ok = console.readLine('\nReview the above config. Type "yes" to procceed and "no" to abort: ')
 				if("sim".equalsIgnoreCase(ok) || "yes".equalsIgnoreCase(ok) 
 					|| "s".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok)) {
-					def environments = new ConfEnvironments(env.ipsProd, env.ipsHom, env.ipsTst)
+					def environments = new ConfEnvironments(env.prod, env.hom, env.tst)
 					def dependencies = mapDependencies2Path();
 					new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
 				} else {
@@ -67,7 +66,7 @@ class Scd4jTask  extends DefaultTask {
 				}
 			} else {
 				println "DEV ONLY: Cannot get console - Will keep processing, but will not accept cryptography in any configuration property"
-				def environments = new ConfEnvironments(env.ipsProd, env.ipsHom, env.ipsTst)
+				def environments = new ConfEnvironments(env.prod, env.hom, env.tst)
 				def dependencies = mapDependencies2Path();
 				new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
 			}

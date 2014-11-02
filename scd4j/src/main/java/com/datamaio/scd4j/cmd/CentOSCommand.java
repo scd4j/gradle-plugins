@@ -37,8 +37,9 @@ public class CentOSCommand extends LinuxCommand {
 	}
 	
 	@Override
-	protected List<String> buildInstallCommand(String pack) {
-		return Arrays.asList(new String[] { "yum", "-y", "install", pack });
+	protected List<String> buildInstallCommand(String pack, String version) {
+		String fullpack = pack + (version!=null? "-" + version : "");
+		return Arrays.asList(new String[] { "yum", "-y", "install", fullpack });
 	}
 	
 	@Override
