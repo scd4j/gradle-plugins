@@ -19,7 +19,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.1"
+  id "com.datamaio.scd4j" version "0.1.2"
 }
 
 repositories {
