@@ -32,15 +32,16 @@ public class CentOSCommand extends LinuxCommand {
 	public static final String DIST_NAME = "CentOS";
 	
 	public void uninstall(String pack) {
-		LOGGER.info("\t********** Removing package " + pack);
+		LOGGER.info("\tRemoving package " + pack);
 		run("yum -y erase " +pack );
 	}
 	
-	@Override
-	protected List<String> buildInstallCommand(String pack, String version) {
+	public void install(String pack, String version) {
+		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "-" + version : "");
-		return Arrays.asList(new String[] { "yum", "-y", "install", fullpack });
-	}
+		List<String> cmd = Arrays.asList(new String[] { "yum", "-y", "install", fullpack });
+		run(cmd);
+	}	
 	
 	@Override
 	public void installFromLocalPath(String path) {

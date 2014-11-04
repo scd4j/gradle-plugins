@@ -105,7 +105,7 @@ public abstract class Command {
         return !isLinux();
     }
 
-	public abstract void service(String name, ServiceAction action);
+	public abstract String service(String name, ServiceAction action);
 
 	public abstract String distribution();
 	public abstract void execute(String file);

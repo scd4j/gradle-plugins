@@ -23,21 +23,12 @@
  */
 package com.datamaio.scd4j.hooks.module;
 
-import java.util.logging.Logger;
-
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
 public abstract class ModuleHook extends Hook {
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	protected String moduleDir;
 	
-	/** Overides the log just to remove \t */
-	@Override
-	public void log(String msg) {
-		LOGGER.info(msg);
-	}
-
 	// ------ methods used by the framework only ----
 	
     /** Used only by {@link HookEvaluator} to set variables */

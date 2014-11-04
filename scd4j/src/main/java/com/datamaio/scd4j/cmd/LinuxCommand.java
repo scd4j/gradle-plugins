@@ -38,8 +38,8 @@ public abstract class LinuxCommand extends Command {
 
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public void service(String name, ServiceAction action){
-    	run("service " + name + " " + action);
+	public String service(String name, ServiceAction action){
+    	return run("service " + name + " " + action);
 	}
 	
 	@Override
@@ -184,14 +184,6 @@ public abstract class LinuxCommand extends Command {
 	
 	public void install(String pack) {
 		install(pack, null);
-	}
-	
-	public void install(String pack, String version) {
-		LOGGER.info("\t********** Installing package " + pack + (version!=null? " ("+version+")" : ""));
-		run(buildInstallCommand(pack, version));
-	}
-
-	protected abstract List<String> buildInstallCommand(String pack, String version);
-
+	}	
 	
 }

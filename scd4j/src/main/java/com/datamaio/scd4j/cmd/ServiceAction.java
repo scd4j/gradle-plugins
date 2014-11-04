@@ -24,5 +24,5 @@
 package com.datamaio.scd4j.cmd;
 
 public enum ServiceAction {
-	start, stop, restart
+	start, stop, restart, status
 }

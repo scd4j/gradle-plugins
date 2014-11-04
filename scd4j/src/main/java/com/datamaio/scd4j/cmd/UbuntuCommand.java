@@ -32,16 +32,17 @@ public class UbuntuCommand extends LinuxCommand {
 	public static final String DIST_NAME = "Ubuntu";
 	
 	public void uninstall(String pack) {
-		LOGGER.info("\t********** Removing package " + pack + " and dependencies");
+		LOGGER.info("\tRemoving package " + pack + " and dependencies");
 		run("apt-get -y purge " + pack);
 		run("apt-get -y autoremove");
 	}
 	
-	@Override
-	protected List<String> buildInstallCommand(String pack, String version) {
+	public void install(String pack, String version) {
+		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "=" + version : "");
-		return Arrays.asList(new String[] { "apt-get", "-y", "install", fullpack });
-	}
+		List<String> cmd = Arrays.asList(new String[] { "apt-get", "-y", "install", fullpack });
+		run(cmd);
+	}	
 	
 	@Override	
 	public void installFromLocalPath(String path) {

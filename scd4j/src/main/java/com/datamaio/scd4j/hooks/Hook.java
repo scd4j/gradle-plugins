@@ -889,42 +889,50 @@ public abstract class Hook extends Script {
 	
     // --- services ---
 
-    /**
-     * DSL for {@link #service(String, ServiceAction)}
-     * <p>
-     * How to use this DSL:
-     * <pre>
-	 * service start: "jboss"
-	 * service stop: "jboss"
-	 * service stop: "reload"
-	 * </pre>
+    /** 
+     * Starts an OS service
 	 * <p>
 	 * Note: Currently Linux only
+	 *  
+     * @param name the service name
      */
-    protected void service(Map<String, String> m) { 
-    	String action = m.keySet().iterator().next();
-    	service(m.get(action), ServiceAction.valueOf(action));
-    }
+	public void start(String name) {
+    	command.service(name, ServiceAction.start);
+	}
     
-    /**
-     * start, stop, restart a service
-     * <p>
-     * How to use:
-     * <pre>
-	 * service "jboss", ServiceAction.start
-	 * service "jboss", ServiceAction.stop
-	 * service "jboss", ServiceAction.restart
-	 * </pre>
+    /** 
+     * Stops an OS service
 	 * <p>
 	 * Note: Currently Linux only
-     * 
-     * @param name the name of the service
-     * @param action the action (start, stop, restart)
+	 *  
+     * @param name the service name
      */
-    protected void service(String name, ServiceAction action) {
-    	command.service(name, action);
-    }
+	public void stop(String name) {
+    	command.service(name, ServiceAction.stop);
+	}
 
+    /** 
+     * restart an OS service
+	 * <p>
+	 * Note: Currently Linux only
+	 *  
+     * @param name the service name
+     */
+	public void restart(String name) {
+    	command.service(name, ServiceAction.restart);
+	}
+	
+    /** 
+     * Checks the OS service status
+	 * <p>
+	 * Note: Currently Linux only
+	 *  
+     * @param name the service name
+     * @return status information of the service
+     */
+	public String status(String name) {
+    	return command.service(name, ServiceAction.status);
+	}
 
 	// ------ methods used by the framework only ----
 	
@@ -950,6 +958,12 @@ public abstract class Hook extends Script {
 	interface SetDuration {
 		WithValue temporary(String key);
 		WithValue permanent(String key);
+	}
+	interface Service {
+		void start();
+		void stop();
+		void restart();
+		String status();
 	}
 	interface WithValue {
 		void with(String value);
