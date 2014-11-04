@@ -30,7 +30,7 @@ import java.util.List;
 public class ConfEnvironments {
 	private List<String> ipProd;
 	private List<String> ipHom;
-	private List<String> ipTst;
+	private List<String> ipTest;
 	
 	public ConfEnvironments() {
 		this((List<String>)null, null, null);
@@ -46,7 +46,7 @@ public class ConfEnvironments {
 		super();
 		this.ipProd = ipProd!=null ? ipProd : new ArrayList<String>();
 		this.ipHom = ipHom!=null ? ipHom : new ArrayList<String>();
-		this.ipTst = ipTst!=null ? ipTst : new ArrayList<String>();
+		this.ipTest = ipTst!=null ? ipTst : new ArrayList<String>();
 	}
 
 	public boolean isProd(final String address) {
@@ -57,7 +57,7 @@ public class ConfEnvironments {
         return ipHom.contains(address);
 	}
 	
-	public boolean isTst(final String address) {
-        return ipTst.contains(address);
+	public boolean isTest(final String address) {
+        return ipTest.contains(address);
 	}
 }

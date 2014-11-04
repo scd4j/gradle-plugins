@@ -465,7 +465,7 @@ public abstract class Hook extends Script {
 	 * @see {@link #isTest()}, {@link #isHom()}, {@link #isProd()}
 	 */
 	protected boolean isDesenv(){
-		return !isTst() && !isHom() && !isProd();
+		return !isTest() && !isHom() && !isProd();
 	}
 
 	/** 
@@ -488,9 +488,9 @@ public abstract class Hook extends Script {
 	 * Note: none of env ips are required. So if you have a very simple
 	 * environment, just ignore it. Everything will be development 
 	 */
-	protected boolean isTst(){
+	protected boolean isTest(){
 		final String address = whatIsMyIp();
-		return envs.isTst(address);
+		return envs.isTest(address);
 	}
 
 	/** 

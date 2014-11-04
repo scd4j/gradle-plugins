@@ -29,7 +29,7 @@ class Scd4jExtension {
 class EnvNestedExtension{
 	String[] prod = []
 	String[] hom  = []
-	String[] tst  = []
+	String[] test = []
 }
 
 class InstallNestedExtension{
