@@ -3,6 +3,7 @@ SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer.
 
 In short, it is a set of tools being developed to automate the whole development cycle (from dev to production including builds, configurations, deployments, monitoring, etc) mainly focused for enterprises which opt to use Java technologies. 
 
+More detail is comming soon. Stay tuned!
 
 gradle-plugins Repository
 =========================
@@ -19,7 +20,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.1"
+  id "com.datamaio.scd4j" version "0.1.2"
 }
 
 repositories {
