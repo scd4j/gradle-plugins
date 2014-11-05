@@ -47,14 +47,24 @@ import com.datamaio.scd4j.cmd.Command.Interaction;
 import com.datamaio.scd4j.cmd.ServiceAction;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.hooks.file.FileHook;
+import com.datamaio.scd4j.hooks.module.ModuleHook;
 
 /**
- * This class is the "father" of all hook scripts.
+ * This class is the "father" of all hook scripts. A hook script is where you
+ * can put complex configuration/intalation logic. In scd4j we have two tipes of
+ * hooks:
+ * <ol>
+ * <li> {@link ModuleHook}: could or could not have one per module
+ * <li> {@link FileHook}: could or could not have one per file
+ * </ol>
  * <p>
  * This class publish the following:
  * <ul>
- * 	<li> {@link #pre()} and {@link #post()} methods to define hooks semantics, pre and post (module or file) respectively.
- *  <li> delegates and helper functions to be used in the {@link #pre()} and {@link #post()} implementation
+ * <li> {@link #pre()} and {@link #post()} methods to be overriden in order to
+ * define hooks semantics, pre and post respectively.
+ * <li> Delegate and helper functions to be used in the {@link #pre()} and
+ * {@link #post()} implementation
  * </ul>
  * 
  * @author Fernando Rubbo
@@ -82,9 +92,10 @@ public abstract class Hook extends Script {
 	 * <li>Conditionally install a module or a file
 	 * <li>Execute any programming logic before installing a module or a file. For example:
 	 * <ul>
-	 *  <li> Execute different logic according environment which we are running (dev, test, hom, prod)
-	 *  <li> Execute different logic OS which we are running (Ubuntu, CentOs, Windows)
+	 *  <li> Execute different logic according environment which you are running (dev, test, hom, prod)
+	 *  <li> Execute different logic depending of operational system you are running on (Ubuntu, CentOs, Windows)
 	 * 	<li> Stop a service (sometimes required to update a file, for example)
+	 *  <li> etc..
 	 * </ul>
 	 * </ul>
 	 * 
@@ -101,6 +112,7 @@ public abstract class Hook extends Script {
 	 * 	<li> Change the file permission
 	 * 	<li> Rename or link the file
 	 * 	<li> Start up a service
+	 *  <li> etc...
 	 * </ul>
 	 * </ul>
 	 * 
@@ -111,23 +123,23 @@ public abstract class Hook extends Script {
 
 	//---------------- init command delegates ---------------
 	
-	/** Rerturns the name of the OS. The same as Java System Property "os.name" */
+	/** Rerturns the name of the operational system. The same as Java System Property "os.name" */
 	public String osname() {
 		return Command.osname();
 	}
 
-	/** Returns <code>true</code> if the we are running in a Linux environment */
+	/** Returns <code>true</code> if we are running in a Linux environment */
 	public boolean isLinux() {
 		return Command.isLinux();
 	}
 	
-	/** Returns <code>true</code> if the we are running in a Windows environment */
+	/** Returns <code>true</code> if we are running in a Windows environment */
 	public boolean isWindows(){
         return Command.isWindows();
     }
 
 	/** 
-	 * Returns the distribution of the OS.
+	 * Returns the distribution of the operational system.<br>
 	 * For example, it may return "CentOS", "Ubuntu", "Windows XYZ", "N/A", etc 
 	 */
 	public String distribution() {
@@ -137,39 +149,23 @@ public abstract class Hook extends Script {
 	/** 
 	 * Execute the file. <br>
 	 * If the file is not executable, we try to make it executable. 
-	 * If it was not possible, an exception is thrown  
+	 * If it is not possible, an exception is thrown
+	 * 
+	 * @param file the file path
 	 */
 	public void execute(String file) {
 		command.execute(file);
 	}
 	
 	/** 
-	 * DSL for {@link #normalizeTextContent(String)}
-	 * <p>
-	 * How to use this DSL:
-	 * 
-	 * <pre>
-	 * normalize "/opt/test/my_text_file" content
-	 * </pre>
-	 */
-	public Normalization normalize(String file){
-		return new Normalization() {			
-			@Override
-			public void content() {
-				normalizeTextContent(file);
-			}
-		};
-	}
-	
-	/** 
-	 * Convert a text file into the patterns of the OS we are running on<br>
-	 * This is mostly required whenever you create a file in windows and than run it on Linux
+	 * Converts a text file into the patterns of the operational system you are running on<br>
+	 * This is mostly required whenever you create a file in windows and then run it on Linux
 	 * <p>
 	 * Note: Usually config files are not an issue, but executable files are!!
 	 * 
-	 * @param file a text file
+	 * @param file the text file path
 	 */
-	public void normalizeTextContent(String file) {
+	public void normalize(String file) {
 		command.normalizeTextContent(file);		
 	}
 
@@ -190,7 +186,7 @@ public abstract class Hook extends Script {
 	 * Note: Currently Linux only
 	 * 
 	 * @param group the name of the group
-	 * @param options the options you would pass in the line command
+	 * @param options the options you would like to pass in the line command
 	 */
 	public void groupadd(final String group, final String options) {
 		command.groupadd(group, options);
@@ -206,8 +202,8 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Creates an user with options. In the second param set the exactly options
-	 * you would pass in the line command
+	 * Creates an user with options. In the second param must be set with the
+	 * exactly options you would pass in the command line 
 	 * <p>
 	 * Note: Currently Linux only
 	 */
@@ -219,11 +215,11 @@ public abstract class Hook extends Script {
 	 * Sets the user password
 	 * <p>
 	 * Note - 1: Currently Linux only<br>
-	 * Note - 2: If nobody should read the password of a prod environment, for
-	 * example, don't forget to encrypt it using <code>gradlew encrypt</code>.
-	 * The see all possibilities, type <code>gradlew tasks</code>.
-	 * Probably you are more interested in those which show up at
-	 * <code>Others</code> section<br>
+	 * Note - 2: If nobody should read the password, for example the prod
+	 * prod environment password, don't forget to encrypt it using
+	 * <code>gradlew encrypt</code>. The see all possibilities, type
+	 * <code>gradlew tasks</code>. Probably you are more interested in those
+	 * which show up at <code>Others</code> section<br>
 	 * Note - : In Linux, if SELinux is turned on, thi execution will fail
 	 */
 	public void passwd(final String user, final String passwd) {
@@ -233,7 +229,7 @@ public abstract class Hook extends Script {
 	/** 
 	 * Changes the Posix File Permissions<br>
 	 * <p>
-	 * Note: Currently Linux only
+	 * Note: Linux only. On windows it will do nothing
 	 * 
 	 * @param mode is the posix definition, ex: "777"
 	 * @param file is the file which we would like to change the permissions 
@@ -245,7 +241,7 @@ public abstract class Hook extends Script {
 	/** 
 	 * Changes the Posix File Permissions<br>
 	 * <p>
-	 * Note: Currently Linux only
+	 * Note: Linux only. On windows it will do nothing
 	 * 
 	 * @param mode is the posix definition, ex: "777"
 	 * @param file is the file which we would like to change the permissions
@@ -258,9 +254,9 @@ public abstract class Hook extends Script {
 	/** 
 	 * Changes ownership of a file<br>
 	 * <p>
-	 * Note: Currently Linux only
+	 * Note: Linux only. On windows it will do nothing
 	 * 
-	 * @param user the new owner. the same information is used for the group
+	 * @param user the new owner. The same information is used for the group
 	 * @param file the file to change ownership 
 	 */
 	public void chown(String user, String file) {
@@ -270,7 +266,7 @@ public abstract class Hook extends Script {
 	/** 
 	 * Changes ownership of a file<br>
 	 * <p>
-	 * Note: Currently Linux only
+	 * Note: Linux only. On windows it will do nothing
 	 * 
 	 * @param user the new owner 
 	 * @param group the new group
@@ -305,7 +301,7 @@ public abstract class Hook extends Script {
 	 * Note: Currently Linux only
 	 * 
 	 * @param link the link path
-	 * @param targetFile the file to be linked 
+	 * @param targetFile the target file path to be linked 
 	 */
 	public void ln(final String link, final String targetFile) {
 		command.ln(link, targetFile);
@@ -398,44 +394,45 @@ public abstract class Hook extends Script {
 	// --- run ----
 
 	/** 
-	 * Execute an line command. OS dependent.
+	 * Execute a command line. OS dependent.
 	 * 
-	 * @param cmd the line command 
+	 * @param cmd the command line  
 	 */
 	public String run(String cmd) {
 		return command.run(cmd);
 	}
 
 	/** 
-	 * Execute an line command. OS dependent.
+	 * Execute a command line. OS dependent.
 	 * 
-	 * @param cmd the line command
-	 * @param printOutput you can choose to not print output in logs
+	 * @param cmd the command line  
+	 * @param printOutput you can choose to not print output in logs informing <code>false</code>
 	 */
 	public String run(String cmd, final boolean printOutput) {
 		return command.run(cmd, printOutput);
 	}
 
 	/** 
-	 * Execute an line command. OS dependent
+	 * Execute a command line. OS dependent.
 	 * 
-	 * @param cmd the line command
-	 * @param successfulExec a list of successful results. Linux default is 0
+	 * @param cmd the command line  
+	 * @param successfulExec a list of successful results. Linux default is 0.
 	 */
 	public String run(String cmd, final int... successfulExec) {
 		return command.run(cmd, successfulExec);
 	}
 
 	/**
-	 * Execute an line command. OS dependent.
+	 * Execute a command line. OS dependent.
+	 * 
 	 * <p>
 	 * Note: in Linux, if SELinux is turned on, this execution will fail
 	 * 
 	 * @param cmd
-	 *            the line command
+	 *            the command line 
 	 * @param interact
 	 *            allow you to programmatically interact with the process
-	 *            similarly in a way a user would interact
+	 *            similarly in the way a user would interact
 	 */
 	public String run(String cmd, Interaction interact) {
 		return command.run(cmd, interact);
@@ -446,10 +443,11 @@ public abstract class Hook extends Script {
 	 * the output when the process finish.
 	 * <p>
 	 * 
-	 * Note - 1: This method was created because very rarely executions in Linux
-	 * hangs reading output.<br>
-	 * Note - 2: If possible use {@link #run(String)} variant
-	 * methods once this one may be removed in future releases
+	 * Note - 1: This method was created because in very rare executions in
+	 * Linux the process hangs reading output. We are still figuring out the
+	 * issue, but we are expecting to resolve this when Java 9 be released<br>
+	 * Note - 2: If possible use {@link #run(String)} variant methods once this
+	 * one may be removed in future releases
 	 */
 	public String runWithNoInteraction(String cmd) {
 		return command.runWithNoInteraction(cmd);
@@ -477,8 +475,7 @@ public abstract class Hook extends Script {
 	 * scd4j {
 	 * 	...
 	 * 	env {
-	 * 		prod = ["192.168.10.20", "192.168.10.21", "192.168.10.22", "192.168.10.23"]
-	 * 		hom  = ["192.168.7.20", "192.168.7.21"]
+	 * 		...
 	 * 		test = ["192.168.3.20", "192.168.3.21"] 
 	 * 	}
 	 * }
@@ -502,9 +499,8 @@ public abstract class Hook extends Script {
 	 * scd4j {
 	 * 	...
 	 * 	env {
-	 * 		prod = ["192.168.10.20", "192.168.10.21", "192.168.10.22", "192.168.10.23"]
+	 * 		...
 	 * 		hom  = ["192.168.7.20", "192.168.7.21"]
-	 * 		test = ["192.168.3.20", "192.168.3.21"] 
 	 * 	}
 	 * }
 	 * </pre>
@@ -549,7 +545,7 @@ public abstract class Hook extends Script {
 	 * <p>
 	 * Note: In order to make this method work as expected the name of the
 	 * machine must be in the DNS and you must have an entry in the /etc/hosts
-	 * with ip 127.0.0.1 linked to that name
+	 * with ip 127.0.0.1 using the same name you have used in DNS
 	 * 
 	 * @return the ip address
 	 */
@@ -573,7 +569,7 @@ public abstract class Hook extends Script {
 	 * <p>
 	 * Note: In order to make this method work as expected the name of the
 	 * machine must be in the DNS and you must have an entry in the /etc/hosts
-	 * with ip 127.0.0.1 linked to that name
+	 * with ip 127.0.0.1 using the same name you have used in DNS
 	 * 
 	 * @return the ip address
 	 */
@@ -587,7 +583,12 @@ public abstract class Hook extends Script {
 		}
     }
 
-    /** Use this method for every log content. So it will be stored in the dir log */
+    /**
+	 * Use this method for every log content. So it will be stored in the dir
+	 * log<br>
+	 * Please, do not use pintln. Otherwise you will print the log information
+	 * only in the starndard output
+	 */
     public void log(String msg) {
         LOGGER.info("\t" + msg);
     }
@@ -642,9 +643,9 @@ public abstract class Hook extends Script {
     
 	/**
 	 * Sets a temporary/transient property.<br>
-	 * A temporary/transient property stays only for a short period time. In other words,
-	 * it is set before the Hook#pre() method be executed and its remains until
-	 * the end of Hook#post() method.
+	 * A temporary/transient property stays only for a short period of time. In
+	 * other words, if it is set before in Hook#pre() method, it will remains
+	 * until the end of Hook#post() method execution.
 	 */
     public void setTemporaryProperty(String key, Object value) {
 		props.put(key, value.toString());
@@ -667,7 +668,7 @@ public abstract class Hook extends Script {
 	 * scd4j {
 	 * 		install {
 	 * 			... 
-	 * 			config = "my_config_file"
+	 * 			config = "my_config_file.conf"
 	 * 		}
 	 * }
 	 * </pre>
@@ -686,7 +687,7 @@ public abstract class Hook extends Script {
 	 * scd4j {
 	 * 		install {
 	 * 			... 
-	 * 			config = "my_config_file"
+	 * 			config = "my_config_file.conf"
 	 * 		}
 	 * }
 	 * </pre>
@@ -809,7 +810,7 @@ public abstract class Hook extends Script {
 	 * }
 	 * </pre>
 	 * <p>
-	 * Then in you hook you need to call
+	 * Then in your hook you need to call
 	 * <pre>
 	 * installFromScd4j "org.wildfly:wildfly:8.1.0.Final"
 	 * </pre>
@@ -834,9 +835,9 @@ public abstract class Hook extends Script {
 	 * }
 	 * </pre>
 	 * <p>
-	 * Then in you hook you need to call
+	 * Then in your hook you need to call
 	 * <pre>
-	 * unzipFromScd4j "org.wildfly:wildfly:8.1.0.Final"
+	 * unzipFromScd4j "org.wildfly:wildfly:8.1.0.Final" to "/opt/exampledir"
 	 * </pre>
 	 * <p>
 	 * Note: Currently Linux only

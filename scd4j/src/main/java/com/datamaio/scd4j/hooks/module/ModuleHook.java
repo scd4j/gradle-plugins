@@ -26,6 +26,12 @@ package com.datamaio.scd4j.hooks.module;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
+/**
+ * This class is the super class for all Module Hook Scripts<br>
+ * This provides some helpful methods and functions
+ *
+ * @author Fernando Rubbo
+ */
 public abstract class ModuleHook extends Hook {
 	protected String moduleDir;
 	

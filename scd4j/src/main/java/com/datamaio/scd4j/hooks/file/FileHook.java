@@ -31,7 +31,7 @@ import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
 /**
- * This class is the super class of File Hook Scripts<br>
+ * This class is the super class for all File Hook Scripts<br>
  * This provides some helpful methods and functions
  * 
  * @author Fernando Rubbo
@@ -63,14 +63,16 @@ public abstract class FileHook extends Hook {
 		chmod(mode, target, recursive);
 	}
 	
-	/** 
-	 * Convert the target file into the patterns of the OS we are running on. Very useful in the post() hook<br>
-	 * This is mostly required whenever you create a file in windows and than run it on Linux
+	/**
+	 * Convert the target file into the patterns of the operational system your
+	 * are running on. Very useful in the post() hook<br>
+	 * This is mostly required whenever you create a file in windows and than
+	 * run it on Linux
 	 * <p>
 	 * Note: Usually config files are not an issue, but executable files are!!
 	 */
 	protected void normalize() {
-		normalizeTextContent(target);	
+		normalize(target);	
 	}
 	
 	/** 
@@ -78,7 +80,7 @@ public abstract class FileHook extends Hook {
 	 * <p>
 	 * Note: Currently Linux only
 	 * 
-	 * @param user the new owner. the same information is used for the group
+	 * @param user the new owner. The same information is used for the group
 	 */
 	protected void chown(String user) {
 		chown(user, target);
@@ -114,7 +116,7 @@ public abstract class FileHook extends Hook {
     }
 	
 	/** 
-	 * Execute the target file. Very useful in the post() hook <br>
+	 * Execute the target file. Very useful in the post() hook<br>
 	 * If the file is not executable, we try to make it executable. 
 	 * If it was not possible, an exception is thrown  
 	 */
@@ -133,12 +135,12 @@ public abstract class FileHook extends Hook {
 
 	// ------ methods used by the framework only ----
 	
-	/** Used unically by {@link HookEvaluator} to set variables */
+	/** Used only by {@link HookEvaluator} to set variables */
 	void setSrc(String srcPath) {
 		this.src = srcPath;
 	}
 
-	/** Used unically by {@link HookEvaluator} to set variables */
+	/** Used only by {@link HookEvaluator} to set variables */
 	void setTarget(String targetPath) {
 		this.target = targetPath;
 	}	

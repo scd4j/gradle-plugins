@@ -90,7 +90,7 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void normalizeTextContent(String file) {
-		// do nothing
+		throw new RuntimeException("Function 'normalizeTextContent' not implemented for windows");
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void ln(String file, String link) {
-		// do nothing
+		throw new RuntimeException("Function 'ln' is not implemented for windows");
 	}
 
 	@Override
