@@ -881,6 +881,9 @@ public abstract class Hook extends Script {
 	 *            the full dependency name
 	 */		
     protected String downloadFromScd4j(String depName) {
+    	if(depName.contains("@")){
+    		depName = depName.substring(0, depName.indexOf("@"));
+    	}
     	Path file = conf.getDependency(depName);
     	if(file==null)
     		throw new RuntimeException("Could not resolve dependency: " + depName);

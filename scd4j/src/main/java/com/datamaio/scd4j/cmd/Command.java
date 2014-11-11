@@ -83,7 +83,7 @@ public abstract class Command {
 				} else if (dist.contains(CentOSCommand.DIST_NAME)) {
 					INSTANCE = new CentOSCommand();
 				} else {
-					throw new RuntimeException("Distribuicao de Linux nao suportada : " + dist);
+					throw new RuntimeException("Linux distribution not supported : " + dist);
 				}
 			} else {
 				INSTANCE = new WindowsCommand();
@@ -290,7 +290,7 @@ public abstract class Command {
 			}
 			return (interact != null) ? handler.getOutput() : noInteractionHandler.toString();
 		} catch (Exception e) {
-			String msg = "Erro executando cmd: " + cmd2String(cmd) + ".";
+			String msg = "Error executing command: " + cmd2String(cmd) + ".";
 			throw new RuntimeException(msg, e);
 		} finally {
 			quitellyClose(out);
@@ -311,7 +311,7 @@ public abstract class Command {
 	}
 
 	private static void throwExecutionException(ThreadedStreamHandler errorHandler, int waitFor) {
-		String output = "O processo terminou com status: " + waitFor + ", saida no console: " + errorHandler.getOutput();
+		String output = "The process has ended with status: " + waitFor + " | Output: " + errorHandler.getOutput();
 		throw new RuntimeException(output);
 	}
 
@@ -337,9 +337,9 @@ public abstract class Command {
 			pb.redirectErrorStream(true);
 			pb.redirectOutput(tempPath.toFile());
 			if(shouldPrint) {
-				LOGGER.info("\t\t!!! AGUARDE !!! "
-					+ "Este comando ira imprimir o resultado apenas ao final de sua execucao! "
-					+ "Acompanhe o resultado do proceso no arquivo temporário: " + tempPath);
+				LOGGER.info("\t\t!!! WHAIT !!! "
+					+ "This command will print the result only at the end of its execution!"
+					+ "Temp file output: " + tempPath);
 			}
 		}
 
