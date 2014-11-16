@@ -29,6 +29,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public final class PathUtils {
 	
 	private PathUtils(){}

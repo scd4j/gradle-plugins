@@ -46,6 +46,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ZipUtils {
 
 	private static final Logger LOGGER = Logger.getLogger(ZipUtils.class);

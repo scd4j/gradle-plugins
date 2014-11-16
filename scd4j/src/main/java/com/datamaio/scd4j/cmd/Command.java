@@ -41,6 +41,10 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.util.io.FileUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public abstract class Command {
 	public static final String OS_LINUX = "Linux";
 	public static final String OS_WINDOWS = "Windows";

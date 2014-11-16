@@ -37,6 +37,10 @@ import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class CopyVisitor extends SimpleFileVisitor<Path> {
 	private static final Logger LOGGER = Logger.getLogger(CopyVisitor.class);
 

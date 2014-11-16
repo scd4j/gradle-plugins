@@ -40,6 +40,10 @@ import org.junit.Test;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class FileUtilsTest {
 	
 	@Test

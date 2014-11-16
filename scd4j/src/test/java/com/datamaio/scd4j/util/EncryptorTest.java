@@ -33,6 +33,10 @@ import org.junit.Test;
 import com.datamaio.scd4j.util.Encryptor;
 import com.datamaio.scd4j.util.Encryptor.DecryptionException;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class EncryptorTest {
 	
 	@Test

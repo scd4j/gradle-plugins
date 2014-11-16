@@ -35,7 +35,10 @@ import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
-
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 	private static final int NONE = Integer.MAX_VALUE;
 	private static final Logger LOGGER = Logger.getLogger(DeleteVisitor.class);

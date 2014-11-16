@@ -31,7 +31,11 @@ import org.gradle.api.tasks.TaskAction
 import com.datamaio.scd4j.conf.ConfEnvironments
 import com.datamaio.scd4j.EnvConfigurator;
 
-class Scd4jTask  extends DefaultTask {
+/**
+ *
+ * @author Fernando Rubbo
+ */
+class Scd4jTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		

@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ConfEnvironments {
 	private List<String> ipProd;
 	private List<String> ipHom;

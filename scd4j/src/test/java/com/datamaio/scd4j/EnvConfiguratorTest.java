@@ -49,7 +49,10 @@ import com.datamaio.scd4j.EnvConfigurator;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
-
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class EnvConfiguratorTest {
 	
 	@After

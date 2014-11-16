@@ -30,6 +30,10 @@ import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class BackupHelper {
 	private final Path dir;
 

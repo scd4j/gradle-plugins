@@ -39,6 +39,10 @@ import java.util.regex.Pattern;
 import com.datamaio.scd4j.util.EncodingHelper;
 import com.datamaio.scd4j.util.Encryptor;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ConfProperties extends Properties {
 	
 	private static final long serialVersionUID = 1L;

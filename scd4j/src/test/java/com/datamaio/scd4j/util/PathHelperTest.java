@@ -39,6 +39,10 @@ import org.junit.Test;
 import com.datamaio.scd4j.util.PathHelper;
 import com.datamaio.scd4j.util.io.PathUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class PathHelperTest {
 	Map<String, String> conf;
 	

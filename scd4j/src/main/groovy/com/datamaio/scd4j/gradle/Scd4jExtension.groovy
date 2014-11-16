@@ -23,26 +23,50 @@
  */
 package com.datamaio.scd4j.gradle;
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class Scd4jExtension {
 }
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class EnvNestedExtension{
 	String[] prod = []
 	String[] hom  = []
 	String[] test = []
 }
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class InstallNestedExtension{
 	String config
 	String module
 }
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class SettingsNestedExtention{
 }
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class LinuxNestedExtention{
 	boolean usesudo=false
 }
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class WindowsNestedExtention{
 }

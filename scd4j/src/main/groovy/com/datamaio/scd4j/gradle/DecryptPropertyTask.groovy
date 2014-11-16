@@ -28,7 +28,11 @@ import org.gradle.api.tasks.TaskAction
 
 import com.datamaio.scd4j.util.Encryptor
 
-class DecryptPropertyTask  extends DefaultTask {
+/**
+ *
+ * @author Fernando Rubbo
+ */
+class DecryptPropertyTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		

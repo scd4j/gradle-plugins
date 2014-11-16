@@ -34,6 +34,10 @@ import org.junit.Test;
 
 import com.datamaio.scd4j.conf.ConfProperties;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ConfPropertiesTest {
 	private StringReader reader = new StringReader("key1=value1\n" 
 			+ "key2=value2\n" 

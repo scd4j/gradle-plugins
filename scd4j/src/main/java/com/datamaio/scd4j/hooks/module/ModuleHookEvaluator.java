@@ -35,7 +35,10 @@ import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 import com.datamaio.scd4j.util.io.PathUtils;
 
-
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ModuleHookEvaluator extends HookEvaluator {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	

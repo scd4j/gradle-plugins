@@ -28,6 +28,10 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.wrapper.Wrapper
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class Scd4jPlugin implements Plugin<Project> {
 
     @Override

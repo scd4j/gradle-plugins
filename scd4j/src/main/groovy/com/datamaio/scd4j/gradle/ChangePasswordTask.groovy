@@ -29,7 +29,11 @@ import org.gradle.api.tasks.TaskAction
 
 import com.datamaio.scd4j.util.Encryptor
 
-class ChangePasswordTask  extends DefaultTask {
+/**
+ *
+ * @author Fernando Rubbo
+ */
+class ChangePasswordTask extends DefaultTask {
 	
 	@TaskAction
     def action() {

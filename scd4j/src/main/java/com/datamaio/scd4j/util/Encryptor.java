@@ -28,6 +28,10 @@ import java.io.Console;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.BasicTextEncryptor;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class Encryptor {
 	public static final String ENCRYPTOR_PASSWORD_PROPERTY = "com.datamaio.scd4j.util.Encryptor.password";
 	public static final String PREFIX = "ENCRYPTED:";	

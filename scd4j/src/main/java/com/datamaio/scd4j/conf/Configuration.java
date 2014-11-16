@@ -37,6 +37,10 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.util.io.PathUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class Configuration {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 

@@ -27,6 +27,11 @@ import org.apache.commons.configuration.PropertiesConfiguration
 
 import com.datamaio.scd4j.util.Encryptor
 
+
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class Input {
 	static File config(project){
 		def install = project.scd4j.install

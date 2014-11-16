@@ -34,6 +34,10 @@ import java.util.logging.SimpleFormatter;
 
 import com.datamaio.scd4j.conf.Configuration;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class LogHelper
 {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

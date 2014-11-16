@@ -26,6 +26,10 @@ package com.datamaio.scd4j.gradle
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class ValidateTask extends DefaultTask {
 	
 	@TaskAction

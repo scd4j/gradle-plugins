@@ -31,6 +31,10 @@ import java.util.regex.Pattern;
 
 import com.datamaio.scd4j.conf.Configuration;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public final class PathHelper {
 	private Map<String, String> properties;
 	private Path module;

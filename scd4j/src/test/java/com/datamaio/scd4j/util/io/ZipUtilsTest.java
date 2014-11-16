@@ -43,6 +43,10 @@ import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 import com.datamaio.scd4j.util.io.ZipUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public class ZipUtilsTest {
 	@Test
 	public void unzip() throws Exception {		

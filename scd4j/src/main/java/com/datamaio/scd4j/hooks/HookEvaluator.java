@@ -36,6 +36,10 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.util.io.FileUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public abstract class HookEvaluator {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	

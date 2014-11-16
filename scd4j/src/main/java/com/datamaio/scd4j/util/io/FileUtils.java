@@ -37,6 +37,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 public final class FileUtils {
 	
 	private static final Logger LOGGER = Logger.getLogger(FileUtils.class);
