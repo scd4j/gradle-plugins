@@ -47,18 +47,23 @@ class Scd4jPlugin implements Plugin<Project> {
 
 		// -- configure new tasks
 		project.task('scd4j', type:Scd4jTask){
+			group = "SCD4J"
 			description = "Automatically isntall and configure the environment"
 		}
 		project.task('encrypt', type:EncryptPropertyTask){
+			group = "SCD4J"
 			description = "Helper to encrypt a property"
 		}
 		project.task('decrypt', type:DecryptPropertyTask){
+			group = "SCD4J"
 			description = "Helper to dencrypt a property"
 		}
 		project.task('validate', type:ValidateTask){
+			group = "SCD4J"
 			description = "Helper to perform a basic sanity check in the configuration (includes password check)"
 		}
 		project.task('changepassword', type:ChangePasswordTask){
+			group = "SCD4J"
 			description = "Helper to change password for encrypted properties all at once"
 		}			
 
@@ -66,7 +71,7 @@ class Scd4jPlugin implements Plugin<Project> {
 		// -- configure the wrapper to execute automatically
 		project.task('wrapper', type: Wrapper) {
 			description = "Generate gradle wrapper"
-			gradleVersion = '2.2-rc-1'
+			gradleVersion = '2.2'
 		}		
 		project.tasks["wrapper"].execute()
 		

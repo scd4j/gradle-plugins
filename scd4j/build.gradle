@@ -77,5 +77,5 @@ uploadArchives {
 
 task wrapper (type: Wrapper) {
 	description = "Generate gradle wrapper"
-    gradleVersion = '2.2-rc-1'
+    gradleVersion = '2.2'
 }

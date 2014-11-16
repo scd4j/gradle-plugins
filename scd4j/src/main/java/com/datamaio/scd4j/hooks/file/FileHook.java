@@ -65,7 +65,7 @@ public abstract class FileHook extends Hook {
 	
 	/**
 	 * Convert the target file into the patterns of the operational system your
-	 * are running on. Very useful in the post() hook<br>
+	 * are running on. Very useful in the post() hook.<br>
 	 * This is mostly required whenever you create a file in windows and than
 	 * run it on Linux
 	 * <p>
@@ -106,7 +106,7 @@ public abstract class FileHook extends Hook {
 	 * 
 	 * @param link the link path
 	 */
-	protected void ln(String link) {
+	protected void linkToTarget(String link) {
 		ln(link, target);
 	}
 	
@@ -124,7 +124,7 @@ public abstract class FileHook extends Hook {
 		execute(target);
 	}
 	
-	/** returns the target directory. If it is already a dir returns it, otherwise return its parent */
+	/** returns the target directory. If the target is already a dir returns it, otherwise return its parent */
 	protected String getTargetDirectory(){
 		Path path = Paths.get(target);
 		if(Files.isDirectory(path)){

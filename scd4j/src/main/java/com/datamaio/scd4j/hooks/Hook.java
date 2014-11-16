@@ -44,7 +44,6 @@ import javax.naming.directory.InitialDirContext;
 
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Command.Interaction;
-import com.datamaio.scd4j.cmd.ServiceAction;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.file.FileHook;
@@ -52,14 +51,14 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
 
 /**
  * This class is the "father" of all hook scripts. A hook script is where you
- * can put complex configuration/intalation logic. In scd4j we have two tipes of
+ * can put complex configuration/installation logic. In scd4j we have two types of
  * hooks:
  * <ol>
- * <li> {@link ModuleHook}: could or could not have one per module
- * <li> {@link FileHook}: could or could not have one per file
+ * <li> {@link ModuleHook}: one per module (optional)
+ * <li> {@link FileHook}: one per file (optional)
  * </ol>
  * <p>
- * This class publish the following:
+ * This class publishs the following:
  * <ul>
  * <li> {@link #pre()} and {@link #post()} methods to be overriden in order to
  * define hooks semantics, pre and post respectively.
@@ -92,14 +91,14 @@ public abstract class Hook extends Script {
 	 * <li>Conditionally install a module or a file
 	 * <li>Execute any programming logic before installing a module or a file. For example:
 	 * <ul>
-	 *  <li> Execute different logic according environment which you are running (dev, test, hom, prod)
-	 *  <li> Execute different logic depending of operational system you are running on (Ubuntu, CentOs, Windows)
-	 * 	<li> Stop a service (sometimes required to update a file, for example)
-	 *  <li> etc..
+	 *  <li> Execute different logic according to the environment in which you are running on (dev, test, hom, prod)
+	 *  <li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOs, Windows)
+	 * 	<li> Stop a service (sometimes required to update a file)
+	 *  <li> and others
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @return <code>true</code> to installing the respective module or file,
+	 * @return <code>true</code> to install the respective module or file,
 	 *         false otherwise. Default is <code>true</code>
 	 */
 	public boolean pre() {return true;}
@@ -110,30 +109,30 @@ public abstract class Hook extends Script {
 	 * <li>Execute any programming logic after installing a module or a file. For example:
 	 * <ul>
 	 * 	<li> Change the file permission
-	 * 	<li> Rename or link the file
+	 * 	<li> Rename or link a file
 	 * 	<li> Start up a service
-	 *  <li> etc...
+	 *  <li> and others
 	 * </ul>
 	 * </ul>
-	 * 
-	 * @return <code>true</code> to installing the respective module or file,
-	 *         false otherwise. Default is <code>true</code>
 	 */	
 	public void post() {}	
 
 	//---------------- init command delegates ---------------
 	
-	/** Rerturns the name of the operational system. The same as Java System Property "os.name" */
+	/** 
+	 * Rerturns the name of the operational system. 
+	 * This looks at Java System Property "os.name" 
+	 */
 	public String osname() {
 		return Command.osname();
 	}
 
-	/** Returns <code>true</code> if we are running in a Linux environment */
+	/** Returns <code>true</code> if you are running on a Linux environment */
 	public boolean isLinux() {
 		return Command.isLinux();
 	}
 	
-	/** Returns <code>true</code> if we are running in a Windows environment */
+	/** Returns <code>true</code> if you are running on a Windows environment */
 	public boolean isWindows(){
         return Command.isWindows();
     }
@@ -147,7 +146,7 @@ public abstract class Hook extends Script {
 	}
 	
 	/** 
-	 * Execute the file. <br>
+	 * Execute a file. <br>
 	 * If the file is not executable, we try to make it executable. 
 	 * If it is not possible, an exception is thrown
 	 * 
@@ -158,10 +157,10 @@ public abstract class Hook extends Script {
 	}
 	
 	/** 
-	 * Converts a text file into the patterns of the operational system you are running on<br>
-	 * This is mostly required whenever you create a file in windows and then run it on Linux
+	 * Converts a text file into the patterns defined by the operational system you are running on.<br>
+	 * This is mostly required whenever you create a file in windows and then run it on Linux, or vice and versa.
 	 * <p>
-	 * Note: Usually config files are not an issue, but executable files are!!
+	 * Note: Usually configuration files are not an issue, but executable files are!!
 	 * 
 	 * @param file the text file path
 	 */
@@ -186,7 +185,7 @@ public abstract class Hook extends Script {
 	 * Note: Currently Linux only
 	 * 
 	 * @param group the name of the group
-	 * @param options the options you would like to pass in the line command
+	 * @param options the same options you would like to use in the command line
 	 */
 	public void groupadd(final String group, final String options) {
 		command.groupadd(group, options);
@@ -196,16 +195,20 @@ public abstract class Hook extends Script {
 	 * Creates an user
 	 * <p>
 	 * Note: Currently Linux only
+	 * 
+	 * @param user the user name
 	 */
 	public void useradd(final String user) {
 		command.useradd(user);
 	}
 
 	/**
-	 * Creates an user with options. In the second param must be set with the
-	 * exactly options you would pass in the command line 
+	 * Creates an user with options.
 	 * <p>
 	 * Note: Currently Linux only
+	 * 
+	 * @param user the user name
+	 * @param options the same options you would like to use in the command line
 	 */
 	public void useradd(final String user, final String options) {
 		command.useradd(user, options);
@@ -214,13 +217,15 @@ public abstract class Hook extends Script {
 	/**
 	 * Sets the user password
 	 * <p>
-	 * Note - 1: Currently Linux only<br>
-	 * Note - 2: If nobody should read the password, for example the prod
-	 * prod environment password, don't forget to encrypt it using
-	 * <code>gradlew encrypt</code>. The see all possibilities, type
-	 * <code>gradlew tasks</code>. Probably you are more interested in those
-	 * which show up at <code>Others</code> section<br>
-	 * Note - : In Linux, if SELinux is turned on, thi execution will fail
+	 * Iportant Notes:
+	 * <ol>
+	 * 	<li>Currently Linux only<br>
+	 * 	<li>For prod environments it is a good practice to encrypt passwords in order to ensure that non authorized 
+	 * 	people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>. <br>
+	 * 	To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
+	 * 	more interested in those which show up under <code>'SCD4J tasks'</code> Group<br>
+	 * 	<li>In Linux, if SELinux is turned on, thi execution will fail
+	 * </ol>
 	 */
 	public void passwd(final String user, final String passwd) {
 		command.passwd(user, passwd);
@@ -296,7 +301,7 @@ public abstract class Hook extends Script {
 	}
 	
 	/** 
-	 * Create a simbolic link<br>
+	 * Create a symbolic link<br>
 	 * <p>
 	 * Note: Currently Linux only
 	 * 
@@ -440,14 +445,18 @@ public abstract class Hook extends Script {
 
 	/**
 	 * This method does no iteraction at all. In other words, it will only show
-	 * the output when the process finish.
+	 * the output after the process has finish.
 	 * <p>
-	 * 
-	 * Note - 1: This method was created because in very rare executions in
-	 * Linux the process hangs reading output. We are still figuring out the
-	 * issue, but we are expecting to resolve this when Java 9 be released<br>
-	 * Note - 2: If possible use {@link #run(String)} variant methods once this
+	 * Important Notes:
+	 * <ol>
+	 * 	<li>This method was created because, in very rare executions in
+	 * Linux, the process hangs reading output. We are still figuring out the
+	 * issue, but we are expecting to resolve this with Java 9 new Process API<br>
+	 * 	<li> If possible use {@link #run(String)} variant methods once this
 	 * one may be removed in future releases
+	 * </ol>
+	 * 
+	 * @param cmd the command line 
 	 */
 	public String runWithNoInteraction(String cmd) {
 		return command.runWithNoInteraction(cmd);
@@ -482,8 +491,14 @@ public abstract class Hook extends Script {
 	 * </pre>
 	 * 
 	 * <br>
-	 * Note: none of env ips are required. So if you have a very simple
-	 * environment, just ignore it. Everything will be development 
+	 * Important Notes:
+	 * <ol>
+	 * 	<li>In order to make this method work as expected the name of the
+	 * machine must be in the DNS and you must have an entry in the /etc/hosts
+	 * with ip 127.0.0.1 using the same name you have used in DNS
+	 * 	<li>None of env ips are required. So if you have a very simple
+	 * environment, just ignore it. Everything will be development
+	 * </ol>
 	 */
 	protected boolean isTest(){
 		final String address = whatIsMyIp();
@@ -506,8 +521,14 @@ public abstract class Hook extends Script {
 	 * </pre>
 	 * 
 	 * <br>
-	 * Note: none of env ips are required. So if you have a very simple
-	 * environment, just ignore it. Everything will be development 
+	 * Important Notes:
+	 * <ol>
+	 * 	<li>In order to make this method work as expected the name of the
+	 * machine must be in the DNS and you must have an entry in the /etc/hosts
+	 * with ip 127.0.0.1 using the same name you have used in DNS
+	 * 	<li>None of env ips are required. So if you have a very simple
+	 * environment, just ignore it. Everything will be development
+	 * </ol>
 	 */
 	protected boolean isHom(){
 		final String address = whatIsMyIp();
@@ -532,8 +553,14 @@ public abstract class Hook extends Script {
 	 * </pre>
 	 * 
 	 * <br>
-	 * Note: none of env ips are required. So if you have a very simple
+	 * Important Notes:
+	 * <ol>
+	 * 	<li>In order to make this method work as expected the name of the
+	 * machine must be in the DNS and you must have an entry in the /etc/hosts
+	 * with ip 127.0.0.1 using the same name you have used in DNS
+	 * 	<li>None of env ips are required. So if you have a very simple
 	 * environment, just ignore it. Everything will be development
+	 * </ol>
 	 */
 	protected boolean isProd(){
 		final String address = whatIsMyIp();
@@ -587,7 +614,7 @@ public abstract class Hook extends Script {
 	 * Use this method for every log content. So it will be stored in the dir
 	 * log<br>
 	 * Please, do not use pintln. Otherwise you will print the log information
-	 * only in the starndard output
+	 * only in the starndard output and you will will lose it if you close the console.
 	 */
     public void log(String msg) {
         LOGGER.info("\t" + msg);
@@ -596,7 +623,9 @@ public abstract class Hook extends Script {
     // --- properties methods ---
     
     /**
-	 * Sets a temporary ({@link #setTemporaryProperty(String, Object)}) or a
+     * EXPERIMENTAL:
+     * <br>
+	 * Sets a temporary ({@link #setTempProperty(String, Object)}) or a
 	 * permanent ({@link #setPermanentProperty(String, Object)}) property.<br>
 	 *  
 	 * <p>
@@ -613,13 +642,13 @@ public abstract class Hook extends Script {
 	 * 
 	 * =======
 	 * 
-	 * set permanent: "my_key", with: "my_string_value"
+	 * set permanent: "my_key" with: "my_string_value"
 	 * OR
-	 * set permanent: "my_key", with: true
+	 * set permanent: "my_key" with: true
 	 * OR
-	 * set permanent: "my_key", with: 234
+	 * set permanent: "my_key" with: 234
 	 * OR
-	 * set permanent: "my_key", with: 98.23	 
+	 * set permanent: "my_key" with: 98.23	 
 	 * </pre>
 	 */
     protected void set(Map<String, ? extends Object> values){
@@ -630,7 +659,7 @@ public abstract class Hook extends Script {
     	
     	String keyTemporary = (String)values.get("temporary");
     	if(keyTemporary!=null) {
-    		setTemporaryProperty(keyTemporary, value);
+    		setTempProperty(keyTemporary, value);
     	} else {
     		String keyPermanent = (String)values.get("permanent");
     		if(keyPermanent!=null) {
@@ -640,21 +669,119 @@ public abstract class Hook extends Script {
     		}
     	}
     }
+
+    /**
+     * EXPERIMENTAL:
+     * <br>
+	 * Sets a temporary ({@link #setTempProperty(String, Object)}) or a
+	 * permanent ({@link #setPermanentProperty(String, Object)}) property.<br>
+	 *  
+	 * <p>
+	 * How to use this DSL:
+	 * 
+	 * <pre>
+	 * set "my_key" with "my_string_value" _as temp
+	 * OR
+	 * set "my_key" with true _as temp
+	 * OR
+	 * set "my_key" with 234 _as temp
+	 * OR
+	 * set "my_key" with 98.23 _as temp
+	 * 
+	 * =======
+	 *
+	 * set "my_key" with "my_string_value" _as permanent
+	 * OR
+	 * set "my_key" with true _as permanent
+	 * OR
+	 * set "my_key" with 234  _as permanent
+	 * OR
+	 * set "my_key" with 98.23  _as permanent
+	 * </pre>
+	 */
+    protected SetValue set(String key){
+    	return new SetValue(){
+			@Override
+			public SetDuration with(String value) {
+				return new SetDuration(){
+					@Override
+					public void _as(PropertyDuration d) {
+						if(PropertyDuration.permanent.equals(d)){
+							setPermanentProperty(key, value);
+						} else {
+							setTempProperty(key, value);
+						}
+					}
+				};
+			}
+			@Override
+			public SetDuration with(Boolean value) {
+				return new SetDuration(){
+					@Override
+					public void _as(PropertyDuration d) {
+						if(PropertyDuration.permanent.equals(d)){
+							setPermanentProperty(key, ""+value);
+						} else {
+							setTempProperty(key, ""+value);
+						}						
+					}
+				};
+			}
+			@Override
+			public SetDuration with(Integer value) {
+				return new SetDuration(){
+					@Override
+					public void _as(PropertyDuration d) {
+						if(PropertyDuration.permanent.equals(d)){
+							setPermanentProperty(key, ""+value);
+						} else {
+							setTempProperty(key, ""+value);
+						}						
+					}
+				};
+			}
+			@Override
+			public SetDuration with(Double value) {
+				return new SetDuration(){
+					@Override
+					public void _as(PropertyDuration d) {
+						if(PropertyDuration.permanent.equals(d)){
+							setPermanentProperty(key, ""+value);
+						} else {
+							setTempProperty(key, ""+value);
+						}						
+					}
+				};
+			}    		
+    	};
+    }
+    protected PropertyDuration permanent = PropertyDuration.permanent;
+    protected PropertyDuration temp = PropertyDuration.temp;    
+    enum PropertyDuration {permanent, temp}
+    protected interface SetDuration{
+    	void _as(PropertyDuration d); //TODO: can not use 'as' because it is a keyword in groovy
+    }
+    protected interface SetValue {
+		SetDuration with(String value);
+		SetDuration with(Boolean value);
+		SetDuration with(Integer value);
+		SetDuration with(Double value);
+	}  
     
 	/**
 	 * Sets a temporary/transient property.<br>
 	 * A temporary/transient property stays only for a short period of time. In
-	 * other words, if it is set before in Hook#pre() method, it will remains
+	 * other words, if it is set in Hook#pre() method, it will remain
 	 * until the end of Hook#post() method execution.
 	 */
-    public void setTemporaryProperty(String key, Object value) {
+    public void setTempProperty(String key, Object value) {
 		props.put(key, value.toString());
 		temporaryProps.put(key, value.toString());
     }
 
     /**
 	 * Sets a permanent/persistent property.<br>
-	 * A permanent/persistent property, stays up until the end of the program.<br>
+	 * A permanent/persistent property stays up until the end of the program.<br>
      */
     public void setPermanentProperty(String key, Object value) {
 		props.put(key, value.toString());
@@ -662,14 +789,16 @@ public abstract class Hook extends Script {
     
     /** 
      * Returns the value of a property.<br>
-     * Properties can be set through programming (see {@link #set(String) method}) or via configuration file:
+	 * Properties can be set through programming (see
+	 * {@link #setTempProperty(String, Object)} and {@link #setPermanentProperty(String,
+	 * Object)} methods) or via configuration file:
      * 
      * <pre>
 	 * scd4j {
-	 * 		install {
-	 * 			... 
-	 * 			config = "my_config_file.conf"
-	 * 		}
+	 * 	install {
+	 * 		... 
+	 * 		config = "my_config_file.conf"
+	 * 	}
 	 * }
 	 * </pre>
      */
@@ -679,19 +808,21 @@ public abstract class Hook extends Script {
 	    return props.get(key);
 	}
 
-    /** 
-     * Checks if a given key was set as a property.<br>
-     * Properties can be set through programming (see {@link #set(String) method}) or via configuration file:
-     * 
-     * <pre>
+    /**
+	 * Checks if a given key was set as a property.<br>
+	 * Properties can be set through programming (see
+	 * {@link #setTempProperty(String, Object)} and {@link #setPermanentProperty(String,
+	 * Object)} methods) or via configuration file:
+	 * 
+	 * <pre>
 	 * scd4j {
-	 * 		install {
-	 * 			... 
-	 * 			config = "my_config_file.conf"
-	 * 		}
+	 * 	install {
+	 * 		... 
+	 * 		config = "my_config_file.conf"
+	 * 	}
 	 * }
 	 * </pre>
-     */
+	 */
 	protected boolean contains(final String key){
         return props.get(key)!=null;
     }
@@ -700,6 +831,7 @@ public abstract class Hook extends Script {
 	// --- install methods ---
 
 	// TODO: DSL => add "x" to linux repository
+	// OR:   DSL => add "x" as_a repository
 	/**
 	 * Add a new repository to the OS. So that it is possible to install
 	 * software from different location than the distribution defaults
@@ -721,29 +853,52 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Install or update to the latest version of a new software.
+	 * Install or update to the latest version of a package.
 	 * 
 	 * @See {@link #install(String, String)}
 	 * 
 	 * @param pack the package name
 	 */
-	public void install(String pack) {
+	public void installLatestVersion(String pack) {
 		command.install(pack);
 	}
-
+	
+	/**
+	 * Experimental<br> 
+	 * DSL for {@link #install(String, String)}
+	 * <p>
+	 * How to use this DSL:
+	 * 
+	 * <pre>
+	 * install "lxde" version "0.5.0-4ubuntu4" 
+	 * </pre> 
+	 */
+	public Version install(String pack) {
+		//TODO: this could first look at scd4j repository and then, if not found, try to check in linux repo
+		return new Version(){
+			@Override
+			public void version(String version) {
+				install(pack, version);
+			}
+		};
+	}
+    protected interface Version {
+		void version(String version);
+    }
+	
 	/**
 	 * Install or update to a specific version of a new software.
 	 * <p>
-	 * Important. Prefer this method over {@link #install(String)} because we
-	 * must test it many times before installing in production. Without putting
-	 * the version we can test a versio X and install in production a version Y.
+	 * Important. Prefer this method over {@link #installLatestVersion(String)} because we
+	 * should test it many times before installing in production. Without putting
+	 * the version we can test a version X and install in production a version Y.
 	 * <p>
 	 * Note: Currently Linux only
 	 * 
 	 * <p>
 	 * For example in Ubuntu:
 	 * <pre>
-	 * install "lxde", "0.5.0-4ubuntu4"
+	 * install ("lxde", "0.5.0-4ubuntu4")
 	 * </pre>
 	 * 
 	 * @param pack
@@ -797,11 +952,11 @@ public abstract class Hook extends Script {
 ////install "lxde" version:"0.5.0-4ubuntu4" from OS
 ////install "org.wildfly:wildfly" version:"0.5.0-4ubuntu4" from SCD4J
 ////OU	
-////install "wildfly" from SD4J version:"0.5.0-4ubuntu4" group "org.wildfly"	
+////install "wildfly" version:"0.5.0-4ubuntu4" from SD4J // OBS: if only has one wildfly with this version, ok, otherwise throws abiguous exception	
 	
 	/**
-	 * Install a package (rpm or deb) which was put in the Artifactory or Nexus.<br>
-	 * In order to accomplish that, you need to resolve the dependency in build.gradle.
+	 * Installs a package (rpm or deb) which was put in the Artifactory or Nexus.<br>
+	 * In order to accomplish that, you need to configure the dependency in build.gradle.
 	 * <p>
 	 * For example:
 	 * <pre>
@@ -815,18 +970,18 @@ public abstract class Hook extends Script {
 	 * installFromScd4j "org.wildfly:wildfly:8.1.0.Final"
 	 * </pre>
 	 * <p>
-	 * Note: Currently Linux only
+	 * Note: In windows the pack should be an executable and shold not require user interaction
 	 * 
 	 * @param depName the full dependency name
 	 */
 	protected void installFromScd4j(String depName) {
-		String path = downloadFromScd4j(depName);
+		String path = resolve(depName);
 		command.installFromLocalPath(path);
 	}
 		
 	/**
-	 * Install a zip which was put in the Artifactory or Nexus.<br>
-	 * In order to accomplish that, you need to resolve the dependency in build.gradle.
+	 * Installs a zip which was put in the Artifactory or Nexus.<br>
+	 * In order to accomplish that, you need to configure the dependency in build.gradle.
 	 * <p>
 	 * For example:
 	 * <pre>
@@ -840,25 +995,25 @@ public abstract class Hook extends Script {
 	 * unzipFromScd4j "org.wildfly:wildfly:8.1.0.Final" to "/opt/exampledir"
 	 * </pre>
 	 * <p>
-	 * Note: Currently Linux only
 	 * 
 	 * @param depName the full dependency name
 	 */	
 	// TODO: DSL => resolve and unzip dependency "x" to dir "y"
+	// Think a better option
 	protected Destination unzipFromScd4j(String depName) {
 		return new Destination() {			
 			@Override
 			public void to(String dir) {
-				String from = downloadFromScd4j(depName);
+				String from = resolve(depName);
 				command.unzip(from, dir);				
 			}
 		};
 	}
 	
 	/**
-	 * Downloads (uses cache to avoid download the same dependency many times) a
+	 * Downloads (uses cache to avoid downloading the same dependency many times) a
 	 * dependency which was put in the Artifactory or Nexus.<br>
-	 * In order to accomplish that, you need to resolve the dependency in
+	 * In order to accomplish that, you need to configure the dependency in
 	 * build.gradle.
 	 * <p>
 	 * For example:
@@ -875,12 +1030,22 @@ public abstract class Hook extends Script {
 	 * downloadFromScd4j "org.wildfly:wildfly:8.1.0.Final"
 	 * </pre>
 	 * <p>
-	 * Note: Currently Linux only
 	 * 
 	 * @param depName
 	 *            the full dependency name
 	 */		
-    protected String downloadFromScd4j(String depName) {
+    protected String resolve(String depName) {
+    	/* 
+    	 * TODO: download should find the right package for the os being running on
+    	 * 
+    	 * downloadFromScd4j "org.wildfly:wildfly:8.1.0.Final"
+    	 * 	- if we are running in both ubuntu and centos we should have configured
+    	 * ex:
+    	 * dependencies {
+		 *    scd4j 'groupX:Y:Z@deb' , 'groupX:Y:Z@rpm'
+		 * } 
+    	 */
+    	
     	if(depName.contains("@")){
     		depName = depName.substring(0, depName.indexOf("@"));
     	}
@@ -901,7 +1066,7 @@ public abstract class Hook extends Script {
      * @param name the service name
      */
 	public void start(String name) {
-    	command.service(name, ServiceAction.start);
+    	command.serviceStart(name);
 	}
     
     /** 
@@ -912,7 +1077,7 @@ public abstract class Hook extends Script {
      * @param name the service name
      */
 	public void stop(String name) {
-    	command.service(name, ServiceAction.stop);
+		command.serviceStop(name);
 	}
 
     /** 
@@ -923,7 +1088,7 @@ public abstract class Hook extends Script {
      * @param name the service name
      */
 	public void restart(String name) {
-    	command.service(name, ServiceAction.restart);
+		command.serviceRestart(name);
 	}
 	
     /** 
@@ -935,7 +1100,7 @@ public abstract class Hook extends Script {
      * @return status information of the service
      */
 	public String status(String name) {
-    	return command.service(name, ServiceAction.status);
+    	return command.serviceStatus(name);
 	}
 
 	// ------ methods used by the framework only ----
@@ -959,21 +1124,11 @@ public abstract class Hook extends Script {
 	protected interface Destination {
 		void to(String to);
 	}
-	interface SetDuration {
-		WithValue temporary(String key);
-		WithValue permanent(String key);
-	}
 	interface Service {
 		void start();
 		void stop();
 		void restart();
 		String status();
-	}
-	interface WithValue {
-		void with(String value);
-		void with(Boolean value);
-		void with(Integer value);
-		void with(Double value);
 	}
 	interface Normalization {
 		void content();

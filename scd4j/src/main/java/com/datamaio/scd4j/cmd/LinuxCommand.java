@@ -38,10 +38,19 @@ public abstract class LinuxCommand extends Command {
 
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	public String service(String name, ServiceAction action){
-    	return run("service " + name + " " + action);
+	public void serviceStart(String name){
+		run("service " + name + " start");
 	}
-	
+	public void serviceStop(String name){
+		run("service " + name + " stop");
+	}
+	public void serviceRestart(String name){
+		run("service " + name + " restart");
+	}
+	public String serviceStatus(String name){
+		return run("service " + name + " status");
+	}
+		
 	@Override
 	public void execute(String file) {
 		Path path = Paths.get(file);
@@ -147,7 +156,7 @@ public abstract class LinuxCommand extends Command {
 	
 	public void unzip(String from, String toDir) {
 		LOGGER.info("\tUnziping " + from + " para " + toDir + " ... ");
-		run("unzip -o " + from + " -d " + toDir);
+		run("unzip -q -o " + from + " -d " + toDir);
 	}
 	
 

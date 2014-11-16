@@ -46,9 +46,8 @@ public class UbuntuCommand extends LinuxCommand {
 	
 	@Override	
 	public void installFromLocalPath(String path) {
-		LOGGER.info("Installing DEB File from " + path + " ... ");
+		LOGGER.info("\tInstalling DEB File from " + path + " ... ");
 		run("dpkg -i " + path);
-		LOGGER.info("DEB File successfully installed! ");
 	}
 	
 	@Override

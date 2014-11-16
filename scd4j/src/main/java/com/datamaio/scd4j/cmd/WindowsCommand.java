@@ -34,12 +34,19 @@ import com.datamaio.scd4j.util.io.ZipUtils;
 public class WindowsCommand extends Command {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	
-	public String service(String name, ServiceAction action){
-		throw new RuntimeException("Function 'service' not implemented for windows");
+	public void serviceStart(String name){
+		throw new RuntimeException("Function 'service start' not implemented for windows");
 	}
-
-
+	public void serviceStop(String name){
+		throw new RuntimeException("Function 'service stop' not implemented for windows");
+	}
+	public void serviceRestart(String name){
+		throw new RuntimeException("Function 'service restart' not implemented for windows");
+	}
+	public String serviceStatus(String name){
+		throw new RuntimeException("Function 'service status' not implemented for windows");
+	}
+	
 	@Override
 	public void execute(String file) {
 		run(file);
@@ -147,7 +154,7 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void installFromLocalPath(String path) {
-		throw new RuntimeException("Operacao Nao implementado para windows");
+		run(path);
 	}
 	
 	@Override

@@ -45,9 +45,8 @@ public class CentOSCommand extends LinuxCommand {
 	
 	@Override
 	public void installFromLocalPath(String path) {
-		LOGGER.info("Instalando RPM a partir de " + path + " ... ");
+		LOGGER.info("\tInstalling RPM from " + path + " ... ");
 		run("rpm -i " + path);
-		LOGGER.info("RPM instalado com sucesso! ");
 	}
 	
 	@Override
