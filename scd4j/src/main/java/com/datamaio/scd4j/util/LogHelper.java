@@ -79,6 +79,7 @@ public class LogHelper
 			FileHandler fileHandler = new FileHandler(file.toString());
 			fileHandler.setFormatter(new SimpleFormatter());
 			LOGGER.addHandler(fileHandler);
+			fileHandler.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Erro criarndo arquivo de log " + logFileName, e);
 		}
