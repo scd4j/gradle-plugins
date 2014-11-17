@@ -46,7 +46,7 @@ class EnvNestedExtension{
  */
 class InstallNestedExtension{
 	String config
-	String module
+	String[] modules = []
 }
 
 /**

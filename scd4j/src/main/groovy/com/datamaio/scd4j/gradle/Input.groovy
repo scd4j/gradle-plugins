@@ -38,23 +38,33 @@ class Input {
 		return project.file("config/" + install.config)
 	}
 	
-	static File module(project){
-		def install = project.scd4j.install
-		return project.file("module/" + install.module)
-	}
-	
-	static boolean validate(module, config) {
-		return validateModule(module) && validateConfig(config);
-	}
-	
-	static boolean validateModule(module) {
-		if(!module.exists() || !module.isDirectory()) {
-			println "***************************************************************************************"
-			println "*** Module '$module' does not exists or it is not a directory ***"
-			println "***************************************************************************************"
-			return false
+	static File[] modules(project){
+		def result = []		
+		
+ 		def modules = project.scd4j.install.modules
+		for(m in  modules){
+			result.add(project.file("module/" + m))
 		}
-		return true;
+		
+		return result;
+	}
+	
+	static boolean validate(modules, config) {
+		return validateModule(modules) && validateConfig(config);
+	}
+	
+	static boolean validateModule(modules) {
+		def ok = true;
+		
+		for( module in modules ){
+			if(!module.exists() || !module.isDirectory()) {
+				println "***************************************************************************************"
+				println "*** Module '$module' does not exists or it is not a directory ***"
+				println "***************************************************************************************"
+				ok = false
+			}
+		}
+		return ok;
 	}
 	
 	static boolean validateConfig(config) {

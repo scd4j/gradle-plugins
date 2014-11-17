@@ -34,11 +34,11 @@ class ValidateTask extends DefaultTask {
 	
 	@TaskAction
     def action() {
-		def module = Input.module(project)
 		def config = Input.config(project)
+		def modules = Input.modules(project)
 		println "\nHelper tool to validate config and module inputs"
 				
-		if(Input.validate(module, config) && Input.validateConfigEncryption(config)) {
+		if(Input.validate(modules, config) && Input.validateConfigEncryption(config)) {
 			println "======================="
 			println "=== Config is valid ==="
 			println "======================="
