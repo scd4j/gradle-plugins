@@ -45,7 +45,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.datamaio.scd4j.EnvConfigurator;
+import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
@@ -56,7 +56,8 @@ import com.datamaio.scd4j.util.io.PathUtils;
 public class EnvConfiguratorTest {
 	
 	@After
-	public void setup(){
+	public void teardown(){
+		LogHelper.closeAndRemoveFileHandler();
 		Path base = new File(".").getAbsoluteFile().toPath();
 		FileUtils.delete(PathUtils.get(base, "backup"));
 		FileUtils.delete(PathUtils.get(base, "log"));
@@ -302,7 +303,8 @@ public class EnvConfiguratorTest {
 	}
 
 	private Path[] createEnv(int index) throws IOException, URISyntaxException {
-		Path root = Files.createTempDirectory("root");		
+		Path root = Files.createTempDirectory("root");
+		
 		Path fs = FileUtils.createDirectories(PathUtils.get(root, "fs"));
 		Path module = FileUtils.createDirectories(PathUtils.get(root, "module"));
 		Path result = FileUtils.createDirectories(PathUtils.get(root, "result"));

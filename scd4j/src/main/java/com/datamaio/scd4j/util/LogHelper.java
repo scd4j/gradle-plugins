@@ -51,15 +51,7 @@ public class LogHelper
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %1$tb %1$td, %1$tY %1$tH:%1$tM:%1$tS %5$s%6$s%n");
 
 		// avoid tha the handler be registred more than once
-		Handler[] handlers = LOGGER.getHandlers();
-		for (Handler handler : handlers) {
-			if (handler instanceof FileHandler) {
-				// it is required to close in order to avoid .lck file
-				FileHandler fh = (FileHandler) handler;
-				fh.close();
-			}
-			LOGGER.removeHandler(handler);
-		}
+		closeAndRemoveFileHandler();
 
         // registry the handlers
         LOGGER.setLevel(Level.INFO);
@@ -79,10 +71,21 @@ public class LogHelper
 			FileHandler fileHandler = new FileHandler(file.toString());
 			fileHandler.setFormatter(new SimpleFormatter());
 			LOGGER.addHandler(fileHandler);
-			fileHandler.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Erro criarndo arquivo de log " + logFileName, e);
 		}
     }
+
+	public static void closeAndRemoveFileHandler() {
+		Handler[] handlers = LOGGER.getHandlers();
+		for (Handler handler : handlers) {
+			if (handler instanceof FileHandler) {
+				// it is required to close in order to avoid .lck file
+				FileHandler fh = (FileHandler) handler;
+				fh.close();
+			}
+			LOGGER.removeHandler(handler);
+		}
+	}
 }
 
