@@ -41,7 +41,7 @@ class Scd4jTask extends DefaultTask {
     def action() {		
     	def env = project.scd4j.env		
 		def config = Input.config(project);
-		def module = Input.module(project)
+		def modules = Input.modules(project)
 				
         println "==================== Running scd4j =============================="
 		println "====== Environment Configuration ======"
@@ -51,42 +51,46 @@ class Scd4jTask extends DefaultTask {
 		println "IP DES  LIST  : [ANY OTHER]"
 		println "====== Instalation Configuration ======"
         println "CONFIG FILE   : " + config 
-        println "MODULE DIR    : " + module  
+        println "MODULE DIRS   : " + modules  
 		println "====================================================================="
 		
-		if( Input.validate(module, config) ) {
+		if( Input.validate(modules, config) ) {
 			def console = System.console()
 			if (console) {
-				def ok = console.readLine('\nReview the above config. Type "yes" to procceed and "no" to abort: ')
+				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed and "no/n" to abort: ')
 				if("sim".equalsIgnoreCase(ok) || "yes".equalsIgnoreCase(ok) 
 					|| "s".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok)) {
 					def environments = new ConfEnvironments(env.prod, env.hom, env.test)
 					def dependencies = mapDependencies2Path();
-					new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+					for(module in modules) {						
+						new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+					}
 				} else {
 					println "============================"
 					println "=== Instalation aborted! ==="
 					println "============================"
 				}
 			} else {
+				// Running inside of eclipse, for example..
 				println "DEV ONLY: Cannot get console - Will keep processing, but will not accept cryptography in any configuration property"
 				def environments = new ConfEnvironments(env.prod, env.hom, env.test)
 				def dependencies = mapDependencies2Path();
-				new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+				for(module in modules) {
+					new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+				}
 			}
 		} else {
 			println "============================"
 			println "=== Instalation aborted! ==="
 			println "============================"
-		}
-		
+		}		
     }
 
 	def mapDependencies2Path(){	
 		def map = [:]		
 		project.configurations.scd4j.dependencies?.each {Dependency d ->
 			if(d.version.contains("+")) {
-				throw new InvalidUserDataException("In 'packs2Intall' it is not allowed to use '+' modifier!")
+				throw new InvalidUserDataException("In 'scd4j' it is not allowed to use '+' modifier!")
 			}
 			
 			def key = "$d.group:$d.name:$d.version"
@@ -95,7 +99,7 @@ class Scd4jTask extends DefaultTask {
 				return d.group.split("\\.").find { s -> name.contains(s) }!=null && name.contains(d.name) && name.contains(d.version)
 			}
 			if(value==null){
-				throw new InvalidUserDataException("Could not resolve 'packs2Install' dependency: $key.")
+				throw new InvalidUserDataException("Could not resolve 'scd4j' dependency: $key.")
 			}
 			map.putAt(key, value.toPath())
 		}		
