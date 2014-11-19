@@ -23,8 +23,11 @@
  */
 package com.datamaio.scd4j.util.io;
 
+import static java.io.File.pathSeparator;
+import static java.io.File.separator;
 import static java.util.stream.Collectors.toList;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -57,11 +60,15 @@ public final class PathUtils {
 				.map(p -> path2str(p))
 				.collect(toList())
 				.toArray(new String[]{});
-		return Paths.get(dir.toString().replace("\\", "/"), moreStr);
+		return Paths.get(fixSeparator(dir.toString()), moreStr);
 	}
 
 	static String path2str(String p) {
-		return p.replace("\\", "/").replaceFirst("([a-zA-Z]\\:)", "");
+		return fixSeparator(p).replaceFirst("([a-zA-Z]\\:)", "");
+	}
+	
+	private static String fixSeparator(String path) {
+		return path.replace("\\", separator).replace("/", separator);
 	}
 	
 	/** Método helper para resolver o caminho de um arquivo em um destino */
