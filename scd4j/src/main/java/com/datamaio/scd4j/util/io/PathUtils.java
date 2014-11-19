@@ -53,7 +53,15 @@ public final class PathUtils {
 	
 	/** Método helper para pegar o caminho de um arquivo */
 	public static Path get(Path dir, String... more) {
-		return Paths.get(dir.toString(), more);
+		String[] moreStr = Arrays.stream(more)
+				.map(p -> path2str(p))
+				.collect(toList())
+				.toArray(new String[]{});
+		return Paths.get(dir.toString().replace("\\", "/"), moreStr);
+	}
+
+	static String path2str(String p) {
+		return p.replace("\\", "/").replaceFirst("([a-zA-Z]\\:)", "");
 	}
 	
 	/** Método helper para resolver o caminho de um arquivo em um destino */
