@@ -32,6 +32,11 @@ import com.datamaio.scd4j.conf.ConfEnvironments
 import com.datamaio.scd4j.EnvConfigurator;
 
 /**
+ * Task used to start SCD4J
+ * <p>
+ * In order to avoid prompting for confirmation use <code>./gradlew -PassumeYes=true</code>. In other words, 
+ * this config automatic answer "yes" all prompts and run non-interactively.
+ * <p> 
  *
  * @author Fernando Rubbo
  */
@@ -58,16 +63,13 @@ class Scd4jTask extends DefaultTask {
 		println "====================================================================="
 		
 		if( Input.validate(modules, config) ) {
-			def console = System.console()
-			if (console) {
+			def console = System.console()			
+			if (assumeYes(project)) {
+				run(env, modules, config)
+			} else if(console) {
 				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed and "no/n" to abort: ')
-				if("sim".equalsIgnoreCase(ok) || "yes".equalsIgnoreCase(ok) 
-					|| "s".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok)) {
-					def environments = new ConfEnvironments(env.prod, env.hom, env.test)
-					def dependencies = mapDependencies2Path();
-					for(module in modules) {						
-						new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
-					}
+				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
+					run(env, modules, config)
 				} else {
 					println "============================"
 					println "=== Instalation aborted! ==="
@@ -89,6 +91,19 @@ class Scd4jTask extends DefaultTask {
 		}		
     }
 
+	def run(env, modules, config) {
+		def environments = new ConfEnvironments(env.prod, env.hom, env.test)
+		def dependencies = mapDependencies2Path();
+		for(module in modules) {						
+			new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+		}
+	}
+
+	
+	def assumeYes(project) {
+		return project.hasProperty("assumeYes") ? "true".equals(project.assumeYes) : false
+	}
+	
 	def mapDependencies2Path(){	
 		def map = [:]		
 		project.configurations.scd4j.dependencies?.each {Dependency d ->
