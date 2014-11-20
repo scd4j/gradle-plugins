@@ -36,11 +36,11 @@ class DecryptPropertyTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		
-		println "\nHelper tool to decrypt an existing property"
+		println "\nHelper tool to decrypt an existing property value"
 		
 		Console console = System.console()
 		if (console) {
-			def encrypted = console.readLine('\nEncrypted Property Value: ')
+			def encrypted = console.readLine('\nProvide the encrypted Property Value: ')
 			def pass = new String(console.readPassword('Password: '))
 			
 			try {

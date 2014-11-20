@@ -49,26 +49,22 @@ class Scd4jPlugin implements Plugin<Project> {
 		project.scd4j.settings.extensions.create("linux", LinuxNestedExtention)
 		project.scd4j.settings.extensions.create("windows", WindowsNestedExtention)
 
-		// -- configure new tasks
-		project.task('scd4j', type:Scd4jTask){
-			group = "scd4j"
-			description = "Automatically isntall and configure the environment"
-		}
+		// -- configure tools tasks
 		project.task('encrypt', type:EncryptPropertyTask){
-			group = "scd4j"
+			group = "scd4j Tools"
 			description = "Helper to encrypt a property"
 		}
 		project.task('decrypt', type:DecryptPropertyTask){
-			group = "scd4j"
+			group = "scd4j Tools"
 			description = "Helper to dencrypt a property"
 		}
 		project.task('validate', type:ValidateTask){
-			group = "scd4j"
+			group = "scd4j Tools"
 			description = "Helper to perform a basic sanity check in the configuration (includes password check)"
 		}
 		project.task('changepassword', type:ChangePasswordTask){
-			group = "scd4j"
-			description = "Helper to change password for encrypted properties all at once"
+			group = "scd4j Tools"
+			description = "Helper to change password for encrypted properties, all at once"
 		}			
 
 		
@@ -80,11 +76,17 @@ class Scd4jPlugin implements Plugin<Project> {
 		project.tasks["wrapper"].execute()
 		
 		
-		// -- configure packaging 
+		// -- configure basic tasks 
 		project.apply (plugin: 'base')
+		project.task('scd4j', type:Scd4jTask){
+			group = "scd4j"
+			description = "Automatically isntall and configure the environment"
+		}
 		project.task('pack', type:Zip) {
+			group = "scd4j"
+			description = "Generates a zip to be installed in another environment. Triggered in the default gradle artifacts generation."
 			from '.'
-			exclude 'build', 'log', 'backup'
+			exclude 'build', 'log', 'backup', 'target', ".gradle"
 		}
 		project.configurations {
 			archives
@@ -95,8 +97,8 @@ class Scd4jPlugin implements Plugin<Project> {
 		
 		// -- override the default behaviour to delete more folders
 		project.clean {
-			description = "Deletes the following folders: build, backup, log"
-			delete "backup","log"
+			description = "Deletes the following folders: build, backup, log and target"
+			delete "backup","log", "target"
 		}
     }
 }

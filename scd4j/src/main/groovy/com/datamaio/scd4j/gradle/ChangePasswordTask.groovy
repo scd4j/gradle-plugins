@@ -37,7 +37,7 @@ class ChangePasswordTask extends DefaultTask {
 	
 	@TaskAction
     def action() {
-		def config = Input.config(project)
+		def config = Input.config(project)		
 		println "\nHelper tool to change the password of file : $config"
 		
 		if( Input.validateConfig(config) ) {
@@ -75,6 +75,7 @@ class ChangePasswordTask extends DefaultTask {
 		Encryptor encryptor = Encryptor.get(newPass);
 		
 		try {
+			boolean success = true;
 			int count = 0;
 			PropertiesConfiguration props = new PropertiesConfiguration(config);
 			Iterator<String> keys = props.getKeys();
@@ -92,12 +93,20 @@ class ChangePasswordTask extends DefaultTask {
 						println "\t***********************************************************************************************************"
 						println "\t********************** COULD NOT DECRYPT PROPERTY: " + key + " *****************"
 						println "\t***********************************************************************************************************"
+						success = false
 					}
 				}
 			}
 			println "\n\nNUMBER OF ENCRYPTED PROPERTIES FOUND: $count";
-			props.save();
-			println "\n\nConfig file $config successfully save!";
+			if(success) {
+				props.save();
+				println "\n\nConfig file $config successfully save!";
+			} else {				
+				println "\n\nConfig file $config was not updated because there are errors. Fix it and try again!";
+				println "============================="
+				println "=== Nothing has been done ==="
+				println "============================="
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

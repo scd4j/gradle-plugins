@@ -56,7 +56,7 @@ import com.datamaio.scd4j.util.io.DeleteVisitor;
 import com.datamaio.scd4j.util.io.FileUtils;
 
 /**
- * This class é the heart of scd4j tool. <br>
+ * This class is the heart of scd4j tool. <br>
  * It is responsible to start the process, to delete target files, copy and
  * merge templates. Beoynd that this class is responsible to initiate and
  * execute all existing hooks.
@@ -94,10 +94,10 @@ public class EnvConfigurator {
 	/**
 	 * This method starts the installation and configuration process.<br>
 	 * 
-	 * Whenever a file <code>Module.hook</code> exists in the root of the module
+	 * Whenever a file called <code>Module.hook</code> exists in the root of the module
 	 * directory, it will be used to perform <code>pre()</code> and
 	 * <code>post()<code> semantics of the module
-	 * Installation.
+	 * installation/configuration.
 	 */
 	public void exec() {
 		conf.printProperties();
@@ -122,22 +122,22 @@ public class EnvConfigurator {
 	}
 
 	/**
-	 * Deletes all files configured inside of the sub folders of a module
+	 * Method responsible for deleting files and directories
 	 * <p>
 	 * 
 	 * Suppose you would like to delete a file found in<br>
 	 * &nbsp;&nbsp;<code>/opt/my_app/my_file.txt</code><br>
-	 * Then, in scd4j you should create a file<br>
+	 * Then, in scd4j you should create a file like this<br>
 	 * &nbsp;&nbsp;
-	 * <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt.del</code>
+	 * <code>< scd4j_module_dir >/opt/my_app/my_file.txt.del</code>
 	 * <p>
 	 * 
 	 * Note that you have to use exactly the same path of the original file
 	 * appending <code>.del</code> at the end. This tells to scd4j to deleted
 	 * such file.<br>
-	 * Although the file content has no importance during delete operations, it
-	 * is strongly recommended to keep the content inside the <code>.del</code>
-	 * file in order keep the original information safe.
+	 * Although the file content has no importance during deletion process, it
+	 * is strongly recommended to keep the original file content into the <code>.del</code>
+	 * file in order to keep tracking this information.
 	 * <p>
 	 * 
 	 * Another important feature implemented in this method is the ability to
@@ -145,7 +145,7 @@ public class EnvConfigurator {
 	 * <br>
 	 * In oder to accomplish that you need to implement another file called 
 	 * <br>
-	 * &nbsp;&nbsp; <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt.del.hook</code>
+	 * &nbsp;&nbsp; <code>< scd4j_module_dir >/opt/my_app/my_file.txt.del.hook</code>
 	 * <br>
 	 * Note that it must have exactly the same name of the <code>.del</code>
 	 * file appending <code>.hook</code> at the end. This tells to scd4j that
@@ -199,39 +199,39 @@ public class EnvConfigurator {
 	}
 	
 	/**
-	 * Copies all files configured inside of the sub folders of a module
+	 * Method responsible to copy files configured inside of a module to its target destination
 	 * 
 	 * <p>
 	 * Suppose you would like to copy a new file to<br>
 	 * &nbsp;&nbsp;<code>/opt/my_app/my_file.txt</code><br>
-	 * Then, in scd4j you should create a file<br>
+	 * Then, in scd4j you should create a file like this<br>
 	 * &nbsp;&nbsp;
-	 * <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt</code>
+	 * <code>< scd4j_module_dir >/opt/my_app/my_file.txt</code>
 	 * <br>
-	 * OR, if you would like fill out some gaps inside of the file before coping
+	 * OR, if you would like to fill out some gaps inside of the file before copying
 	 * it to the target place you should create a file like this<br>
 	 * &nbsp;&nbsp;
-	 * <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt.tmpl</code>
+	 * <code>< scd4j_module_dir >/opt/my_app/my_file.txt.tmpl</code>
 	 * <p>
 	 * 
 	 * Note that you have to use exactly the same path of the original target
 	 * file in oder to copy it to the right place. If you intend to fill out
 	 * dinamically a database url, for example, you must append
-	 * <code>.tmpl</code> at the end. This tells to scd4j to, before coping,
+	 * <code>.tmpl</code> at the end of the file name. This tells to scd4j to, before copying,
 	 * resolve the template of the file. Which can be written using <a
 	 * href="http://groovy.codehaus.org/Groovy+Templates">Groovy Templates
 	 * sintax</a>.
 	 * 
 	 * <p>
 	 * Another important feature implemented in this method is the ability to
-	 * execute a hook before and after the coping.<br>
+	 * execute a hook before and after the copying.<br>
 	 * In oder to accomplish that you need to implement another file called <br>
 	 * &nbsp;&nbsp;
-	 * <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt.hook</code>
+	 * <code>< scd4j_module_dir >/opt/my_app/my_file.txt.hook</code>
 	 * <br>
 	 * OR <br>
 	 * &nbsp;&nbsp;
-	 * <code>< scd4j_home >/module/< my_module_name >/opt/my_app/my_file.txt.tmpl.hook</code>
+	 * <code>< scd4j_module_dir >/opt/my_app/my_file.txt.tmpl.hook</code>
 	 * <br>
 	 * depending on if you would like to use a template or not.
 	 * 
@@ -282,7 +282,7 @@ public class EnvConfigurator {
 						} catch (Exception e) {
 							throw new IOException(e);
 						}
-					    LOGGER.info(" :MERGED");
+					    LOGGER.info(" :TMPL_MERGED");
 					    LOGGER.info("\t" + source + " -> " + resolvedTargetFile);
 					    hook.post();
 					} else {

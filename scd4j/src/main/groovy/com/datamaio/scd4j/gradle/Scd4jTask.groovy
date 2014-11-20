@@ -44,6 +44,9 @@ class Scd4jTask extends DefaultTask {
 		def modules = Input.modules(project)
 				
         println "==================== Running scd4j =============================="
+		println "====== Version Info ==================="
+		println "Pack Name     : ${project.archivesBaseName} "
+		println "Pack Version  : ${project.version} "		
 		println "====== Environment Configuration ======"
         println "IP PROD LIST  : " + env.prod
         println "IP HOM  LIST  : " + env.hom

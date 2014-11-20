@@ -36,7 +36,7 @@ class EncryptPropertyTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		
-		println "\nHelper tool to encrypt a new property"
+		println "\nHelper tool to encrypt a property value"
 		
 		Console console = System.console()
 		if (console) {
@@ -46,7 +46,7 @@ class EncryptPropertyTask extends DefaultTask {
 			def cNewPass = new String(console.readPassword('Confirm New Password: '))
 			if (newPass==cNewPass) {			
 				def encrypted = Encryptor.get(newPass).encryptProp(value)
-				println "\nPut the property bellow in the configuration file"
+				println "\nPut the property bellow in your configuration file"
 				println "$name=$encrypted"
 			} else {
 				println "==============================="

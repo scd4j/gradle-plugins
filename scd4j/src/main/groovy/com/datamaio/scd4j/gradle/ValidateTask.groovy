@@ -36,7 +36,9 @@ class ValidateTask extends DefaultTask {
     def action() {
 		def config = Input.config(project)
 		def modules = Input.modules(project)
-		println "\nHelper tool to validate config and module inputs"
+		println """\nHelper tool to validate:
+	- Config file: $config
+	- Module inputs: $modules"""
 				
 		if(Input.validate(modules, config) && Input.validateConfigEncryption(config)) {
 			println "======================="
