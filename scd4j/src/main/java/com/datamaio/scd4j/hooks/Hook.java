@@ -46,6 +46,7 @@ import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Command.Interaction;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.exception.DependencyNotFoundException;
 import com.datamaio.scd4j.hooks.file.FileHook;
 import com.datamaio.scd4j.hooks.module.ModuleHook;
 
@@ -223,7 +224,7 @@ public abstract class Hook extends Script {
 	 * 	<li>For prod environments it is a good practice to encrypt passwords in order to ensure that non authorized 
 	 * 	people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>. <br>
 	 * 	To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
-	 * 	more interested in those which show up under <code>'SCD4J tasks'</code> Group<br>
+	 * 	more interested in those which show up under <code>'Scd4j Tools tasks'</code> group<br>
 	 * 	<li>In Linux, if SELinux is turned on, thi execution will fail
 	 * </ol>
 	 */
@@ -830,189 +831,113 @@ public abstract class Hook extends Script {
 
 	// --- install methods ---
 
-	// TODO: DSL => add "x" to linux repository
-	// OR:   DSL => add "x" as_a repository
 	/**
-	 * Add a new repository to the OS. So that it is possible to install
-	 * software from different location than the distribution defaults
+	 * Install or update a package.
 	 * <p>
-	 * For example:
+	 * This method is capable to install three types of packages depending on the parameter it receives:
+	 * <ul>
 	 * 
-	 * <pre>
-	 * addRepository "ppa:notepadqq-team/notepadqq"
-	 * </pre>
-	 *
-	 * <p>
-	 * Note: Currently Linux only
+	 * 	<li> Install a package (rpm, deb or executable in windows) which is located inside of scd4j directory.
+	 * 		<br>
+	 * 		In order to accomplish that, you need to configure the dependencies in build.gradle.
+	 * 		<br>
+	 * 		For example:
+	 * 		<pre>
+	 * 		dependencies {
+	 * 			scd4j files('dependencies/my_dependency.deb')
+	 * 		}
+	 * 		</pre>
+	 * 		<br>
+	 * 		Then, in your hook file, you will need to call
+	 * 		<br>
+	 * 		<pre>
+	 * 		install "my_dependency.deb"
+	 * 		</pre>
 	 * 
-	 * @param repository
-	 *            location
-	 */
-	public void addRepository(String repository) {
-		command.addRepository(repository);
-	}
-
-	/**
-	 * Install or update to the latest version of a package.
+	 * 	<li> Install a package (rpm, deb or executable in windows) which is located inside of Artifactory or Nexus binary repository.
+	 * 		<br>
+	 * 		In order to accomplish that, you need to configure the dependencies in build.gradle.
+	 * 		<br>
+	 * 		For example:
+	 * 		<pre>
+	 * 		dependencies {
+	 * 			scd4j 'my_group:my_pack_name:my_pack_version@rpm',
+	 * 		}
+	 * 		</pre>
+ 	 *		Then, in your hook file, you will need to call
+	 * 		<pre>
+	 * 		install 'my_group:my_pack_name:my_pack_version@rpm'
+	 * 		</pre>
 	 * 
-	 * @See {@link #install(String, String)}
+	 * 	<li> Install an operational system package (not supported on Windows)
+	 * 		<br>
+	 * 		For example, in your hook file you will need to call:
+	 * 		<pre>
+	 * 		install "lxde=0.5.0-4ubuntu4"
+	 * 		</pre>
+	 * </ol>
 	 * 
 	 * @param pack the package name
 	 */
-	public void installLatestVersion(String pack) {
-		command.install(pack);
+	public void install(String pack) {
+		try { 
+			String path = resolve(pack);
+			command.installFromLocalPath(path);
+		} catch (DependencyNotFoundException e) {		
+			command.install(pack);
+		}
 	}
 	
-	/**
-	 * Experimental<br> 
-	 * DSL for {@link #install(String, String)}
-	 * <p>
-	 * How to use this DSL:
-	 * 
-	 * <pre>
-	 * install "lxde" version "0.5.0-4ubuntu4" 
-	 * </pre> 
+	/** 
+	 * Uninstall an existing package.
+	 * <br>
+	 * Currently only supports Linux operational system packages uninstall 
 	 */
-	public Version install(String pack) {
-		//TODO: this could first look at scd4j repository and then, if not found, try to check in linux repo
-		return new Version(){
-			@Override
-			public void version(String version) {
-				install(pack, version);
-			}
-		};
-	}
-    protected interface Version {
-		void version(String version);
-    }
-	
-	/**
-	 * Install or update to a specific version of a new software.
-	 * <p>
-	 * Important. Prefer this method over {@link #installLatestVersion(String)} because we
-	 * should test it many times before installing in production. Without putting
-	 * the version we can test a version X and install in production a version Y.
-	 * <p>
-	 * Note: Currently Linux only
-	 * 
-	 * <p>
-	 * For example in Ubuntu:
-	 * <pre>
-	 * install ("lxde", "0.5.0-4ubuntu4")
-	 * </pre>
-	 * 
-	 * @param pack
-	 *            the package name
-	 * @param version
-	 *            the version of the pack
-	 */
-	public void install(String pack, String version) {
-		command.install(pack, version);
-	}
-	
-	/** Uninstall an existing package */
 	public void uninstall(String pack) {
 		command.uninstall(pack);
 	}
-	
-	// TODO: DSL => resolve and install dependency "x"
-	// nova forma do gradle 2.2-rc de ler um arquivo de texto de dentro de uma dependencia
-	// config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, "path/to/archive/entry.txt")
-	// http://gradle.org/docs/release-candidate/dsl/org.gradle.api.resources.TextResourceFactory.html
-	
-//	protected InstallVersion install2(String pack) {
-//	return new InstallVersion() {			
-//		@Override
-//		public InstallFrom version(String version) {
-//			return new InstallFrom(){
-//				@Override
-//				public void from(InstallRepository repo) {
-//					if(repo == OS) {
-//						install(pack, version);
-//					} else {
-//						installFromScd4j(pack + ":" + version);
-//					}
-//				}
-//			};
-//		}
-//	};
-//}
-//interface InstallVersion {
-//	InstallFrom version(String version);
-//}
-//interface InstallFrom {
-//	void from(InstallRepository repo);
-//}
-//InstallRepository OS = InstallRepository.OS;
-//InstallRepository SCD4J = InstallRepository.SCD4J;
-//public static enum InstallRepository {
-//	OS, SCD4J
-//}
-//
-////install "lxde" version:"0.5.0-4ubuntu4" from OS
-////install "org.wildfly:wildfly" version:"0.5.0-4ubuntu4" from SCD4J
-////OU	
-////install "wildfly" version:"0.5.0-4ubuntu4" from SD4J // OBS: if only has one wildfly with this version, ok, otherwise throws abiguous exception	
-	
-	/**
-	 * Installs a package (rpm or deb) which was put in the Artifactory or Nexus.<br>
-	 * In order to accomplish that, you need to configure the dependency in build.gradle.
-	 * <p>
-	 * For example:
-	 * <pre>
-	 * dependencies {
-	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final'
-	 * }
-	 * </pre>
-	 * <p>
-	 * Then in your hook you need to call
-	 * <pre>
-	 * installFromScd4j "org.wildfly:wildfly:8.1.0.Final"
-	 * </pre>
-	 * <p>
-	 * Note: In windows the pack should be an executable and shold not require user interaction
-	 * 
-	 * @param depName the full dependency name
-	 */
-	protected void installFromScd4j(String depName) {
-		String path = resolve(depName);
-		command.installFromLocalPath(path);
-	}
 		
 	/**
-	 * Installs a zip which was put in the Artifactory or Nexus.<br>
-	 * In order to accomplish that, you need to configure the dependency in build.gradle.
+	 * DSL for {@link #unzip(String, String)}
 	 * <p>
+	 * Unzip a file which was put in the Artifactory, Nexus or which is located inside of scd4j directory.<br>
+	 * In order to accomplish that, you need to configure the dependency in
+	 * build.gradle.
+	 * <p>
+	 * 
 	 * For example:
 	 * <pre>
 	 * dependencies {
-	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip'
-	 * }
+	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
+	 *		files('dependencies/my_dependency.zip')
+	 * 	}
 	 * </pre>
-	 * <p>
-	 * Then in your hook you need to call
+	 * 
+	 * Then, in your hook file, you will need to call
 	 * <pre>
-	 * unzipFromScd4j "org.wildfly:wildfly:8.1.0.Final" to "/opt/exampledir"
+	 * 	unzip "org.wildfly:wildfly:8.1.0.Final@zip" to "/opt/example_wildfly_dir"
+	 * 	unzip "my_dependency.zip" to "/opt/another_example_dir"
 	 * </pre>
+	 * 
+	 * Note that the first line will get the dependency from a binary
+	 * repository (Artifactory or Nexus) and the second line will get it from a scd4j 
+	 * relative directory
 	 * <p>
 	 * 
-	 * @param depName the full dependency name
+	 * @param depName
+	 *            the full dependency name
 	 */	
-	// TODO: DSL => resolve and unzip dependency "x" to dir "y"
-	// Think a better option
-	protected Destination unzipFromScd4j(String depName) {
+	protected Destination unzip(String depName) {
 		return new Destination() {			
 			@Override
 			public void to(String dir) {
-				String from = resolve(depName);
-				command.unzip(from, dir);				
+				unzip(depName, dir);				
 			}
 		};
 	}
 	
 	/**
-	 * Downloads (uses cache to avoid downloading the same dependency many times) a
-	 * dependency which was put in the Artifactory or Nexus.<br>
+	 * Unzip a file which was put in the Artifactory, Nexus or which is located inside of scd4j directory.<br>
 	 * In order to accomplish that, you need to configure the dependency in
 	 * build.gradle.
 	 * <p>
@@ -1020,39 +945,66 @@ public abstract class Hook extends Script {
 	 * 
 	 * <pre>
 	 * dependencies {
-	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip'
-	 * }
+	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
+	 *		files('dependencies/my_dependency.zip')
+	 * 	}
 	 * </pre>
-	 * <p>
-	 * Then in you hook you need to call
 	 * 
+	 * <br>
+	 * Then, in your hook file, you will need to call
 	 * <pre>
-	 * downloadFromScd4j "org.wildfly:wildfly:8.1.0.Final"
+	 * 	unzip("org.wildfly:wildfly:8.1.0.Final@zip", "/opt/example_wildfly_dir")
+	 * 	unzip("my_dependency.zip", "/opt/another_example_dir")
+	 * </pre>
+	 * 
+	 * Note that the first line will get the dependency from a binary
+	 * repository (Artifactory or Nexus) and the second line will get it from a scd4j 
+	 * relative directory
+	 * <p>
+	 * 
+	 * @param depName
+	 *            the full dependency name
+	 * @param doDir
+	 * 				destination directory
+	 */
+	protected void unzip(String depName, String toDir) {
+		String from = resolve(depName);
+		command.unzip(from, toDir);				
+	}
+	
+	/**
+	 * Downloads (uses cache to avoid downloading the same dependency many times) a
+	 * dependency which was put in the Artifactory or Nexus.
+	 * <br>
+	 * In order to accomplish that, you need to configure the dependency in
+	 * build.gradle.
+	 * <p>
+	 * For example:
+	 * <pre>
+	 * 	dependencies {
+	 * 		scd4j 'org.wildfly:wildfly:8.1.0.Final@zip'
+	 * 	}
+	 * </pre>
+	 * Then, in you hook file, you will need to call
+	 * <pre>
+	 * 	def path = resolve "org.wildfly:wildfly:8.1.0.Final"
+	 * 	OR
+	 * 	def path = resolve "org.wildfly:wildfly:8.1.0.Final@zip"
 	 * </pre>
 	 * <p>
 	 * 
 	 * @param depName
 	 *            the full dependency name
+	 * @return the full path where is located the file
 	 */		
     protected String resolve(String depName) {
-    	/* 
-    	 * TODO: download should find the right package for the os being running on
-    	 * 
-    	 * downloadFromScd4j "org.wildfly:wildfly:8.1.0.Final"
-    	 * 	- if we are running in both ubuntu and centos we should have configured
-    	 * ex:
-    	 * dependencies {
-		 *    scd4j 'groupX:Y:Z@deb' , 'groupX:Y:Z@rpm'
-		 * } 
-    	 */
-    	
     	if(depName.contains("@")){
     		depName = depName.substring(0, depName.indexOf("@"));
     	}
     	Path file = conf.getDependency(depName);
     	if(file==null)
-    		throw new RuntimeException("Could not resolve dependency: " + depName);
-    	
+    		throw new DependencyNotFoundException("Could not resolve dependency: " + depName);
+
     	return file.toString();
     }
 	
@@ -1121,17 +1073,8 @@ public abstract class Hook extends Script {
 	
 	// ---- interfaces for dsl -----
 	
-	protected interface Destination {
+	protected interface Destination {		
 		void to(String to);
-	}
-	interface Service {
-		void start();
-		void stop();
-		void restart();
-		String status();
-	}
-	interface Normalization {
-		void content();
 	}
 	
 	// ------ private methods ------
