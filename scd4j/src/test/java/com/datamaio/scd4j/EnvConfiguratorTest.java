@@ -111,7 +111,6 @@ public class EnvConfiguratorTest {
 		
 		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
 
-		
 		FileUtils.delete(root);
 	}
 	
@@ -201,8 +200,13 @@ public class EnvConfiguratorTest {
 		Path fs = paths[1];
 		Path module = paths[2];
 		
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));		
-		Set<PosixFilePermission> before = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));	
+		Set<PosixFilePermission> before = null;
+		
+		if (!isWindows()) {
+			before = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+		}
+		
 		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
 		assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(false));
 		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
@@ -213,8 +217,11 @@ public class EnvConfiguratorTest {
 		new EnvConfigurator(ext, module).exec();		
 
 		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		Set<PosixFilePermission> after = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
-		assertThat(after, is(not(equalTo(before))));
+		
+		if (!isWindows()) {
+			Set<PosixFilePermission> after = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+			assertThat(after, is(not(equalTo(before))));
+		}
 		assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(true));
 		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
 		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt.postexecuted")), is(true));
@@ -303,8 +310,15 @@ public class EnvConfiguratorTest {
 	}
 
 	private Path[] createEnv(int index) throws IOException, URISyntaxException {
-		Path root = Files.createTempDirectory("root");
-		
+		Path root = null;
+				
+		if(isWindows()) {
+			FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			root = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
+		} else {
+			root =  Files.createTempDirectory("root");
+		}
+				
 		Path fs = FileUtils.createDirectories(PathUtils.get(root, "fs"));
 		Path module = FileUtils.createDirectories(PathUtils.get(root, "module"));
 		Path result = FileUtils.createDirectories(PathUtils.get(root, "result"));
@@ -326,5 +340,9 @@ public class EnvConfiguratorTest {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
+	}
+	
+	private boolean isWindows() {
+		return System.getProperty( "os.name" ).contains( "indow" );
 	}
 }
