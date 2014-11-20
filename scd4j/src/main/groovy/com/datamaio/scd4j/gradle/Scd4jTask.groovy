@@ -104,23 +104,34 @@ class Scd4jTask extends DefaultTask {
 		return project.hasProperty("assumeYes") ? "true".equals(project.assumeYes) : false
 	}
 	
-	def mapDependencies2Path(){	
-		def map = [:]		
+	def mapDependencies2Path(){
+		def map = [:]
+		def set = []
 		project.configurations.scd4j.dependencies?.each {Dependency d ->
-			if(d.version.contains("+")) {
-				throw new InvalidUserDataException("In 'scd4j' it is not allowed to use '+' modifier!")
+			if(d.group!=null && d.version!=null) {
+				if(d.version.contains("+")) {
+					throw new InvalidUserDataException("In 'scd4j' it is not allowed to use '+' modifier!")
+				}
+				
+				def key = "$d.group:$d.name:$d.version"		
+				def value = project.configurations.scd4j.files?.find { File f ->
+					def name = f.toString();
+					return d.group.split("\\.").find{s -> name.contains(s)}!=null && name.contains(d.name) && name.contains(d.version)
+				}
+				if(value==null){
+					throw new InvalidUserDataException("Could not resolve 'scd4j' dependency: $key.")
+				}
+				map.putAt(key, value.toPath())
+				set.add(value)
 			}
-			
-			def key = "$d.group:$d.name:$d.version"
-			def value = project.configurations.scd4j.files?.find { File f ->
-				def name = f.toString();
-				return d.group.split("\\.").find { s -> name.contains(s) }!=null && name.contains(d.name) && name.contains(d.version)
+		}
+		
+		project.configurations.scd4j.files?.each { File f ->
+			if(!set.contains(f)){
+				map.putAt(f.name, f.toPath())
 			}
-			if(value==null){
-				throw new InvalidUserDataException("Could not resolve 'scd4j' dependency: $key.")
-			}
-			map.putAt(key, value.toPath())
-		}		
+		}
+	
 		return map
 	}
 }
