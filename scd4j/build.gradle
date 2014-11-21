@@ -10,7 +10,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.1.3'
+version = '0.1.4'
 
 bintray {
 	user = bintray_user
