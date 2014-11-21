@@ -294,17 +294,16 @@ public class EnvConfiguratorTest {
 	}
 	
 	private byte[] buildModuleHookPre() {
-		return ("println envs; println modulePath; println conf; println props;"
-				+ "\nboolean pre() {"
-				+ "\n	return \"xyz\".equals(get(\"var\"));"
+		return ("Action pre() {"
+				+ "\n	if (\"xyz\".equals(get(\"var\")))"
+				+ "\n		CONTINUE_INSTALATION;"
+				+ "\n	else"
+				+ "\n		SKIP_INSTALATION;"
 				+ "\n}").getBytes();
 	}
 	
 	private byte[] buildModuleHookPost() {
-		return ("\nimport java.nio.file.Files;"
-				+ "\nimport java.nio.file.Paths;"
-		        + "\n"
-				+ "\nvoid post() {"
+		return ("\nvoid post() {"
 				+ "\n	Files.createFile(Paths.get(moduleDir + \"/Module.postexecuted\"));"
 				+ "\n}").getBytes();
 	}

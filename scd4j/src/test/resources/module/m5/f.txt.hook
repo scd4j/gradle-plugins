@@ -1,4 +1,7 @@
-boolean pre() {
+Action pre() {
 	println get("favlang")
-  return "aaaaaa".equals(get("favlang"));
+	if ("aaaaaa".equals(get("favlang")))	  
+  		CONTINUE_INSTALATION
+	else
+		SKIP_INSTALATION
 }
