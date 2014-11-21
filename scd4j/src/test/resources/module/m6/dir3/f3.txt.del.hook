@@ -1,11 +1,8 @@
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-boolean pre() {
+Action pre() {
 	set "my_temporary_property" with "my_string_value" _as temp 	
 	set "my_permanent_property" with true _as permanent
 	
-	return true
+	return CONTINUE_INSTALATION
 }
 
 void post() {

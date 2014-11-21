@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j.hooks;
 
+import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALATION;
 import groovy.lang.Script;
 
 import java.net.InetAddress;
@@ -99,10 +100,10 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @return <code>true</code> to install the respective module or file,
-	 *         false otherwise. Default is <code>true</code>
+	 * @return <code>CONTINUE_INSTALATION</code> to install the respective module or file,
+	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALATION</code>
 	 */
-	public boolean pre() {return true;}
+	public Action pre() {return CONTINUE_INSTALATION;}
 	
 	/**
 	 * Override this method whenever you need to:
