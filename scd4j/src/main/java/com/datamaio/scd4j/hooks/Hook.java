@@ -890,7 +890,7 @@ public abstract class Hook extends Script {
 	public void install(String pack) {
 		try { 
 			String path = resolve(pack);
-			command.installFromLocalPath(path);
+			command.installLocalPack(path);
 		} catch (DependencyNotFoundException e) {		
 			command.install(pack);
 		}
@@ -898,12 +898,42 @@ public abstract class Hook extends Script {
 	
 	/** 
 	 * Uninstall an existing package.
-	 * <br>
+	 * <p>
+	 * This method is capable to uninstall two types of packages depending on the parameter it receives:
+	 * <ul>
+	 * 
+	 * 	<li> Uninstall a package (rpm or deb) which was installed locally
+	 * 		<br>
+	 * 		In order to accomplish that, in your hook file, you will need to call
+	 * 		<br>
+	 * 		<pre>
+	 * 		uninstall 'foo'
+	 * 		</pre>
+	 * 		Where foo is the name of your deb package
+	 * 
+	 * 	<li> Uninstall a package (rpm or deb) which was installed from the OS repositories
+	 * 		<br>
+	 * 		In order to accomplish that, in your hook file, you will need to call
+	 * 		<pre>
+	 * 		uninstall 'lxde'
+	 * 		</pre>
+	 * 		Where lxde is the name of your package in the OS repository
+	 * 
+	 * </ol>
+	 * 
+	 * <p>
 	 * Currently only supports Linux operational system packages uninstall 
+	 * 
+	 * @param pack the package name without the version
 	 */
 	public void uninstall(String pack) {
-		// TODO: tentar fazer como o install
-		command.uninstall(pack);
+		if(command.isInstalled(pack)){
+			try {
+				command.uninstallLocalPack(pack);
+			} catch (Exception e) {
+				command.uninstall(pack);
+			}
+		}
 	}
 		
 	/**

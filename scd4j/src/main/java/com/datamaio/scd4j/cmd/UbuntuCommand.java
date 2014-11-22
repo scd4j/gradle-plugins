@@ -35,12 +35,12 @@ public class UbuntuCommand extends LinuxCommand {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public static final String DIST_NAME = "Ubuntu";
 	
-	public void uninstall(String pack) {
-		LOGGER.info("\tRemoving package " + pack + " and dependencies");
-		run("apt-get -y purge " + pack);
-		run("apt-get -y autoremove");
+	@Override
+	public String distribution() {
+		return DIST_NAME;
 	}
 	
+	@Override
 	public void install(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "=" + version : "");
@@ -49,16 +49,34 @@ public class UbuntuCommand extends LinuxCommand {
 	}	
 	
 	@Override	
-	public void installFromLocalPath(String path) {
+	public void installLocalPack(String path) {
 		LOGGER.info("\tInstalling DEB File from " + path + " ... ");
 		run("dpkg -i " + path);
 	}
 	
 	@Override
-	public String distribution() {
-		return DIST_NAME;
+	public boolean isInstalled(String pack) {
+		try {
+			run("dpkg-query -l " + pack, false);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
-
+	
+	@Override
+	public void uninstall(String pack) {
+		LOGGER.info("\tRemoving package " + pack + " and dependencies");
+		run("apt-get -y purge " + pack);
+		run("apt-get -y autoremove");
+	}
+	
+	@Override
+	public void uninstallLocalPack(String pack) {
+		LOGGER.info("\tUninstalling DEB File from " + pack + " ... ");
+		run("dpkg -r " + pack);
+	}
+	
 	@Override
 	public void addRepository(String repository) {
 		run("add-apt-repository -y " + repository);

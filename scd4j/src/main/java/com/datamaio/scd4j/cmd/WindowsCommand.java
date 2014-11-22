@@ -38,15 +38,22 @@ import com.datamaio.scd4j.util.io.ZipUtils;
 public class WindowsCommand extends Command {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
+	@Override
 	public void serviceStart(String name){
 		throw new RuntimeException("Function 'service start' not implemented for windows");
 	}
+	
+	@Override
 	public void serviceStop(String name){
 		throw new RuntimeException("Function 'service stop' not implemented for windows");
 	}
+	
+	@Override
 	public void serviceRestart(String name){
 		throw new RuntimeException("Function 'service restart' not implemented for windows");
 	}
+	
+	@Override
 	public String serviceStatus(String name){
 		throw new RuntimeException("Function 'service status' not implemented for windows");
 	}
@@ -77,16 +84,29 @@ public class WindowsCommand extends Command {
 		}
 	}
 	
+	@Override
 	public void install(String pack) {
 		run(pack);
 	}
 
+	@Override
 	public void install(String pack, String version) {
 		throw new RuntimeException("Function 'install' with version not implemented for windows");
 	}
 	
+	@Override
+	public boolean isInstalled(String pack) {
+		throw new RuntimeException("Function 'isLocalPackInstalled' not implemented for windows");
+	}
+	
+	@Override
 	public void uninstall(String pack) {
 		throw new RuntimeException("Function 'uninstall' not implemented for windows");
+	}
+	
+	@Override
+	public void uninstallLocalPack(String pack) {
+		throw new RuntimeException("Function 'uninstallLocalPack' not implemented for CentOS");
 	}
 
 	@Override
@@ -157,7 +177,7 @@ public class WindowsCommand extends Command {
 	}
 
 	@Override
-	public void installFromLocalPath(String path) {
+	public void installLocalPack(String path) {
 		run(path);
 	}
 	

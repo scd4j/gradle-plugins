@@ -35,11 +35,12 @@ public class CentOSCommand extends LinuxCommand {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public static final String DIST_NAME = "CentOS";
 	
-	public void uninstall(String pack) {
-		LOGGER.info("\tRemoving package " + pack);
-		run("yum -y erase " +pack );
+	@Override
+	public String distribution() {
+		return DIST_NAME;
 	}
 	
+	@Override
 	public void install(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "-" + version : "");
@@ -48,14 +49,25 @@ public class CentOSCommand extends LinuxCommand {
 	}	
 	
 	@Override
-	public void installFromLocalPath(String path) {
+	public void installLocalPack(String path) {
 		LOGGER.info("\tInstalling RPM from " + path + " ... ");
 		run("rpm -i " + path);
 	}
 	
 	@Override
-	public String distribution() {
-		return DIST_NAME;
+	public boolean isInstalled(String pack) {
+		throw new RuntimeException("Function 'isLocalPackInstalled' not implemented for CentOS");
+	}
+	
+	@Override
+	public void uninstall(String pack) {
+		LOGGER.info("\tRemoving package " + pack);
+		run("yum -y erase " +pack );
+	}
+	
+	@Override
+	public void uninstallLocalPack(String pack) {
+		throw new RuntimeException("Function 'uninstallLocalPack' not implemented for CentOS");
 	}
 	
 	@Override

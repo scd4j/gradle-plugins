@@ -119,8 +119,10 @@ public abstract class Command {
 	public abstract void addRepository(String repository);
 	public abstract void install(String pack);
 	public abstract void install(String pack, String version);
-	public abstract void installFromLocalPath(String path);
+	public abstract void installLocalPack(String path);
+	public abstract boolean isInstalled(String pack);
 	public abstract void uninstall(String pack);
+	public abstract void uninstallLocalPack(String pack);
 	public abstract void unzip(String from, String toDir);
 	public abstract void normalizeTextContent(String file);
 	
@@ -396,5 +398,4 @@ public abstract class Command {
 			return output.toString();
 		}
 	}
-	
 }
