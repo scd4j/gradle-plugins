@@ -58,7 +58,7 @@ import com.datamaio.scd4j.util.io.FileUtils;
 /**
  * This class is the heart of scd4j tool. <br>
  * It is responsible to start the process, to delete target files, copy and
- * merge templates. Beoynd that this class is responsible to initiate and
+ * merge templates. Beyond that this class is responsible to initiate and
  * execute all existing hooks.
  * <p>
  * Note. This class is not thread safe due to FileHookEmbeddedGroovy.
