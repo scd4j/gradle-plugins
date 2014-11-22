@@ -770,6 +770,13 @@ public abstract class Hook extends Script {
 		SetDuration with(Double value);
 	}  
     
+    /**
+     * Delegates to {@link #setTempProperty(String, Object)} 
+     */
+    public void set(String key, Object value) {
+    	setTempProperty(key, value);
+    }
+    
 	/**
 	 * Sets a temporary/transient property.<br>
 	 * A temporary/transient property stays only for a short period of time. In
@@ -895,6 +902,7 @@ public abstract class Hook extends Script {
 	 * Currently only supports Linux operational system packages uninstall 
 	 */
 	public void uninstall(String pack) {
+		// TODO: tentar fazer como o install
 		command.uninstall(pack);
 	}
 		
