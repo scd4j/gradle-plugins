@@ -65,16 +65,16 @@ public class UbuntuCommand extends LinuxCommand {
 	}
 	
 	@Override
-	public void uninstall(String pack) {
+	public void uninstallRemotePack(String pack) {
 		LOGGER.info("\tRemoving package " + pack + " and dependencies");
-		run("apt-get -y purge " + pack);
-		run("apt-get -y autoremove");
+		run("apt-get -y --auto-remove purge " + pack);
 	}
 	
 	@Override
 	public void uninstallLocalPack(String pack) {
 		LOGGER.info("\tUninstalling DEB File from " + pack + " ... ");
-		run("dpkg -r " + pack);
+		run("dpkg --purge " + pack);
+		run("apt-get -y autoremove");
 	}
 	
 	@Override

@@ -94,7 +94,7 @@ public abstract class LinuxCommand extends Command {
 
 	public void normalizeTextContent(String file) {
 		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
-			install("dos2unix");
+			installRemotePack("dos2unix");
 		}
 		
 		List<String> cmd = new ArrayList<String>();
@@ -195,7 +195,7 @@ public abstract class LinuxCommand extends Command {
 	// ---------- end bash run -------
 
 	
-	public void install(String pack) {
+	public void installRemotePack(String pack) {
 		install(pack, null);
 	}	
 	

@@ -60,7 +60,7 @@ public class CentOSCommand extends LinuxCommand {
 	}
 	
 	@Override
-	public void uninstall(String pack) {
+	public void uninstallRemotePack(String pack) {
 		LOGGER.info("\tRemoving package " + pack);
 		run("yum -y erase " +pack );
 	}

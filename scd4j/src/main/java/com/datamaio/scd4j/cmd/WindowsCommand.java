@@ -85,7 +85,7 @@ public class WindowsCommand extends Command {
 	}
 	
 	@Override
-	public void install(String pack) {
+	public void installRemotePack(String pack) {
 		run(pack);
 	}
 
@@ -100,7 +100,7 @@ public class WindowsCommand extends Command {
 	}
 	
 	@Override
-	public void uninstall(String pack) {
+	public void uninstallRemotePack(String pack) {
 		throw new RuntimeException("Function 'uninstall' not implemented for windows");
 	}
 	

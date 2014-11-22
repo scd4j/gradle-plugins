@@ -117,11 +117,11 @@ public abstract class Command {
 	public abstract String distribution();
 	public abstract void execute(String file);
 	public abstract void addRepository(String repository);
-	public abstract void install(String pack);
+	public abstract void installRemotePack(String pack);
 	public abstract void install(String pack, String version);
 	public abstract void installLocalPack(String path);
 	public abstract boolean isInstalled(String pack);
-	public abstract void uninstall(String pack);
+	public abstract void uninstallRemotePack(String pack);
 	public abstract void uninstallLocalPack(String pack);
 	public abstract void unzip(String from, String toDir);
 	public abstract void normalizeTextContent(String file);
@@ -146,7 +146,7 @@ public abstract class Command {
 		return Files.exists(Paths.get(file));
 	}
 	
-	public String whoami() {
+	public static String whoami() {
 		return System.getProperty("user.name");
 	}
 

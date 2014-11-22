@@ -24,6 +24,7 @@
 
 package com.datamaio.scd4j;
 
+import static com.datamaio.scd4j.cmd.Command.isWindows;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -339,9 +340,5 @@ public class EnvConfiguratorTest {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
-	}
-	
-	private boolean isWindows() {
-		return System.getProperty( "os.name" ).contains( "indow" );
 	}
 }

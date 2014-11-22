@@ -890,12 +890,20 @@ public abstract class Hook extends Script {
 	public void install(String pack) {
 		try { 
 			String path = resolve(pack);
-			command.installLocalPack(path);
+			installLocalPack(path);
 		} catch (DependencyNotFoundException e) {		
-			command.install(pack);
+			installRemotePack(pack);
 		}
 	}
+
+	void installLocalPack(String path) {
+		command.installLocalPack(path);
+	}
 	
+	void installRemotePack(String pack) {
+		command.installRemotePack(pack);
+	}
+
 	/** 
 	 * Uninstall an existing package.
 	 * <p>
@@ -929,11 +937,22 @@ public abstract class Hook extends Script {
 	public void uninstall(String pack) {
 		if(command.isInstalled(pack)){
 			try {
-				command.uninstallLocalPack(pack);
+				uninstallLocalPack(pack);
 			} catch (Exception e) {
-				command.uninstall(pack);
+				e.printStackTrace();
+				// TODO: It would not be better to uninstall using the same strategy than installation?
+				// Asking this, because it is unistalling with uninstallLocalPack even though it has been installed using apt-get install
+				uninstallRemotePack(pack);
 			}
 		}
+	}
+
+	void uninstallRemotePack(String pack) {
+		command.uninstallRemotePack(pack);
+	}
+
+	void uninstallLocalPack(String pack) {
+		command.uninstallLocalPack(pack);
 	}
 		
 	/**

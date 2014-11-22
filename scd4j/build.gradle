@@ -64,8 +64,8 @@ dependencies {
 			'org.codehaus.groovy:groovy-all:2.3.6',
 			'commons-configuration:commons-configuration:+'
 	
-    testCompile 'junit:junit:4.+'
-	testCompile 'org.mockito:mockito-all:+'
+    testCompile 'junit:junit:4.+',
+				'org.mockito:mockito-core:+'
 }
 
 uploadArchives {
