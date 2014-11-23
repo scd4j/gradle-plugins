@@ -26,6 +26,7 @@ package com.datamaio.scd4j.util.io;
 
 import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.exists;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -36,6 +37,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.datamaio.scd4j.util.io.FileUtils;
@@ -269,8 +271,8 @@ public class FileUtilsTest {
 		
 		List<Path> files = FileUtils.ls(parentdir);
 		assertThat(files.size(), is(2));
-		assertThat(files.get(0), is(parentdirfile1));
-		assertThat(files.get(1), is(parentdirfile2));
+		assertThat(files, hasItem(parentdirfile1));		
+		assertThat(files, hasItem(parentdirfile2));
 	}
 	
 	@Test
