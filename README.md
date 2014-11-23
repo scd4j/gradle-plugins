@@ -37,11 +37,12 @@ scd4j {
 	install {
 		modules = ["my_module_dir"] 	// should be any dir into module dir
 		config = "my_config_file.conf"	// should be any property file into config dir. By convention we strongly suggest to put the extention .conf in the file
+		env {
+			prod = ["192.168.10.21"]		  	  	  // your production environment
+			test  = ["192.168.7.20", "192.168.7.21"]  // your test/stage environment
+		}
 	}
-	env {
-		prod = ["192.168.10.21"]		  	  	  // your production environment
-		test  = ["192.168.7.20", "192.168.7.21"]  // your test/stage environment
-	}
+
 }
 ```
 
