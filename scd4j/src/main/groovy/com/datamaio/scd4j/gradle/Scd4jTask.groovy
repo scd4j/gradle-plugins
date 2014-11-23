@@ -47,20 +47,21 @@ class Scd4jTask extends DefaultTask {
     	def env = project.scd4j.env		
 		def config = Input.config(project);
 		def modules = Input.modules(project)
-				
+						
         println "==================== Running scd4j =============================="
 		println "====== Version Info ==================="
+		println "SCD4J Version : " + getScd4jVersion(project)		
 		println "Pack Name     : ${project.archivesBaseName} "
-		println "Pack Version  : ${project.version} "		
+		println "Pack Version  : ${project.version} "
 		println "====== Environment Configuration ======"
-        println "IP PROD LIST  : " + env.prod
-        println "IP HOM  LIST  : " + env.hom
-        println "IP TEST LIST  : " + env.test
+        println "IP PROD LIST  : ${env.prod}" 
+        println "IP HOM  LIST  : ${env.hom}" 
+        println "IP TEST LIST  : ${env.test}" 
 		println "IP DES  LIST  : [ANY OTHER]"
 		println "====== Instalation Configuration ======"
-        println "CONFIG FILE   : " + config 
-        println "MODULE DIRS   : " + modules  
-		println "====================================================================="
+        println "CONFIG FILE   : $config" 
+        println "MODULE DIRS   : $modules" 
+		println "=================================================================="
 		
 		if( Input.validate(modules, config) ) {
 			def console = System.console()			
@@ -133,5 +134,14 @@ class Scd4jTask extends DefaultTask {
 		}
 	
 		return map
+	}
+	
+	def getScd4jVersion(project) {
+		def plugin = project.buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies?.find({ it.moduleName.equals("scd4j") })
+		if(plugin!=null) {
+			return plugin.moduleVersion
+		}
+	
+		return "N/A"
 	}
 }
