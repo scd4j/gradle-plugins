@@ -41,7 +41,7 @@ public class CentOSCommand extends LinuxCommand {
 	}
 	
 	@Override
-	public void install(String pack, String version) {
+	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "-" + version : "");
 		List<String> cmd = Arrays.asList(new String[] { "yum", "-y", "install", fullpack });

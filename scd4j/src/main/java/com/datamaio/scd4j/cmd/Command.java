@@ -118,7 +118,7 @@ public abstract class Command {
 	public abstract void execute(String file);
 	public abstract void addRepository(String repository);
 	public abstract void installRemotePack(String pack);
-	public abstract void install(String pack, String version);
+	public abstract void installRemotePack(String pack, String version);
 	public abstract void installLocalPack(String path);
 	public abstract boolean isInstalled(String pack);
 	public abstract void uninstallRemotePack(String pack);
@@ -138,9 +138,7 @@ public abstract class Command {
 	public abstract void chown(String user, String file, boolean recursive);
 	public abstract void chown(String user, String group, String file, boolean recursive);
 
-	public void ln(final String link, final String targetFile) {
-		FileUtils.createSymbolicLink(Paths.get(link), Paths.get(targetFile));
-	}	
+	public abstract void ln(final String link, final String targetFile);
 	
 	public boolean exists(String file){
 		return Files.exists(Paths.get(file));

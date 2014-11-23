@@ -42,15 +42,22 @@ public abstract class LinuxCommand extends Command {
 
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
+	@Override
 	public void serviceStart(String name){
 		run("service " + name + " start");
 	}
+	
+	@Override
 	public void serviceStop(String name){
 		run("service " + name + " stop");
 	}
+	
+	@Override
 	public void serviceRestart(String name){
 		run("service " + name + " restart");
 	}
+	
+	@Override
 	public String serviceStatus(String name){
 		return run("service " + name + " status");
 	}
@@ -71,10 +78,12 @@ public abstract class LinuxCommand extends Command {
 		}			
 	}
 	
+	@Override
 	public void chmod(String mode, String file) {
 		chmod(mode, file, false);
 	}
 
+	@Override
 	public void chmod(String mode, String file, boolean recursive) {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("chmod");
@@ -92,6 +101,7 @@ public abstract class LinuxCommand extends Command {
 		}
 	}
 
+	@Override
 	public void normalizeTextContent(String file) {
 		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
 			installRemotePack("dos2unix");
@@ -103,14 +113,17 @@ public abstract class LinuxCommand extends Command {
 		run(cmd, false);
 	}
 
+	@Override
 	public void chown(String user, String file) {
-		chown(user, file, false);
+		chown(user, file, true);
 	}
 
+	@Override
 	public void chown(String user, String file, boolean recursive) {
 		chown(user, user, file, recursive);
 	}
 
+	@Override
 	public void chown(String user, String group, String file, boolean recursive) {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("chown");
@@ -121,19 +134,28 @@ public abstract class LinuxCommand extends Command {
 		cmd.add(file);
 		run(cmd);
 	}
+	
+	@Override
+	public void ln(final String link, final String targetFile) {
+		run("ln -sf " + targetFile + " " + link);
+	}	
 
+	@Override
 	public void groupadd(final String group) {
 		groupadd(group, null);
 	}
 
+	@Override
 	public void groupadd(final String group, final String options) {
 		run("groupadd " + (options != null ? options : "-f") + " " + group);
 	}
 
+	@Override
 	public void useradd(final String user) {
 		useradd(user, null);
 	}
 
+	@Override
 	public void useradd(final String user, final String options) {
 		try {
 			run("id " + user, false);
@@ -146,6 +168,7 @@ public abstract class LinuxCommand extends Command {
 	/**
 	 * OBS IMPORTANTE: Se o selinux estiver ligado este método não funciona.
 	 */
+	@Override
 	public void passwd(final String user, final String passwd) {
 		List<String> cmd = Arrays.asList("passwd", user);
 		run(cmd, new Interaction() {
@@ -158,6 +181,7 @@ public abstract class LinuxCommand extends Command {
 		});
 	}
 	
+	@Override
 	public void unzip(String from, String toDir) {
 		LOGGER.info("\tUnziping " + from + " para " + toDir + " ... ");
 		run("unzip -q -o " + from + " -d " + toDir);
@@ -194,9 +218,9 @@ public abstract class LinuxCommand extends Command {
 
 	// ---------- end bash run -------
 
-	
+	@Override
 	public void installRemotePack(String pack) {
-		install(pack, null);
+		installRemotePack(pack, null);
 	}	
 	
 }

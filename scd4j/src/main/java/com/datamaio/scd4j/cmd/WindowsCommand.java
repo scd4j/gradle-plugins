@@ -90,7 +90,7 @@ public class WindowsCommand extends Command {
 	}
 
 	@Override
-	public void install(String pack, String version) {
+	public void installRemotePack(String pack, String version) {
 		throw new RuntimeException("Function 'install' with version not implemented for windows");
 	}
 	

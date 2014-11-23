@@ -1107,10 +1107,14 @@ public abstract class Hook extends Script {
 	 * Note: Currently Linux only
 	 *  
      * @param name the service name
-     * @return status information of the service
+     * @return status information of the service, or the error message if it does not exists
      */
 	public String status(String name) {
-    	return command.serviceStatus(name);
+		try {
+			return command.serviceStatus(name);
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 
 	// ------ methods used by the framework only ----
