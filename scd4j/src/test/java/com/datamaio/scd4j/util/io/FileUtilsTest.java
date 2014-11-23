@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -259,13 +260,37 @@ public class FileUtilsTest {
 		FileUtils.delete(tempTargetDir);
 		assertThat(exists(tempTargetDir), is(false));
 	}
+	
+	@Test
+	public void ls() throws Exception {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path parentdirfile1 = createTempFile(parentdir, "FILE_1", ".tmp");
+		Path parentdirfile2 = createTempFile(parentdir, "FILE_2", ".tmp");
+		
+		List<Path> files = FileUtils.ls(parentdir);
+		assertThat(files.size(), is(2));
+		assertThat(files.get(0), is(parentdirfile1));
+		assertThat(files.get(1), is(parentdirfile2));
+	}
+	
+	@Test
+	public void deletDir() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path parentdirfile1 = createTempFile(parentdir, "FILE_1", ".tmp");
+		Path parentdirfile2 = createTempFile(parentdir, "FILE_2", ".tmp");
+		
+		FileUtils.deleteDir(parentdir, new DeleteVisitor("*.tmp"));
+		
+		assertThat(exists(parentdir), is(true));
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(parentdirfile2), is(false));	
+	}
+	
 //	
 //	@Test
 //	public void copyDirAndKeepExistingFileAttributes() {
 //		Assert.fail("Implementar...");
 //	}
-//	
-
-	
+//		
 }
 
