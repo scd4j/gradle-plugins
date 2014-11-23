@@ -269,8 +269,8 @@ public class FileUtilsTest {
 		
 		List<Path> files = FileUtils.ls(parentdir);
 		assertThat(files.size(), is(2));
-		assertThat(files.get(0), is(parentdirfile1));
-		assertThat(files.get(1), is(parentdirfile2));
+		assertThat(files.contains(parentdirfile1), is(true));
+		assertThat(files.contains(parentdirfile2), is(true));
 	}
 	
 	@Test
