@@ -43,8 +43,8 @@ class Scd4jPlugin implements Plugin<Project> {
 		
 		// -- create scd4j extension
         project.extensions.create("scd4j", Scd4jExtension)
-        project.scd4j.extensions.create("env", EnvNestedExtension)
         project.scd4j.extensions.create("install", InstallNestedExtension)		
+        project.scd4j.install.extensions.create("env", EnvNestedExtension)
 		project.scd4j.extensions.create("settings", SettingsNestedExtention)
 		project.scd4j.settings.extensions.create("linux", LinuxNestedExtention)
 		project.scd4j.settings.extensions.create("windows", WindowsNestedExtention)

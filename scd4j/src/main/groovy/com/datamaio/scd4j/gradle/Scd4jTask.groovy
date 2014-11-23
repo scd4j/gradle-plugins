@@ -44,7 +44,7 @@ class Scd4jTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		
-    	def env = project.scd4j.env		
+    	def env = project.scd4j.install.env		
 		def config = Input.config(project);
 		def modules = Input.modules(project)
 						
