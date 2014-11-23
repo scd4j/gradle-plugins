@@ -44,8 +44,10 @@ import com.datamaio.scd4j.util.io.PathUtils;
 public class Configuration {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-	private static final String LOG_FOLDER = "log";
-	private static final String BACKUP_FOLDER = "backup";
+	public static final String MODULES_FOLDER = "modules";
+	public static final String CONFIG_FOLDER = "config";
+	public static final String LOG_FOLDER = "log";
+	public static final String BACKUP_FOLDER = "backup";
 	
 	public static final String HOOK_SUFFIX = ".hook";
 	public static final String DELETE_SUFFIX = ".del";

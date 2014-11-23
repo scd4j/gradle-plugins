@@ -68,12 +68,14 @@ class Scd4jPlugin implements Plugin<Project> {
 		}			
 
 		
-		// -- configure the wrapper to execute automatically
+		// -- configure the wrapper to execute automatically and create directories
 		project.task('wrapper', type: Wrapper) {
 			description = "Generate gradle wrapper"
 			gradleVersion = '2.2'
 		}		
 		project.tasks["wrapper"].execute()
+		newDir (project, 'modules')
+		newDir (project, 'config')
 		
 		
 		// -- configure basic tasks 
@@ -101,4 +103,14 @@ class Scd4jPlugin implements Plugin<Project> {
 			delete "backup","log", "target"
 		}
     }
+	
+	boolean newDir(project, dir){
+		File f = new File("${project.projectDir}/$dir");
+		if(!f.exists()) {
+			println "Creating directory ${f.absolutePath}"
+			f.mkdirs();
+			return true;
+		}
+		return false;
+	}
 }

@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j;
 
+import static com.datamaio.scd4j.conf.Configuration.CONFIG_FOLDER;
 import static com.datamaio.scd4j.conf.Configuration.DELETE_SUFFIX;
 import static com.datamaio.scd4j.conf.Configuration.HOOK_SUFFIX;
 import static com.datamaio.scd4j.conf.Configuration.TEMPLATE_SUFFIX;
@@ -77,7 +78,7 @@ public class EnvConfigurator {
 	}
 	
 	EnvConfigurator(Map<String, String> instalationProperties, Path module2Install) {
-		this(new Configuration(Paths.get(new File(".").getAbsolutePath(), "config"), instalationProperties, module2Install));
+		this(new Configuration(Paths.get(new File(".").getAbsolutePath(), CONFIG_FOLDER), instalationProperties, module2Install));
 	}
 	
 	public EnvConfigurator(Path properties, Path module2Install, ConfEnvironments environments, Map<String, Path> dependencies) {
@@ -110,14 +111,14 @@ public class EnvConfigurator {
 					copyFiles();
 					hook.post();
 				} else {
-					LOGGER.warning("Modulo " + module + " nao foi instalado neste ambiente pois o Module.hook retornou false");
+					LOGGER.warning("Module " + module + " was not installed. Check Module.hook!");
 				}
 			} finally {
 				hook.finish();
 			}
 		} catch (final Exception e) {
-			LOGGER.log(Level.SEVERE, "Erro inesperado.", e);
-			throw new RuntimeException("Erro inesperado. Causa: " + e.getMessage(), e);
+			LOGGER.log(Level.SEVERE, "Unexpected Error.", e);
+			throw new RuntimeException("Unexpected Error. Cause: " + e.getMessage(), e);
 		}
 	}
 
@@ -161,7 +162,7 @@ public class EnvConfigurator {
 		FileUtils.deleteDir(module, new DeleteVisitor("*" + DELETE_SUFFIX){
 			private FileHookEvaluator hook;
 			
-			@Override /** Verificar se o arquivo existe antes de tentar deletar */
+			@Override 
 			protected boolean mustDelete(Path source) {
 				if(source.toString().endsWith(HOOK_SUFFIX)){
 					return false;
@@ -182,7 +183,8 @@ public class EnvConfigurator {
 				}
 			}
 			
-			@Override /** Deleta o target e não source */ 
+			/** Deletes the target and not the source */
+			@Override  
 			protected void delete(Path source) throws IOException {
 				try {
 					Path target = pathHelper.getTargetWithoutSuffix(source, DELETE_SUFFIX);
@@ -249,7 +251,8 @@ public class EnvConfigurator {
 		FileUtils.copy(new CopyVisitor(module, target, "*" + DELETE_SUFFIX){
 			private FileHookEvaluator hook;
 			
-			@Override /** Não considera os .del */
+			/** Do not consider .del files */
+			@Override 
 			protected boolean mustCopy(Path source) {
 				if(source.toString().endsWith(HOOK_SUFFIX)){
 					return false;
@@ -269,7 +272,8 @@ public class EnvConfigurator {
 				}				
 			}
 			
-			@Override /** Copia OU faz o merge do template */
+			/** Copy or merge templates */
+			@Override 
 			protected void copy(Path source, final Path target) throws IOException {
 				try {
 					if(source.toString().endsWith(TEMPLATE_SUFFIX)) {

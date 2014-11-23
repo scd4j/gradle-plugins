@@ -143,7 +143,7 @@ public class HookTest {
 	private void checkRoot() {
 		String whoami = whoami();
 		if (!"root".equals(whoami)) {
-			throw new RuntimeException("This Automated Test must run with root. I'm " + whoami);
+			throw new RuntimeException("This Automated Test must run with root. You are " + whoami);
 		}
 	}
 

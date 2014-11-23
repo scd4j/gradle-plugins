@@ -319,17 +319,37 @@ public class EnvConfiguratorTest {
 			root =  Files.createTempDirectory("root");
 		}
 				
-		Path fs = FileUtils.createDirectories(PathUtils.get(root, "fs"));
-		Path module = FileUtils.createDirectories(PathUtils.get(root, "module"));
-		Path result = FileUtils.createDirectories(PathUtils.get(root, "result"));
-		Path completeModule = FileUtils.createDirectories(PathUtils.get(module, fs));
+		Path targetFileSystemDir = FileUtils.createDirectories(PathUtils.get(root, "fs"));
+		Path tempModuleDir = FileUtils.createDirectories(PathUtils.get(root, "modules"));
+		Path targetResultDir = FileUtils.createDirectories(PathUtils.get(root, "result"));
+		Path targetModuleDir = FileUtils.createDirectories(PathUtils.get(tempModuleDir, targetFileSystemDir));
 		
-		FileUtils.copy(Paths.get(getClass().getResource("/fs/fs" + index).toURI()), fs);
-		FileUtils.copy(Paths.get(getClass().getResource("/module/m" + index).toURI()), completeModule);
-		FileUtils.copy(Paths.get(getClass().getResource("/result/r" + index).toURI()), result);
+		FileUtils.copy(getFileSystemResource(index), targetFileSystemDir);
+		FileUtils.copy(getModuleResource(index), targetModuleDir);
+		FileUtils.copy(getResultResource(index), targetResultDir);
 		
-		return new Path[]{root, fs, module, result};
+		return new Path[]{root, targetFileSystemDir, tempModuleDir, targetResultDir};
 	}
+
+	private Path getFileSystemResource(int index) throws URISyntaxException {		
+		String resource = "/com/datamaio/scd4j/EnvConfiguratorResources/filesystem/fs" + index;
+		return getResource(resource);
+	}
+	
+	private Path getModuleResource(int index) throws URISyntaxException {
+		String resource = "/com/datamaio/scd4j/EnvConfiguratorResources/modules/m" + index;
+		return getResource(resource);
+	}
+
+	private Path getResultResource(int index) throws URISyntaxException {
+		String resource = "/com/datamaio/scd4j/EnvConfiguratorResources/result/r" + index;
+		return getResource(resource);
+	}
+	
+	private Path getResource(String resource) throws URISyntaxException {
+		return Paths.get(getClass().getResource(resource).toURI());
+	}
+	
 	private void checkResult(Path fs, Path result, String file) {
 		assertThat(exists(PathUtils.get(fs, file)), is(true));
 		try {

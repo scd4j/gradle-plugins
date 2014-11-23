@@ -25,6 +25,8 @@ package com.datamaio.scd4j.gradle
 
 import org.apache.commons.configuration.PropertiesConfiguration
 
+import static com.datamaio.scd4j.conf.Configuration.MODULES_FOLDER;
+import static com.datamaio.scd4j.conf.Configuration.CONFIG_FOLDER;
 import com.datamaio.scd4j.util.Encryptor
 
 
@@ -35,7 +37,7 @@ import com.datamaio.scd4j.util.Encryptor
 class Input {
 	static File config(project){
 		def install = project.scd4j.install
-		return project.file("config/" + install.config)
+		return project.file(CONFIG_FOLDER + "/" + install.config)
 	}
 	
 	static File[] modules(project){
@@ -43,17 +45,17 @@ class Input {
 		
  		def modules = project.scd4j.install.modules
 		for(m in  modules){
-			result.add(project.file("module/" + m))
+			result.add(project.file(MODULES_FOLDER + "/" + m))
 		}
 		
 		return result;
 	}
 	
 	static boolean validate(modules, config) {
-		return validateModule(modules) && validateConfig(config);
+		return validateModules(modules) && validateConfig(config);
 	}
 	
-	static boolean validateModule(modules) {
+	static boolean validateModules(modules) {
 		def ok = true;
 		
 		for( module in modules ){

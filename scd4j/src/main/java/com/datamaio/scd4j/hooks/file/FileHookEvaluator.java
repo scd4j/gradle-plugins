@@ -24,6 +24,7 @@
 package com.datamaio.scd4j.hooks.file;
 
 import static com.datamaio.scd4j.conf.Configuration.HOOK_SUFFIX;
+import static com.datamaio.scd4j.conf.Configuration.MODULES_FOLDER;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -77,7 +78,7 @@ public class FileHookEvaluator extends HookEvaluator {
 
 	private String relativize() {
 		String relative = src.toString();
-		Path p = Paths.get(relative.substring(relative.indexOf("module" + File.separator)));
+		Path p = Paths.get(relative.substring(relative.indexOf(MODULES_FOLDER + File.separator)));
 		return p.subpath(2, p.getNameCount()).toString();
 	}
 }
