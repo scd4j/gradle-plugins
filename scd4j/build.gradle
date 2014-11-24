@@ -54,9 +54,10 @@ project.artifacts {
 
 repositories {
     mavenCentral()
-	maven {
-		url "file:///opt/gradle-repo/maven-repo/"
-	}
+    mavenLocal()
+	//maven {
+	//	url "file:///opt/gradle-repo/maven-repo/"
+	//}
 }
 
 dependencies {
@@ -72,7 +73,8 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: "file:///opt/gradle-repo/maven-repo/")
+			repository(url : mavenLocal().url)
+			// repository(url : "file:///opt/gradle-repo/maven-repo/")
 		}
 	}
 }
