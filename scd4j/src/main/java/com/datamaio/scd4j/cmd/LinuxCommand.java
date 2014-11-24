@@ -42,6 +42,8 @@ public abstract class LinuxCommand extends Command {
 
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
+	public abstract String getPackExtension();
+	
 	@Override
 	public void serviceStart(String name){
 		run("service " + name + " start");

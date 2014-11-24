@@ -44,6 +44,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import com.datamaio.scd4j.cmd.Command;
+import com.datamaio.scd4j.cmd.LinuxCommand;
 import com.datamaio.scd4j.cmd.Command.Interaction;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
@@ -1031,41 +1032,63 @@ public abstract class Hook extends Script {
 	}
 	
 	/**
-	 * Downloads (uses cache to avoid downloading the same dependency many times) a
-	 * dependency which was put in the Artifactory or Nexus.
-	 * <br>
+	 * Downloads (uses cache to avoid downloading the same dependency many
+	 * times) a dependency which was put in the Artifactory or Nexus. <br>
 	 * In order to accomplish that, you need to configure the dependency in
 	 * build.gradle.
 	 * <p>
 	 * For example:
+	 * 
 	 * <pre>
 	 * 	dependencies {
-	 * 		scd4j 'org.wildfly:wildfly:8.1.0.Final@zip'
+	 * 		scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
+	 * 			'com.xyz:foo:0.1@deb',
+	 * 			'com.xyz:oof:1.0@rpm'
 	 * 	}
 	 * </pre>
+	 * 
 	 * Then, in you hook file, you will need to call
+	 * 
 	 * <pre>
-	 * 	def path = resolve "org.wildfly:wildfly:8.1.0.Final"
+	 * 	def path = resolve "com.xyz:foo:0.1@deb"
+	 * 	OR
+	 * 	def path = resolve "com.xyz:oof:1.0@rpm"
 	 * 	OR
 	 * 	def path = resolve "org.wildfly:wildfly:8.1.0.Final@zip"
 	 * </pre>
 	 * <p>
+	 * 
+	 * If you do not provide the file extention (@zip, @deb or @rpm) this method tries to
+	 * infer it according to the following rule:
+	 * <ol>
+	 * <li>Tries to resolve the provided dependency name
+	 * <li>If it does not work and you are running on linux, tries to resolve the distribution dependency
+	 * (i.e. @deb for ubuntu and @rpm for CentOs)
+	 * <li>If it does not work tries to resolve @zip dependency
+	 * </ol> 
 	 * 
 	 * @param depName
 	 *            the full dependency name
 	 * @return the full path where is located the file
 	 */		
     protected String resolve(String depName) {
-    	if(depName.contains("@")){
-    		depName = depName.substring(0, depName.indexOf("@"));
-    	}
     	Path file = conf.getDependency(depName);
+    	
+    	if(file==null && isLinux()){
+			String packExtension = ((LinuxCommand)command).getPackExtension();
+			file = conf.getDependency(depName + "@" + packExtension);	   		
+    	}
+    	
+    	if(file==null){
+    		file = conf.getDependency(depName + "@zip");
+    	}    	
+    	
     	if(file==null)
     		throw new DependencyNotFoundException("Could not resolve dependency: " + depName);
 
     	return file.toString();
     }
-	
+    
     // --- services ---
 
     /** 
