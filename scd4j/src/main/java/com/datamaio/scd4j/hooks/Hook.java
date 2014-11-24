@@ -30,6 +30,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -44,8 +45,8 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import com.datamaio.scd4j.cmd.Command;
-import com.datamaio.scd4j.cmd.LinuxCommand;
 import com.datamaio.scd4j.cmd.Command.Interaction;
+import com.datamaio.scd4j.cmd.LinuxCommand;
 import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
@@ -1058,20 +1059,21 @@ public abstract class Hook extends Script {
 	 * </pre>
 	 * <p>
 	 * 
-	 * If you do not provide the file extention (@zip, @deb or @rpm) this method tries to
-	 * infer it according to the following rule:
+	 * If you do not provide the file extention (@deb, @rpm, @zip, @ear, @war or
+	 * @jar) this method tries to infer it according to the following rule:
 	 * <ol>
 	 * <li>Tries to resolve the provided dependency name
-	 * <li>If it does not work and you are running on linux, tries to resolve the distribution dependency
-	 * (i.e. @deb for ubuntu and @rpm for CentOs)
-	 * <li>If it does not work tries to resolve @zip dependency
-	 * </ol> 
+	 * <li>If it does not work and you are running on linux, tries to resolve
+	 * the distribution dependency (i.e. @deb for ubuntu and @rpm for CentOs)
+	 * <li>If it does not work tries to resolve the dependency in the following order: @zip, 
+	 * @ear, @war or @jar
+	 * </ol>
 	 * 
 	 * @param depName
 	 *            the full dependency name
 	 * @return the full path where is located the file
 	 */		
-    protected String resolve(String depName) {
+    protected String resolve(final String depName) {
     	Path file = conf.getDependency(depName);
     	
     	if(file==null && isLinux()){
@@ -1079,10 +1081,14 @@ public abstract class Hook extends Script {
 			file = conf.getDependency(depName + "@" + packExtension);	   		
     	}
     	
-    	if(file==null){
-    		file = conf.getDependency(depName + "@zip");
-    	}    	
-    	
+    	if(file==null) {
+	    	List<String> extentions = Arrays.asList("zip", "ear", "war", "jar");
+	    	String ext = extentions.stream()
+	    		.filter(e -> conf.getDependency(depName + "@" + e)!=null )	    		
+	    		.findFirst().orElse(null);
+	    	file = conf.getDependency(depName + "@" + ext);
+    	}
+    	    	
     	if(file==null)
     		throw new DependencyNotFoundException("Could not resolve dependency: " + depName);
 

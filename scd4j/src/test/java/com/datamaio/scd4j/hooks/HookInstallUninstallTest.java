@@ -33,12 +33,12 @@ import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HookTest {
+public class HookInstallUninstallTest {
 
 	private static final Path FOO_PATH = Paths.get("/opt/foo/tst/foo.txt");
 	private static final String RPM_PACK = "foo-0.1-1.i386.rpm";
 	private static final String DEB_PACK = "foo_0.1-1_all.deb";
-	
+		
 	private static Path root;
 	
 	@Mock
@@ -76,7 +76,7 @@ public class HookTest {
 	public void teardown() throws Exception {
 		reset(hook);
 	}
-	
+		
 	@Test
 	public void testInstallAndUninstallLocalPack() throws Exception {
 		checkRoot();
@@ -140,6 +140,19 @@ public class HookTest {
 		// Asking this, because it is unistalling with uninstallLocalPack even though it has been installed using apt-get install
 	}
 	
+	/**
+	 * TODO: Tests for 
+	 * 1) install and uninstall from Linux repository
+	 * 		a) providing the version
+	 * 		b) withot provide the version
+	 * 2) isntall and unistall from Artifactory/Maven repository
+	 * 		- how to test this? need to have artifactory/nexus up and running
+	 * 		a) providing extension. ex: com.datamaio:foo:1@deb
+	 *      b) not providing extension. ex. com.datamaio:foo:1
+	 *          this case the OS operational should be infered by install method
+	 */
+	
+	
 	private void checkRoot() {
 		String whoami = whoami();
 		if (!"root".equals(whoami)) {
@@ -156,7 +169,7 @@ public class HookTest {
 			r =  Files.createTempDirectory("root");
 		}
 						
-		FileUtils.copy(Paths.get(HookTest.class.getResource("/_packages").toURI()), r);		
+		FileUtils.copy(Paths.get(HookInstallUninstallTest.class.getResource("/_packages").toURI()), r);		
 		return r;
 	}
 
