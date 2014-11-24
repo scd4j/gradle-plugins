@@ -31,17 +31,14 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-
-import com.datamaio.scd4j.util.io.FileUtils;
-import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
  * 
@@ -287,6 +284,92 @@ public class FileUtilsTest {
 		assertThat(exists(parentdirfile1), is(false));
 		assertThat(exists(parentdirfile2), is(false));	
 	}
+	
+
+	@Test
+	public void deletComplexDir() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path subdir = Files.createTempDirectory(parentdir, "SUBDIR");	
+		Path parentdirfile1 = createTempFile(parentdir, "FILE_1", ".tmp");
+		Path parentdirfile2 = createTempFile(parentdir, "FILE_2", ".tmp");
+		Path parentdirfile3 = createTempFile(subdir, "FILE_3", ".tmp");
+		Path parentdirfile4 = createTempFile(subdir, "FILE_4", ".tmp");
+		
+		FileUtils.deleteDir(parentdir, new DeleteVisitor("*.tmp"));
+		
+		assertThat(exists(parentdir), is(true));
+		assertThat(exists(subdir), is(true));
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(parentdirfile2), is(false));
+		assertThat(exists(parentdirfile3), is(false));
+		assertThat(exists(parentdirfile4), is(false));	
+	}
+	
+	@Test
+	public void createDirectories() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path createDir = PathUtils.get(parentdir, "/test");
+		
+		FileUtils.createDirectories(createDir);
+		
+		assertThat(exists(createDir), is(true));
+	}
+	
+	@Test
+	public void createComplexDirectories() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path createDir = PathUtils.get(parentdir, "/test/test/test");
+		
+		FileUtils.createDirectories(createDir);
+		
+		assertThat(exists(createDir), is(true));
+	}
+	
+	@Test
+	public void read() throws IOException {
+		final String writeHello = "Hello Test!!";
+		Path parentdir = Files.createTempDirectory("DIR");	
+		Path parentdirfile1 = createTempFile(parentdir, "FILE_1", ".tmp");
+		Files.write(parentdirfile1, writeHello.getBytes());
+		String readReturn = FileUtils.read(parentdirfile1);
+		
+		assertThat(readReturn.equals(writeHello), is(true));
+	}
+	
+	@Test
+	public void copyReplaceExisting() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path from = Files.createTempDirectory("from");
+		Path parentdirfile1 = FileUtils.createFile(from, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		Path target = Files.createTempDirectory(parentdir, "target");
+		Path parentdirfile2 = FileUtils.createFile(target, "FILE_1.tmp");
+		Files.write(parentdirfile2, "File two!!".getBytes());
+		
+		FileUtils.copy(from, target);
+		String fileTwo = FileUtils.read(parentdirfile2);
+		
+		assertThat(exists(parentdirfile1), is(true));
+		assertThat(fileOne.endsWith(fileTwo), is(true));
+	}
+	
+	@Test
+	public void copyFileReplaceExisting() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		Path parentdirfile2 = FileUtils.createFile(parentdir, "FILE_2.tmp");
+		Files.write(parentdirfile2, "File two!!".getBytes());
+		
+		FileUtils.copyFile(parentdirfile1, parentdirfile2);
+		String fileTwo = FileUtils.read(parentdirfile2);
+		
+		assertThat(exists(parentdirfile1), is(true));
+		assertThat(fileOne.endsWith(fileTwo), is(true));
+	}
+	
 	
 //	
 //	@Test
