@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.cmd.Command.isWindows;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -198,14 +197,6 @@ public class HookCopyTest {
 	}
 
 	private static Path createTempDir() throws IOException {
-		Path r = null;				
-		if (isWindows()) {
-			// FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			// Path tmpUnit = Files.createTempDirectory("tmpUnit");
-			r = Files.createTempDirectory(/*Paths.get("/tmpUnit"),*/ "root");
-		} else {
-			r =  Files.createTempDirectory("root");
-		}
-		return r;
+		return Files.createTempDirectory("root");
 	}
 }

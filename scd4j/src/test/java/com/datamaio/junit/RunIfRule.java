@@ -36,12 +36,16 @@ import org.junit.runners.model.Statement;
 
 /**
  * <p>
- * This class was originally written by Rüdiger Herrmann and Matt Morrissette
+ * This class was originally written by RÃ¼diger Herrmann and Matt Morrissette
  * and published on github (https://gist.github.com/rherrmann/7447571) with the
- * name ConditionalIgnoreRule. The class was renamed and the logical was
- * refactored. Now we test if the JUnit test will run. On the original version
- * the test would not run if the condition was true.
+ * name ConditionalIgnoreRule. The class was renamed and its logic was slightly
+ * rewritten in order to run unit tests only if the condition is satisfied. On
+ * the original version, unit tests would run only if the condition was not
+ * satisfied.
  * <p>
+ * 
+ * @author Fernando Rubbo 
+ * @author Mateus M. da Costa
  */
 public class RunIfRule implements MethodRule {
   
