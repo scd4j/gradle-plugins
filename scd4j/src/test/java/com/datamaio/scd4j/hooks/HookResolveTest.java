@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 import org.junit.After;
@@ -22,32 +23,33 @@ import com.datamaio.scd4j.exception.DependencyNotFoundException;
 @RunWith(MockitoJUnitRunner.class)
 public class HookResolveTest {
 
-	private static final String LOCAL_ZIP_PATH = "/foo/foo.zip";
+
+	private static final String LOCAL_ZIP_PATH = File.separator + "foo" + File.separator + "foo.zip";
 	private static final String LOCAL_ZIP_DEP = "foo_zip.zip";
 	
-	private static final String LOCAL_DEB_PATH = "/foo/foo.deb";
+	private static final String LOCAL_DEB_PATH = File.separator + "foo" + File.separator + "foo.deb";
 	private static final String LOCAL_DEB_DEP = "foo.deb";
 
-	private static final String LOCAL_RPM_PATH = "/foo/foo.rpm";
+	private static final String LOCAL_RPM_PATH = File.separator + "foo" + File.separator + "foo.rpm";
 	private static final String LOCAL_RPM_DEP = "foo.rpm";
 	
-	private static final String REMOTE_FILE_DEB_PATH = "/other/foo.deb";
+	private static final String REMOTE_FILE_DEB_PATH = File.separator + "other" + File.separator + "foo.deb";
 	private static final String REMOTE_DEB_DEP = "foo@deb";
 
-	private static final String REMOTE_FILE_RPM_PATH = "/other/foo.rpm";
+	private static final String REMOTE_FILE_RPM_PATH = File.separator + "other"+ File.separator + "foo.rpm";
 	private static final String REMOTE_RPM_DEP = "foo@rpm";
 	
 
-	private static final String REMOTE_FILE_ZIP_PATH = "/other/foo.zip";
+	private static final String REMOTE_FILE_ZIP_PATH = File.separator + "other"+ File.separator + "foo.zip";
 	private static final String REMOTE_ZIP_DEP = "foo@zip";
 
-	private static final String REMOTE_FILE_EAR_PATH = "/other/foo.ear";
+	private static final String REMOTE_FILE_EAR_PATH = File.separator + "other" + File.separator + "foo.ear";
 	private static final String REMOTE_EAR_DEP = "foo@ear";
 
-	private static final String REMOTE_FILE_WAR_PATH = "/other/foo.war";
+	private static final String REMOTE_FILE_WAR_PATH = File.separator + "other"+ File.separator +"foo.war";
 	private static final String REMOTE_WAR_DEP = "foo@war";
 
-	private static final String REMOTE_FILE_JAR_PATH = "/other/foo.jar";
+	private static final String REMOTE_FILE_JAR_PATH = File.separator + "other"+ File.separator +"foo.jar";
 	private static final String REMOTE_JAR_DEP = "foo@jar";
 
 	
