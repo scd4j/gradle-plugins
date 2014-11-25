@@ -60,16 +60,16 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
  * can put complex configuration/installation logic. In scd4j we have two types of
  * hooks:
  * <ol>
- * <li> {@link ModuleHook}: one per module (optional)
- * <li> {@link FileHook}: one per file (optional)
+ * <li> {@link ModuleHook}: one per module (optional);
+ * <li> {@link FileHook}: one per file (optional).
  * </ol>
  * <p>
- * This class publishs the following:
+ * This class publishes the following:
  * <ul>
  * <li> {@link #pre()} and {@link #post()} methods to be overriden in order to
- * define hooks semantics, pre and post respectively.
+ * define hooks semantics, pre and post respectively;
  * <li> Delegate and helper functions to be used in the {@link #pre()} and
- * {@link #post()} implementation
+ * {@link #post()} implementation.
  * </ul>
  * 
  * @author Fernando Rubbo
@@ -94,13 +94,13 @@ public abstract class Hook extends Script {
 	/**
 	 * Override this method whenever you need to:
 	 * <ul>
-	 * <li>Conditionally install a module or a file
+	 * <li>Conditionally install a module or a file;
 	 * <li>Execute any programming logic before installing a module or a file. For example:
 	 * <ul>
-	 *  <li> Execute different logic according to the environment in which you are running on (dev, test, hom, prod)
-	 *  <li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOs, Windows)
-	 * 	<li> Stop a service (sometimes required to update a file)
-	 *  <li> and others
+	 *  <li> Execute different logic according to the environment in which you are running on (dev, test, hom, prod);
+	 *  <li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOS, Windows);
+	 * 	<li> Stop a service (sometimes required to update a file);
+	 *  <li> and others...
 	 * </ul>
 	 * </ul>
 	 * 
