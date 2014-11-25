@@ -54,13 +54,13 @@ project.artifacts {
 
 repositories {
     mavenCentral()
-    mavenLocal()
-	//maven {
-	//	url "file:///opt/gradle-repo/maven-repo/"
-	//}
-    //maven {
-	//	url "https://repository.sonatype.org/content/groups/forge/"
-	//}
+    //mavenLocal()
+	maven {
+		url "file:///opt/gradle-repo/maven-repo/"
+	}
+    maven {
+		url "https://repository.sonatype.org/content/groups/forge/"
+	}
 }
 
 dependencies {
@@ -76,8 +76,8 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url : mavenLocal().url)
-			// repository(url : "file:///opt/gradle-repo/maven-repo/")
+			//repository(url : mavenLocal().url)
+			repository(url : "file:///opt/gradle-repo/maven-repo/")
 		}
 	}
 }
