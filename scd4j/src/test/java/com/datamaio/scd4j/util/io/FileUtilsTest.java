@@ -369,13 +369,5 @@ public class FileUtilsTest {
 		assertThat(exists(parentdirfile1), is(true));
 		assertThat(fileOne.endsWith(fileTwo), is(true));
 	}
-	
-	
-//	
-//	@Test
-//	public void copyDirAndKeepExistingFileAttributes() {
-//		Assert.fail("Implementar...");
-//	}
-//		
 }
 

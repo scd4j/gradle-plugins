@@ -52,8 +52,8 @@ import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
- * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class EnvConfiguratorTest {
 	
