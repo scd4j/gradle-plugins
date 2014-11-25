@@ -325,7 +325,7 @@ public abstract class Hook extends Script {
 	
 	/** Returns the current user name */
 	public String whoami() {
-		return command.whoami();
+		return Command.whoami();
 	}
 
 	/** Creates a directory */
@@ -397,7 +397,12 @@ public abstract class Hook extends Script {
 		};
 	}
 	
-	/** Copy a file or a directory from a destination to another */
+	/** 
+	 * Copy a file or a directory from a destination to another<br>
+	 * 
+	 * @param from Accepts a a file path OR a dependency
+	 * @param to The destination directory
+	 */
 	public void cp(String from, String to) {
 		if(!Files.exists(Paths.get(from))) {
 			try {
