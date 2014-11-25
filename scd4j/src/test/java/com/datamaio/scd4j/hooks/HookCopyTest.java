@@ -199,9 +199,10 @@ public class HookCopyTest {
 
 	private static Path createTempDir() throws IOException {
 		Path r = null;				
-		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			r = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
+		if (isWindows()) {
+			// FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			// Path tmpUnit = Files.createTempDirectory("tmpUnit");
+			r = Files.createTempDirectory(/*Paths.get("/tmpUnit"),*/ "root");
 		} else {
 			r =  Files.createTempDirectory("root");
 		}

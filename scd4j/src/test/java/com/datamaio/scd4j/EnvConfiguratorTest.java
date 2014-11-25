@@ -30,6 +30,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -310,11 +311,9 @@ public class EnvConfiguratorTest {
 	}
 
 	private Path[] createEnv(int index) throws IOException, URISyntaxException {
-		Path root = null;
-				
-		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			root = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
+		Path root = null;				
+		if (isWindows()) {
+			root = buildRootPathForWindows();
 		} else {
 			root =  Files.createTempDirectory("root");
 		}
@@ -329,6 +328,19 @@ public class EnvConfiguratorTest {
 		FileUtils.copy(getResultResource(index), targetResultDir);
 		
 		return new Path[]{root, targetFileSystemDir, tempModuleDir, targetResultDir};
+	}
+	
+	private Path buildRootPathForWindows() throws IOException {
+		Path root = null;
+		//FileUtils.createDirectories(Paths.get("/tmpUnit"));			
+		//root = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
+		Path newRootDir = Files.createTempDirectory("root");
+		for (Path rootPath : newRootDir.getFileSystem().getRootDirectories()) {
+			if (newRootDir.startsWith(rootPath)) {
+				root = Paths.get("/" + rootPath.relativize(newRootDir).toString());
+			}
+		}
+		return root;
 	}
 
 	private Path getFileSystemResource(int index) throws URISyntaxException {		
@@ -358,7 +370,7 @@ public class EnvConfiguratorTest {
 			Assert.assertThat(actual, is(equalTo(expected)));
 		} catch (IOException e) {
 			e.printStackTrace();
-			Assert.fail(e.getMessage());
+			fail(e.getMessage());
 		}
 	}
 }

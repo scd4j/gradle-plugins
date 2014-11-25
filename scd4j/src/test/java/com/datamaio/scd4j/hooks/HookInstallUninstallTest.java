@@ -189,9 +189,9 @@ public class HookInstallUninstallTest {
 
 	private static Path createEnv() throws Exception{
 		Path r = null;				
-		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			r = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
+		if (isWindows()) {
+			// FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			r = Files.createTempDirectory(/*Paths.get("/tmpUnit"),*/"root");
 		} else {
 			r =  Files.createTempDirectory("root");
 		}

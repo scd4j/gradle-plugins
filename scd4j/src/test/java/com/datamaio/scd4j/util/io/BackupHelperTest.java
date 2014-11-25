@@ -65,8 +65,9 @@ public class BackupHelperTest {
 		Path dirToBkp = null;
 		
 		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp");
+			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp");
+			dirToBkp = this.buildPathForWindows("dirToBkp");
 		} else {
 			dirToBkp =  Files.createTempDirectory("dirToBkp");
 		}
@@ -89,8 +90,9 @@ public class BackupHelperTest {
 		Path dirToBkp = null;
 		
 		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp2");
+			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp2");
+			dirToBkp = this.buildPathForWindows("dirToBkp2");
 		} else {
 			dirToBkp =  Files.createTempDirectory("dirToBkp2");
 		}
@@ -108,13 +110,13 @@ public class BackupHelperTest {
 	
 	@Test
 	public void backupFile() throws IOException {
-		Path dirToBkp = null;
-		
-		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp3");
+		Path dirToBkp = null;		
+		if (isWindows()) {
+			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp3");
+			dirToBkp = buildPathForWindows("dirToBkp3");
 		} else {
-			dirToBkp =  Files.createTempDirectory("dirToBkp3");
+			dirToBkp = Files.createTempDirectory("dirToBkp3");
 		}
 		
 		Path parentdirfile1 = createTempFile(dirToBkp, "FILE_1", ".tmp");
@@ -129,8 +131,9 @@ public class BackupHelperTest {
 		Path dirToBkp = null;
 		
 		if(isWindows()) {
-			FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp4");
+			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
+			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp4");
+			dirToBkp = this.buildPathForWindows("dirToBkp4");
 		} else {
 			dirToBkp =  Files.createTempDirectory("dirToBkp4");
 		}
@@ -162,5 +165,16 @@ public class BackupHelperTest {
 						PathUtils.get(bkp, subDir1.getFileName()),
 						subDir3.getFileName()), parentdirfile3.getFileName())),
 				is(true));	
+	}
+	
+	private Path buildPathForWindows(String path) throws IOException {
+		Path root = null;
+		Path newDir = Files.createTempDirectory(path);
+		for (Path rootPath : newDir.getFileSystem().getRootDirectories()) {
+			if (newDir.startsWith(rootPath)) {
+				root = Paths.get("/" + rootPath.relativize(newDir).toString());
+			}
+		}
+		return root;
 	}
 }
