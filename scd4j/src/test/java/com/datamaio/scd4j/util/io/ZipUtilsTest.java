@@ -116,4 +116,19 @@ public class ZipUtilsTest {
 		FileUtils.delete(dir);
 		FileUtils.delete(targetDir);
 	}
+	
+	@Test
+	public void createComplexZip() throws IOException {
+		Path dir = Files.createTempDirectory("DIR");
+		Path toZip = Files.createTempDirectory(dir, "toZip");
+		Path file1 = Files.createTempFile(toZip, "TEMP1", ".txt");
+		Files.createTempFile(toZip, "TEMP2", ".txt");
+		Files.createTempFile(toZip, "TEMP3", ".txt");
+		ZipUtils.create(toZip.getParent().toString()+"/my.zip", toZip.getParent().toString()+"/"+toZip.getFileName(), file1.toString());
+		
+		Path zipFile = PathUtils.get(toZip.getParent(), "my.zip");
+		List<String> list = ZipUtils.list(zipFile);
+		assertThat(list.size(), is(1));
+		assertThat(list, hasItem(endsWith(file1.getFileName().toString())));
+	}
 }

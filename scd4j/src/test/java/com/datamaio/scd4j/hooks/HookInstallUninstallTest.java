@@ -1,3 +1,26 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (C) 2014 scd4j scd4j.tools@gmail.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.datamaio.scd4j.hooks;
 
 import static com.datamaio.scd4j.cmd.Command.isWindows;
@@ -25,20 +48,24 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.datamaio.scd4j.cmd.CentOSCommand;
+import com.datamaio.scd4j.cmd.CentosCommand;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
+/**
+ * 
+ * @author Fernando Rubbo
+ */
 @RunWith(MockitoJUnitRunner.class)
-public class HookTest {
+public class HookInstallUninstallTest {
 
 	private static final Path FOO_PATH = Paths.get("/opt/foo/tst/foo.txt");
 	private static final String RPM_PACK = "foo-0.1-1.i386.rpm";
 	private static final String DEB_PACK = "foo_0.1-1_all.deb";
-	
+		
 	private static Path root;
 	
 	@Mock
@@ -76,7 +103,7 @@ public class HookTest {
 	public void teardown() throws Exception {
 		reset(hook);
 	}
-	
+		
 	@Test
 	public void testInstallAndUninstallLocalPack() throws Exception {
 		checkRoot();
@@ -85,7 +112,7 @@ public class HookTest {
 		String dist = Command.get().distribution();
 		if(UbuntuCommand.DIST_NAME.equals(dist)) {
 			pack = DEB_PACK;
-		} else if(CentOSCommand.DIST_NAME.equals(dist)) {
+		} else if(CentosCommand.DIST_NAME.equals(dist)) {
 			pack = RPM_PACK;
 		} else {
 			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
@@ -115,7 +142,7 @@ public class HookTest {
 		String dist = Command.get().distribution();
 		if(UbuntuCommand.DIST_NAME.equals(dist)) {
 			pack = "lxde=0.5.0-4ubuntu4";
-		} else if(CentOSCommand.DIST_NAME.equals(dist)) {
+		} else if(CentosCommand.DIST_NAME.equals(dist)) {
 			pack = "lxde-?????????????";
 		} else {
 			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
@@ -140,6 +167,19 @@ public class HookTest {
 		// Asking this, because it is unistalling with uninstallLocalPack even though it has been installed using apt-get install
 	}
 	
+	/**
+	 * TODO: Tests for 
+	 * 1) install and uninstall from Linux repository
+	 * 		a) providing the version
+	 * 		b) withot provide the version
+	 * 2) isntall and unistall from Artifactory/Maven repository
+	 * 		- how to test this? need to have artifactory/nexus up and running
+	 * 		a) providing extension. ex: com.datamaio:foo:1@deb
+	 *      b) not providing extension. ex. com.datamaio:foo:1
+	 *          this case the OS operational should be infered by install method
+	 */
+	
+	
 	private void checkRoot() {
 		String whoami = whoami();
 		if (!"root".equals(whoami)) {
@@ -156,7 +196,7 @@ public class HookTest {
 			r =  Files.createTempDirectory("root");
 		}
 						
-		FileUtils.copy(Paths.get(HookTest.class.getResource("/_packages").toURI()), r);		
+		FileUtils.copy(Paths.get(HookInstallUninstallTest.class.getResource("/_packages").toURI()), r);		
 		return r;
 	}
 
