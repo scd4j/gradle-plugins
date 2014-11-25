@@ -332,8 +332,6 @@ public class EnvConfiguratorTest {
 	
 	private Path buildRootPathForWindows() throws IOException {
 		Path root = null;
-		//FileUtils.createDirectories(Paths.get("/tmpUnit"));			
-		//root = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
 		Path newRootDir = Files.createTempDirectory("root");
 		for (Path rootPath : newRootDir.getFileSystem().getRootDirectories()) {
 			if (newRootDir.startsWith(rootPath)) {
