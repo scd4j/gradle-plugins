@@ -32,6 +32,7 @@ import java.util.Arrays;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public final class PathUtils {
 	
@@ -45,7 +46,7 @@ public final class PathUtils {
 	/** Método helper para pegar o caminho de um arquivo */
 	public static Path get(Path dir, Path... more) {
 		String[] moreStr = Arrays.stream(more)
-							.map(p -> p.toString())
+							.map(p -> p.toString().replaceFirst("([a-zA-Z]\\:)", ""))
 							.collect(toList())
 							.toArray(new String[]{});
 		return get(dir, moreStr);

@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.util.io;
 
-import static com.datamaio.scd4j.cmd.Command.isWindows;
 import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +32,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,15 +60,7 @@ public class BackupHelperTest {
 	
 	@Test
 	public void existingBackupDir() throws Exception {
-		Path dirToBkp = null;
-		
-		if(isWindows()) {
-			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp");
-			dirToBkp = this.buildPathForWindows("dirToBkp");
-		} else {
-			dirToBkp =  Files.createTempDirectory("dirToBkp");
-		}
+		Path dirToBkp = Files.createTempDirectory("dirToBkp");
 		
 		FileUtils.createDirectories(PathUtils.get(conf.getBackupDir(), dirToBkp));
 		Path parentdirfile1 = createTempFile(dirToBkp, "FILE_1", ".tmp");
@@ -87,16 +77,8 @@ public class BackupHelperTest {
 	
 	@Test
 	public void notExistingBackupDir() throws Exception {
-		Path dirToBkp = null;
-		
-		if(isWindows()) {
-			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp2");
-			dirToBkp = this.buildPathForWindows("dirToBkp2");
-		} else {
-			dirToBkp =  Files.createTempDirectory("dirToBkp2");
-		}
-		
+		Path dirToBkp = Files.createTempDirectory("dirToBkp2");
+				
 		Path parentdirfile1 = createTempFile(dirToBkp, "FILE_1", ".tmp");
 		Path parentdirfile2 = createTempFile(dirToBkp, "FILE_2", ".tmp");
 		
@@ -110,15 +92,8 @@ public class BackupHelperTest {
 	
 	@Test
 	public void backupFile() throws IOException {
-		Path dirToBkp = null;		
-		if (isWindows()) {
-			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp3");
-			dirToBkp = buildPathForWindows("dirToBkp3");
-		} else {
-			dirToBkp = Files.createTempDirectory("dirToBkp3");
-		}
-		
+		Path dirToBkp = Files.createTempDirectory("dirToBkp3");		
+	
 		Path parentdirfile1 = createTempFile(dirToBkp, "FILE_1", ".tmp");
 		
 		new BackupHelper(conf).backupFile(parentdirfile1);
@@ -128,16 +103,8 @@ public class BackupHelperTest {
 	
 	@Test
 	public void backupComplexDir() throws IOException {
-		Path dirToBkp = null;
-		
-		if(isWindows()) {
-			//FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			//dirToBkp = Files.createTempDirectory(Paths.get("/tmpUnit"), "dirToBkp4");
-			dirToBkp = this.buildPathForWindows("dirToBkp4");
-		} else {
-			dirToBkp =  Files.createTempDirectory("dirToBkp4");
-		}
-		
+		Path dirToBkp = Files.createTempDirectory("dirToBkp4");	
+			
 		Path subDir1 = Files.createTempDirectory(dirToBkp, "subDir1");
 		Path subDir2 = Files.createTempDirectory(dirToBkp, "subDir2");
 		Path subDir3 = Files.createTempDirectory(subDir1, "subDir3");
@@ -165,16 +132,5 @@ public class BackupHelperTest {
 						PathUtils.get(bkp, subDir1.getFileName()),
 						subDir3.getFileName()), parentdirfile3.getFileName())),
 				is(true));	
-	}
-	
-	private Path buildPathForWindows(String path) throws IOException {
-		Path root = null;
-		Path newDir = Files.createTempDirectory(path);
-		for (Path rootPath : newDir.getFileSystem().getRootDirectories()) {
-			if (newDir.startsWith(rootPath)) {
-				root = Paths.get("/" + rootPath.relativize(newDir).toString());
-			}
-		}
-		return root;
 	}
 }

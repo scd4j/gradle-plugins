@@ -46,6 +46,7 @@ import com.datamaio.scd4j.util.io.ZipUtils;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class ZipUtilsTest {
 	@Test

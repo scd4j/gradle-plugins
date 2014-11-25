@@ -33,6 +33,7 @@ import com.datamaio.scd4j.util.io.PathUtils;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class BackupHelper {
 	private final Path dir;

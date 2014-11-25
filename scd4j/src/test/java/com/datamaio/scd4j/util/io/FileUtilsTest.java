@@ -42,6 +42,7 @@ import org.junit.Test;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class FileUtilsTest {
 	
