@@ -84,8 +84,8 @@ public abstract class Command {
 				String dist = _run(cmdList, NO_PRINTING);
 				if(dist.contains(UbuntuCommand.DIST_NAME)) {
 					INSTANCE = new UbuntuCommand();
-				} else if (dist.contains(CentOSCommand.DIST_NAME)) {
-					INSTANCE = new CentOSCommand();
+				} else if (dist.contains(CentosCommand.DIST_NAME)) {
+					INSTANCE = new CentosCommand();
 				} else {
 					throw new RuntimeException("Linux distribution not supported : " + dist);
 				}

@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.datamaio.scd4j.cmd.CentOSCommand;
+import com.datamaio.scd4j.cmd.CentosCommand;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
@@ -85,7 +85,7 @@ public class HookInstallUninstallTest {
 		String dist = Command.get().distribution();
 		if(UbuntuCommand.DIST_NAME.equals(dist)) {
 			pack = DEB_PACK;
-		} else if(CentOSCommand.DIST_NAME.equals(dist)) {
+		} else if(CentosCommand.DIST_NAME.equals(dist)) {
 			pack = RPM_PACK;
 		} else {
 			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
@@ -115,7 +115,7 @@ public class HookInstallUninstallTest {
 		String dist = Command.get().distribution();
 		if(UbuntuCommand.DIST_NAME.equals(dist)) {
 			pack = "lxde=0.5.0-4ubuntu4";
-		} else if(CentOSCommand.DIST_NAME.equals(dist)) {
+		} else if(CentosCommand.DIST_NAME.equals(dist)) {
 			pack = "lxde-?????????????";
 		} else {
 			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");

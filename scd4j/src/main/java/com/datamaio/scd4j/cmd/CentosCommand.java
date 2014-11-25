@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * 
  * @author Fernando Rubbo
  */
-public class CentOSCommand extends LinuxCommand {
+public class CentosCommand extends LinuxCommand {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	public static final String DIST_NAME = "CentOS";
 	public static final String INST_EXTENSION = "rpm";

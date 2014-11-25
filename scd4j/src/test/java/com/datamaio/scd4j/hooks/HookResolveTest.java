@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.datamaio.scd4j.cmd.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
 
@@ -125,7 +126,7 @@ public class HookResolveTest {
 			if(hook.isWindows())
 				fail("Running on windows this dependency must NOT be found");
 			
-			if("Ubuntu".equals(hook.distribution())) {
+			if(UbuntuCommand.DIST_NAME.equals(hook.distribution())) {
 				assertThat(path, is(REMOTE_FILE_DEB_PATH));
 			} else {
 				assertThat(path, is(REMOTE_FILE_RPM_PATH));

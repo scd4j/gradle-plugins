@@ -28,7 +28,9 @@ import groovy.lang.Script;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -397,6 +399,13 @@ public abstract class Hook extends Script {
 	
 	/** Copy a file or a directory from a destination to another */
 	public void cp(String from, String to) {
+		if(!Files.exists(Paths.get(from))) {
+			try {
+				from = resolve(from);
+			} catch (DependencyNotFoundException e) {
+				throw new RuntimeException("It was not possible to find file/dir '" + from + "' to copy!");
+			}
+		}
 		command.cp(from, to);
 	}
 	
