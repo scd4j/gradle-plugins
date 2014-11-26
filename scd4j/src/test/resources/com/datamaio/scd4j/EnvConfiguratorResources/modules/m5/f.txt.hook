@@ -3,5 +3,5 @@ Action pre() {
 	if ("aaaaaa".equals(get("favlang")))	  
   		CONTINUE_INSTALLATION
 	else
-		SKIP_INSTALATION
+		SKIP_INSTALLATION
 }

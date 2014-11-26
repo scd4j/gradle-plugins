@@ -24,5 +24,5 @@
 package com.datamaio.scd4j.hooks;
 
 public enum Action {
-	CONTINUE_INSTALLATION, SKIP_INSTALATION
+	CONTINUE_INSTALLATION, SKIP_INSTALLATION
 }

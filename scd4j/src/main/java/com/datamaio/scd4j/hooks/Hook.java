@@ -106,7 +106,7 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * 
 	 * @return <code>CONTINUE_INSTALLATION</code> to install the respective module or file,
-	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALLATION</code>
+	 *         SKIP_INSTALLATION otherwise. Default is <code>CONTINUE_INSTALLATION</code>
 	 */
 	public Action pre() {
 		if(preClosure!=null){
