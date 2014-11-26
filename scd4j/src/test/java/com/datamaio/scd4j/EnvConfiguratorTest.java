@@ -295,6 +295,23 @@ public class EnvConfiguratorTest {
 		FileUtils.delete(root);
 	}
 	
+	
+	@Test
+	public void testSubistituionProperty() throws IOException, URISyntaxException {
+		Path[] paths = createEnv(10);
+		Path root = paths[0];
+		Path fs = paths[1];
+		Path module = paths[2];
+		Path result = paths[3];
+		
+		Map<String, String> ext = new HashMap<>();
+		ext.put("test", "TESTADO!");
+		new EnvConfigurator(ext, module).exec();
+		assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
+		checkResult(fs, result, "dir1/f10.txt");
+		FileUtils.delete(root);
+	}
+	
 	private byte[] buildModuleHookPre() {
 		return ("Action pre() {"
 				+ "\n	if (\"xyz\".equals(get(\"var\")))"
