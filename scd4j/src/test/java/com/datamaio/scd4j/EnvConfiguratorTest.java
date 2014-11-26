@@ -52,8 +52,8 @@ import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
- * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class EnvConfiguratorTest {
 	
@@ -295,10 +295,27 @@ public class EnvConfiguratorTest {
 		FileUtils.delete(root);
 	}
 	
+	
+	@Test
+	public void testSubstitutionProperty() throws IOException, URISyntaxException {
+		Path[] paths = createEnv(10);
+		Path root = paths[0];
+		Path fs = paths[1];
+		Path module = paths[2];
+		Path result = paths[3];
+		
+		Map<String, String> ext = new HashMap<>();
+		ext.put("test", "TESTADO!");
+		new EnvConfigurator(ext, module).exec();
+		assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
+		checkResult(fs, result, "dir1/f10.txt");
+		FileUtils.delete(root);
+	}
+	
 	private byte[] buildModuleHookPre() {
 		return ("Action pre() {"
 				+ "\n	if (\"xyz\".equals(get(\"var\")))"
-				+ "\n		CONTINUE_INSTALATION;"
+				+ "\n		CONTINUE_INSTALLATION;"
 				+ "\n	else"
 				+ "\n		SKIP_INSTALATION;"
 				+ "\n}").getBytes();
@@ -332,8 +349,6 @@ public class EnvConfiguratorTest {
 	
 	private Path buildRootPathForWindows() throws IOException {
 		Path root = null;
-		//FileUtils.createDirectories(Paths.get("/tmpUnit"));			
-		//root = Files.createTempDirectory(Paths.get("/tmpUnit"), "root");
 		Path newRootDir = Files.createTempDirectory("root");
 		for (Path rootPath : newRootDir.getFileSystem().getRootDirectories()) {
 			if (newRootDir.startsWith(rootPath)) {

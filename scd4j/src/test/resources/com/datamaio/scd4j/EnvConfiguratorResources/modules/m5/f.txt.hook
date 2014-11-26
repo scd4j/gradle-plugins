@@ -1,7 +1,7 @@
 Action pre() {
 	println get("favlang")
 	if ("aaaaaa".equals(get("favlang")))	  
-  		CONTINUE_INSTALATION
+  		CONTINUE_INSTALLATION
 	else
 		SKIP_INSTALATION
 }

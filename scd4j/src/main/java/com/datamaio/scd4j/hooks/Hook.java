@@ -23,7 +23,8 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALATION;
+import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
+import groovy.lang.Closure;
 import groovy.lang.Script;
 
 import java.net.InetAddress;
@@ -104,10 +105,20 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @return <code>CONTINUE_INSTALATION</code> to install the respective module or file,
-	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALATION</code>
+	 * @return <code>CONTINUE_INSTALLATION</code> to install the respective module or file,
+	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALLATION</code>
 	 */
-	public Action pre() {return CONTINUE_INSTALATION;}
+	public Action pre() {
+		if(preClosure!=null){
+			return preClosure.call(); 
+		}
+		return CONTINUE_INSTALLATION;
+	}
+	
+	private Closure<Action> preClosure;
+	protected void pre(Closure<Action> preClosure){
+		this.preClosure = preClosure;
+	}	
 	
 	/**
 	 * Override this method whenever you need to:
@@ -121,7 +132,16 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 */	
-	public void post() {}	
+	public void post() {
+		if(postClosure!=null){
+			postClosure.call(); 
+		}
+	}	
+	
+	private Closure<Void> postClosure;
+	protected void post(Closure<Void> postClosure){
+		this.postClosure = postClosure;
+	}
 
 	//---------------- init command delegates ---------------
 	
@@ -354,6 +374,11 @@ public abstract class Hook extends Script {
 	/**  Move a file or a directory */
 	public void mv(String from, String to) {
 		command.mv(from, to);
+	}
+	
+	/** DSL for {@link #ln(String, String)} */
+	public List<String> list(String path) {
+		return ls(path);
 	}
 	
 	/** List the files of a directory */
@@ -856,6 +881,30 @@ public abstract class Hook extends Script {
 	// --- install methods ---
 
 	/**
+	 * Configures a given service to start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void activeAtBoot(String serviceName) {
+		command.activeAtBoot(serviceName);
+	}
+
+	/**
+	 * Configures a given service to not start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void deactiveAtBoot(String serviceName) {
+		command.deactiveAtBoot(serviceName);
+	}
+	
+	/**
 	 * Install or update a package.
 	 * <p>
 	 * This method is capable to install three types of packages depending on the parameter it receives:
@@ -1162,15 +1211,21 @@ public abstract class Hook extends Script {
 
 	// ------ methods used by the framework only ----
 	
-    /** Used only by {@link HookEvaluator} to set variables */
-	void setConf(Configuration conf) {
+    /**
+     * Not a public API.<br> 
+     * Used only by {@link HookEvaluator} to set variables 
+     */
+	final void setConf(Configuration conf) {
 		this.conf = conf;
 		this.envs = conf.getEnvironments();
 		this.props = conf.getProperties();
 		this.temporaryProps = conf.getTemporaryProperties();
 	}
 	
-	/** Used unically by {@link HookEvaluator} to cleanup transient properties */
+    /**
+     * Not a public API.<br> 
+	 * Used unically by {@link HookEvaluator} to cleanup transient properties 
+	 */
 	void finish() {
 		temporaryProps.forEach((k, v) -> props.remove(k) );
 		temporaryProps.clear();

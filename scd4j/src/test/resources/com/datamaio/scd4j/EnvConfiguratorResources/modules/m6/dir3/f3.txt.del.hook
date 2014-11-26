@@ -2,7 +2,7 @@ Action pre() {
 	set "my_temporary_property" with "my_string_value" _as temp 	
 	set "my_permanent_property" with true _as permanent
 	
-	return CONTINUE_INSTALATION
+	return CONTINUE_INSTALLATION
 }
 
 void post() {
