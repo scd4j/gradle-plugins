@@ -297,7 +297,7 @@ public class EnvConfiguratorTest {
 	
 	
 	@Test
-	public void testSubistituionProperty() throws IOException, URISyntaxException {
+	public void testSubstitutionProperty() throws IOException, URISyntaxException {
 		Path[] paths = createEnv(10);
 		Path root = paths[0];
 		Path fs = paths[1];
