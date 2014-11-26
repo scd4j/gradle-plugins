@@ -92,7 +92,7 @@ public class HookActiveAtBootTest {
 	}
 	
 	@Test @RunIf(IsLinux.class)
-	public void testCopyRemoteDependency() throws Exception {
+	public void testActiveDeactiveAtBoot() throws Exception {
 		checkRoot();
 		
 		Path dir = PathUtils.get(root, "tmp");

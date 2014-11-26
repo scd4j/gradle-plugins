@@ -24,6 +24,7 @@
 package com.datamaio.scd4j.hooks;
 
 import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALATION;
+import groovy.lang.Closure;
 import groovy.lang.Script;
 
 import java.net.InetAddress;
@@ -107,7 +108,17 @@ public abstract class Hook extends Script {
 	 * @return <code>CONTINUE_INSTALATION</code> to install the respective module or file,
 	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALATION</code>
 	 */
-	public Action pre() {return CONTINUE_INSTALATION;}
+	public Action pre() {
+		if(preClosure!=null){
+			return preClosure.call(); 
+		}
+		return CONTINUE_INSTALATION;
+	}
+	
+	private Closure<Action> preClosure;
+	protected void pre(Closure<Action> preClosure){
+		this.preClosure = preClosure;
+	}	
 	
 	/**
 	 * Override this method whenever you need to:
@@ -121,7 +132,16 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 */	
-	public void post() {}	
+	public void post() {
+		if(postClosure!=null){
+			postClosure.call(); 
+		}
+	}	
+	
+	private Closure<Void> postClosure;
+	protected void post(Closure<Void> postClosure){
+		this.postClosure = postClosure;
+	}
 
 	//---------------- init command delegates ---------------
 	
@@ -1191,15 +1211,21 @@ public abstract class Hook extends Script {
 
 	// ------ methods used by the framework only ----
 	
-    /** Used only by {@link HookEvaluator} to set variables */
-	void setConf(Configuration conf) {
+    /**
+     * Not a public API.<br> 
+     * Used only by {@link HookEvaluator} to set variables 
+     */
+	final void setConf(Configuration conf) {
 		this.conf = conf;
 		this.envs = conf.getEnvironments();
 		this.props = conf.getProperties();
 		this.temporaryProps = conf.getTemporaryProperties();
 	}
 	
-	/** Used unically by {@link HookEvaluator} to cleanup transient properties */
+    /**
+     * Not a public API.<br> 
+	 * Used unically by {@link HookEvaluator} to cleanup transient properties 
+	 */
 	void finish() {
 		temporaryProps.forEach((k, v) -> props.remove(k) );
 		temporaryProps.clear();
