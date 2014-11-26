@@ -1,4 +1,4 @@
-Action pre() {
+pre {
 	println get("favlang")
 	if ("aaaaaa".equals(get("favlang")))	  
   		CONTINUE_INSTALLATION

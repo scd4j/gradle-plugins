@@ -1,4 +1,4 @@
-void post() {
+post {
   renameTo(target + ".postexecuted");
   
   if( contains("my_temporary_property") )

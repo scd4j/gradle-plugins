@@ -75,7 +75,7 @@ public abstract class HookEvaluator {
 
 	public boolean pre(){
 		if(exists()) {
-			return CONTINUE_INSTALLATION.equals((Action) evaluate("pre"));
+			return CONTINUE_INSTALLATION.equals((Action) evaluate("_pre"));
 		}
 		
 		return true;
@@ -83,13 +83,13 @@ public abstract class HookEvaluator {
 	
 	public void post(){
 		if(exists()) {
-			evaluate("post");
+			evaluate("_post");
 		}
 	}
 	
 	public void finish(){
 		if(exists()) {
-			evaluate("finish");
+			evaluate("_finish");
 		}
 		LOGGER.info("--------------------------" );
 	}
@@ -100,12 +100,12 @@ public abstract class HookEvaluator {
 
 	private Object evaluate(String action) {
 		String fullScript = "import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;\n"
-						+ "import static com.datamaio.scd4j.hooks.Action.SKIP_INSTALLATION;\n"
-						+ "import java.nio.file.Files;\n"
-						+ "import java.nio.file.Paths;\n"
-						+ "import com.datamaio.scd4j.hooks.Action;\n"
-						+ script + "\n " 
-						+ action + "();";
+						  + "import static com.datamaio.scd4j.hooks.Action.SKIP_INSTALLATION;\n"
+						  + "import java.nio.file.Files;\n"
+						  + "import java.nio.file.Paths;\n"
+						  + "import com.datamaio.scd4j.hooks.Action;\n"
+						  + script + "\n " 
+						  + action + "();";
 		return shell.evaluate(fullScript);
 	}
 	

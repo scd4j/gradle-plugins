@@ -313,7 +313,7 @@ public class EnvConfiguratorTest {
 	}
 	
 	private byte[] buildModuleHookPre() {
-		return ("Action pre() {"
+		return ("pre {"
 				+ "\n	if (\"xyz\".equals(get(\"var\")))"
 				+ "\n		CONTINUE_INSTALLATION;"
 				+ "\n	else"
@@ -322,7 +322,7 @@ public class EnvConfiguratorTest {
 	}
 	
 	private byte[] buildModuleHookPost() {
-		return ("\nvoid post() {"
+		return ("\npost {"
 				+ "\n	Files.createFile(Paths.get(moduleDir + \"/Module.postexecuted\"));"
 				+ "\n}").getBytes();
 	}
