@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.cmd.Command.isWindows;
 import static com.datamaio.scd4j.cmd.Command.whoami;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.is;
@@ -188,14 +187,7 @@ public class HookInstallUninstallTest {
 	}
 
 	private static Path createEnv() throws Exception{
-		Path r = null;				
-		if (isWindows()) {
-			// FileUtils.createDirectories(Paths.get("/tmpUnit"));
-			r = Files.createTempDirectory(/*Paths.get("/tmpUnit"),*/"root");
-		} else {
-			r =  Files.createTempDirectory("root");
-		}
-						
+		Path r =  Files.createTempDirectory("root");						
 		FileUtils.copy(Paths.get(HookInstallUninstallTest.class.getResource("/_packages").toURI()), r);		
 		return r;
 	}

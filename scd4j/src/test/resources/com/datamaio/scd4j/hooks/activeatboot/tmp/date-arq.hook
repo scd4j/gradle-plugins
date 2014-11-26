@@ -1,0 +1,3 @@
+void post() {
+	chmod "777"
+}

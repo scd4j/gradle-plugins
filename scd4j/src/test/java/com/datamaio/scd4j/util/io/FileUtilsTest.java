@@ -42,6 +42,7 @@ import org.junit.Test;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class FileUtilsTest {
 	
@@ -368,13 +369,5 @@ public class FileUtilsTest {
 		assertThat(exists(parentdirfile1), is(true));
 		assertThat(fileOne.endsWith(fileTwo), is(true));
 	}
-	
-	
-//	
-//	@Test
-//	public void copyDirAndKeepExistingFileAttributes() {
-//		Assert.fail("Implementar...");
-//	}
-//		
 }
 

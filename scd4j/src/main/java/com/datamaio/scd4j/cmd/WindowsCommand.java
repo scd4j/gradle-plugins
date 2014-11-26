@@ -59,6 +59,16 @@ public class WindowsCommand extends Command {
 	}
 	
 	@Override
+	public void activeAtBoot(String serviceName) {
+		throw new RuntimeException("Function 'activeAtBoot' not implemented for windows");
+	}
+	
+	@Override
+	public void deactiveAtBoot(String serviceName) {
+		throw new RuntimeException("Function 'deactiveAtBoot' not implemented for windows");
+	}
+	
+	@Override
 	public void execute(String file) {
 		run(file);
 	}
