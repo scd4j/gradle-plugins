@@ -1,0 +1,50 @@
+#!/bin/bash
+# chkconfig: 3 98 99
+# description: Imprime data em arquivo
+
+RETVAL=0
+script="date-arq.sh"
+
+function start () {
+   if [ "`ps aux | grep $script | grep -v grep`" != "" ]; then
+      echo "O script $script já está em execução."
+      exit 1
+   else
+      /bin/bash /opt/tmp/$script &
+   fi
+}
+
+function stop () {
+   kill `ps aux | grep $script | grep -v "grep" | awk '{print $2}'`
+}
+
+function status () {
+   if [ "`ps aux | grep $script | grep -v "grep"`" != "" ]; then
+      return="Iniciado."
+   else
+      return="Parado."
+   fi
+   echo $return
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 2
+                start
+                ;;
+        status)
+                status
+                ;;
+        *)
+                echo "Uso: $0 {start|stop|restart|status}" 
+                RETVAL=1
+esac
+
+exit $RETVAL

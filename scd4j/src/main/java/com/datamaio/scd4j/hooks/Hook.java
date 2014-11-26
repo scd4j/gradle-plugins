@@ -356,6 +356,11 @@ public abstract class Hook extends Script {
 		command.mv(from, to);
 	}
 	
+	/** DSL for {@link #ln(String, String)} */
+	public List<String> list(String path) {
+		return ls(path);
+	}
+	
 	/** List the files of a directory */
 	public List<String> ls(String path) {
 		return command.ls(path);
@@ -855,6 +860,30 @@ public abstract class Hook extends Script {
 
 	// --- install methods ---
 
+	/**
+	 * Configures a given service to start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void activeAtBoot(String serviceName) {
+		command.activeAtBoot(serviceName);
+	}
+
+	/**
+	 * Configures a given service to not start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void deactiveAtBoot(String serviceName) {
+		command.deactiveAtBoot(serviceName);
+	}
+	
 	/**
 	 * Install or update a package.
 	 * <p>

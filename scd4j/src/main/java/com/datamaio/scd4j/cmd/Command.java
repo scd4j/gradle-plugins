@@ -114,6 +114,9 @@ public abstract class Command {
 	public abstract void serviceRestart(String name);
 	public abstract String serviceStatus(String name);
 
+	public abstract void activeAtBoot(String name);
+	public abstract void deactiveAtBoot(String name);
+	
 	public abstract String distribution();
 	public abstract void execute(String file);
 	public abstract void addRepository(String repository);
