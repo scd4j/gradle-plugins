@@ -82,13 +82,11 @@ class Scd4jTask extends DefaultTask {
 					println "=== Instalation aborted! ==="
 					println "============================"
 				}
-			} else if(console == null) {
+			} else {
 					//If console returns null it will open dialog for requesting the confirmation
-					def ok = null;
-					def dialogButton = JOptionPane.YES_NO_OPTION;
-					def dialogResult =JOptionPane.showConfirmDialog (null, "Review the above config. Click YES to procceed and NO to abort: ","Warning",dialogButton);
-	
-					if(dialogResult == JOptionPane.YES_OPTION){
+					def msg = "Review the above config. Click YES to procceed and NO to abort: "
+					def option =JOptionPane.showConfirmDialog (null, msg ,"Warning", JOptionPane.YES_NO_OPTION);
+					if(option == JOptionPane.YES_OPTION){
 						run(env, modules, config)
 					} else {
 						println "============================"

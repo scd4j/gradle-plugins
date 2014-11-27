@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j.hooks;
 
+import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;
 import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
 import groovy.lang.Closure;
 import groovy.lang.Script;
@@ -85,8 +86,8 @@ public abstract class Hook extends Script {
 	protected Map<String, String> temporaryProps;
 	protected final Command command;
 	
-	private Closure<Action> pre;
-	private Closure<Void> post;
+	protected Closure<Action> pre;
+	protected Closure<Void> post;
 
 	/** Default constructor */
 	public Hook(){
@@ -1221,21 +1222,32 @@ public abstract class Hook extends Script {
 	
 	/**
      * Not a public API.<br> 
-	 * Used unically by {@link HookEvaluator} to call the pre condition closure 
+	 * Used only by {@link HookEvaluator} to call the pre condition closure 
 	 */
-	final Action _pre() {
+	final Action _pre(){
 		if (pre != null) {
 			Action action = pre.call();
-			if (action == null)
+			if (action == null) { 
+				// pre{} does not return anything				
 				return CONTINUE_INSTALLATION;
-			return action;
+			} 
+			
+			validateAction(action);
+			return action;	
 		}
+		
+		// pre{} was not defined
 		return CONTINUE_INSTALLATION;
-	}	
+	}
+
+	/**
+     * Not a public API.<br>   
+	 */
+	protected abstract void validateAction(Action action);
 	
 	/**
      * Not a public API.<br> 
-	 * Used unically by {@link HookEvaluator} to call the post condition closure 
+	 * Used only by {@link HookEvaluator} to call the post condition closure 
 	 */
 	final void _post() {
 		if(post!=null){
@@ -1245,7 +1257,7 @@ public abstract class Hook extends Script {
 	
 	/**
      * Not a public API.<br> 
-	 * Used unically by {@link HookEvaluator} to cleanup transient properties 
+	 * Used only by {@link HookEvaluator} to cleanup transient properties 
 	 */
 	final void _finish() {
 		temporaryProps.forEach((k, v) -> props.remove(k) );

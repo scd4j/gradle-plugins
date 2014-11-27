@@ -51,6 +51,7 @@ import com.datamaio.scd4j.cmd.CentosCommand;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.hooks.module.ModuleHook;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
@@ -70,7 +71,7 @@ public class HookInstallUninstallTest {
 	@Mock
 	Configuration conf;
 	@Spy
-	private Hook hook = new Hook() {		
+	private Hook hook = new ModuleHook() {		
 		@Override
 		public Object run() {
 			return null;

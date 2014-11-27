@@ -100,10 +100,10 @@ public abstract class HookEvaluator {
 
 	private Object evaluate(String action) {
 		String fullScript = "import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;\n"
-						  + "import static com.datamaio.scd4j.hooks.Action.SKIP_INSTALLATION;\n"
-						  + "import java.nio.file.Files;\n"
-						  + "import java.nio.file.Paths;\n"
-						  + "import com.datamaio.scd4j.hooks.Action;\n"
+						  + "import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;\n"
+						  + "import static com.datamaio.scd4j.hooks.Action.SKIP_FILE_INSTALLATION;\n"
+						  + "import java.nio.file.*;\n"
+						  + "import java.io.*;\n"
 						  + script + "\n " 
 						  + action + "();";
 		return shell.evaluate(fullScript);
