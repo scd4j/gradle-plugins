@@ -20,7 +20,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.5"
+  id "com.datamaio.scd4j" version "0.1.6"
 }
 
 repositories {
@@ -42,7 +42,6 @@ scd4j {
 			test  = ["192.168.7.20", "192.168.7.21"]  // your test/stage environment
 		}
 	}
-
 }
 ```
 
