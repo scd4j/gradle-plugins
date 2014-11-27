@@ -83,7 +83,7 @@ class Scd4jTask extends DefaultTask {
 					println "============================"
 				}
 			} else if(console == null) {
-					println '\nReview the above config. Type "yes/y" to procceed and "no/n" to abort2: '
+					//If console returns null it will open dialog for requesting the confirmation
 					def ok = null;
 					def dialogButton = JOptionPane.YES_NO_OPTION;
 					def dialogResult =JOptionPane.showConfirmDialog (null, "Review the above config. Click YES to procceed and NO to abort: ","Warning",dialogButton);
@@ -95,15 +95,6 @@ class Scd4jTask extends DefaultTask {
 						println "=== Instalation aborted! ==="
 						println "============================"
 					}
-			}
-			else {
-				// Running inside of eclipse, for example..
-				println "DEV ONLY: Cannot get console - Will keep processing, but will not accept cryptography in any configuration property"
-				def environments = new ConfEnvironments(env.prod, env.hom, env.test)
-				def dependencies = mapDependencies2Path();
-				for(module in modules) {
-					new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
-				}
 			}
 		} else {
 			println "============================"
