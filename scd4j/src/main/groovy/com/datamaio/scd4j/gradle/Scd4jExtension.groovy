@@ -35,9 +35,9 @@ class Scd4jExtension {
  * @author Fernando Rubbo
  */
 class EnvNestedExtension{
-	String[] prod = []
-	String[] hom  = []
-	String[] test = []
+	String[] production = []
+	String[] staging  = []
+	String[] testing = []
 }
 
 /**

@@ -60,10 +60,10 @@ class Scd4jTask extends DefaultTask {
 		println "Pack Name     : ${project.archivesBaseName} "
 		println "Pack Version  : ${project.version} "
 		println "====== Environment Configuration ======"
-        println "IP PROD LIST  : ${env.prod}" 
-        println "IP HOM  LIST  : ${env.hom}" 
-        println "IP TEST LIST  : ${env.test}" 
-		println "IP DES  LIST  : [ANY OTHER]"
+        println "IP PRODUCTION LIST : ${env.production}" 
+        println "IP STAGIN  LIST  	: ${env.staging}" 
+        println "IP TESTING LIST  	: ${env.testing}" 
+		println "IP DESENV  LIST  	: [ANY OTHER]"
 		println "====== Instalation Configuration ======"
         println "CONFIG FILE   : $config" 
         println "MODULE DIRS   : $modules" 
@@ -102,7 +102,7 @@ class Scd4jTask extends DefaultTask {
     }
 
 	def run(env, modules, config) {
-		def environments = new ConfEnvironments(env.prod, env.hom, env.test)
+		def environments = new ConfEnvironments(env.production, env.staging, env.testing)
 		def dependencies = mapDependencies2Path();
 		for(module in modules) {						
 			new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();

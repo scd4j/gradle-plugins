@@ -28,6 +28,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.wrapper.Wrapper
 
+import com.datamaio.scd4j.gradle.util.URLDownloader;
+
 /**
  *
  * @author Fernando Rubbo
@@ -41,13 +43,18 @@ class Scd4jPlugin implements Plugin<Project> {
     		scd4j
     	}
 		
-		// -- create scd4j extension
+		// -- create scd4j extensions
         project.extensions.create("scd4j", Scd4jExtension)
         project.scd4j.extensions.create("install", InstallNestedExtension)		
         project.scd4j.install.extensions.create("env", EnvNestedExtension)
 		project.scd4j.extensions.create("settings", SettingsNestedExtention)
 		project.scd4j.settings.extensions.create("linux", LinuxNestedExtention)
 		project.scd4j.settings.extensions.create("windows", WindowsNestedExtention)
+		
+		project.extensions.add('url', { url ->
+			def file = new URLDownloader().download(url, project);
+			return project.files(file)
+		});
 
 		// -- configure tools tasks
 		project.task('encrypt', type:EncryptPropertyTask){

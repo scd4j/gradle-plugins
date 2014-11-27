@@ -20,7 +20,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.6"
+  id "com.datamaio.scd4j" version "0.1.7"
 }
 
 repositories {
@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
 	// dependencies we desire to install - Must be in your own repo (my_repo in this case)
-	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip'
+	scd4j url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
 }
 
 scd4j {
@@ -38,8 +38,9 @@ scd4j {
 		modules = ["my_module_dir"] 	// should be any dir into modules dir
 		config = "my_config_file.conf"	// should be any property file into config dir. By convention we strongly suggest to put the extention .conf in the file
 		env {
-			prod = ["192.168.10.21"]		  	  	  // your production environment
-			test  = ["192.168.7.20", "192.168.7.21"]  // your test/stage environment
+			production = ["192.168.10.21"]		  	  	  // your production ips
+			staging    = ["192.168.10.21"]		  	  	  // your staging ips
+			testing    = ["192.168.7.20", "192.168.7.21"]  // your test/stage ips
 		}
 	}
 }
