@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j.hooks.module;
 
+import com.datamaio.scd4j.hooks.Action;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
@@ -36,6 +37,14 @@ public abstract class ModuleHook extends Hook {
 	protected String moduleDir;
 	
 	// ------ methods used by the framework only ----
+	
+	@Override
+	protected final void validateAction(Action action) {
+		if(!action.isValidForModuleHook()){
+			throw new RuntimeException("Module.hook has returned the invalid action '" + action 
+					+ "' at pre{...} script! Please, read Action javadoc for more information.");
+		}
+	}
 	
     /** Used only by {@link HookEvaluator} to set variables */
 	void setModuleDir(String moduleDir) {

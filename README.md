@@ -20,7 +20,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.5"
+  id "com.datamaio.scd4j" version "0.1.6"
 }
 
 repositories {
@@ -35,14 +35,13 @@ dependencies {
 
 scd4j {
 	install {
-		modules = ["my_module_dir"] 	// should be any dir into module dir
+		modules = ["my_module_dir"] 	// should be any dir into modules dir
 		config = "my_config_file.conf"	// should be any property file into config dir. By convention we strongly suggest to put the extention .conf in the file
 		env {
 			prod = ["192.168.10.21"]		  	  	  // your production environment
 			test  = ["192.168.7.20", "192.168.7.21"]  // your test/stage environment
 		}
 	}
-
 }
 ```
 

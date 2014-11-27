@@ -43,6 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
+import com.datamaio.scd4j.hooks.module.ModuleHook;
 
 /**
  * 
@@ -83,9 +84,10 @@ public class HookResolveTest {
 	
 	@Mock
 	Configuration conf;
-	private Hook hook = new Hook() {		
+	private Hook hook = new ModuleHook() {		
 		@Override
 		public Object run() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	};

@@ -317,7 +317,7 @@ public class EnvConfiguratorTest {
 				+ "\n	if (\"xyz\".equals(get(\"var\")))"
 				+ "\n		CONTINUE_INSTALLATION;"
 				+ "\n	else"
-				+ "\n		SKIP_INSTALLATION;"
+				+ "\n		CANCEL_INSTALLATION;"
 				+ "\n}").getBytes();
 	}
 	
