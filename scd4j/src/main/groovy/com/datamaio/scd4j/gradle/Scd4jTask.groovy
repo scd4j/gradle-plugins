@@ -83,7 +83,7 @@ class Scd4jTask extends DefaultTask {
 					println "============================"
 				}
 			} else if(console == null) {
-					//If console returns null it will open dialog for requesting the confirmation
+					//If console returns null it will open a dialog for requesting the confirmation
 					def ok = null;
 					def dialogButton = JOptionPane.YES_NO_OPTION;
 					def dialogResult =JOptionPane.showConfirmDialog (null, "Review the above config. Click YES to procceed and NO to abort: ","Warning",dialogButton);
