@@ -47,6 +47,18 @@ public class CentosCommand extends LinuxCommand {
 	}
 	
 	@Override
+	public void activeAtBoot(String serviceName) {
+		run("chkconfig --add " + serviceName +
+				" && chkconfig " + serviceName + " on " + 
+				" && chkconfig --list " + serviceName);
+	}
+	
+	@Override
+	public void deactiveAtBoot(String serviceName) {
+		run("chkconfig --del " + serviceName );
+	}
+	
+	@Override
 	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "-" + version : "");

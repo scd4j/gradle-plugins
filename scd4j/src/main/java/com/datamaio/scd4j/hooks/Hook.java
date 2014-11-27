@@ -23,7 +23,8 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALATION;
+import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
+import groovy.lang.Closure;
 import groovy.lang.Script;
 
 import java.net.InetAddress;
@@ -83,6 +84,9 @@ public abstract class Hook extends Script {
 	protected Map<String, String> props;	
 	protected Map<String, String> temporaryProps;
 	protected final Command command;
+	
+	private Closure<Action> pre;
+	private Closure<Void> post;
 
 	/** Default constructor */
 	public Hook(){
@@ -104,11 +108,19 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @return <code>CONTINUE_INSTALATION</code> to install the respective module or file,
-	 *         SKIP_INSTALATION otherwise. Default is <code>CONTINUE_INSTALATION</code>
+	 * @param closure closure containing pre-condition logic.<br>
+	 * 		Returning options are:
+	 * 		<ul>
+	 * 			<li><code>CONTINUE_INSTALLATION</code> to install the respective module or file,
+	 * 			<li><code>SKIP_INSTALLATION</code> otherwise. 
+	 * 		</ul>
+	 * 		Default is <code>CONTINUE_INSTALLATION</code>. I.e. if it returns nothing or <code>null</code>, the 
+	 * 		installation will proceed
 	 */
-	public Action pre() {return CONTINUE_INSTALATION;}
-	
+	protected void pre(Closure<Action> closure){
+		this.pre = closure;
+	}	
+
 	/**
 	 * Override this method whenever you need to:
 	 * <ul>
@@ -120,8 +132,12 @@ public abstract class Hook extends Script {
 	 *  <li> and others
 	 * </ul>
 	 * </ul>
+	 * 
+	 * @param closure closure containing post-condition logic.<br>
 	 */	
-	public void post() {}	
+	protected void post(Closure<Void> closure){
+		this.post = closure;
+	}
 
 	//---------------- init command delegates ---------------
 	
@@ -354,6 +370,11 @@ public abstract class Hook extends Script {
 	/**  Move a file or a directory */
 	public void mv(String from, String to) {
 		command.mv(from, to);
+	}
+	
+	/** DSL for {@link #ln(String, String)} */
+	public List<String> list(String path) {
+		return ls(path);
 	}
 	
 	/** List the files of a directory */
@@ -856,6 +877,30 @@ public abstract class Hook extends Script {
 	// --- install methods ---
 
 	/**
+	 * Configures a given service to start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void activeAtBoot(String serviceName) {
+		command.activeAtBoot(serviceName);
+	}
+
+	/**
+	 * Configures a given service to not start at system boot<br>
+	 * This method used default levels for each operational system
+	 * <p>
+	 * Note: Currently Linux only
+	 *   	
+	 * @param serviceName the name of the service
+	 */
+	public void deactiveAtBoot(String serviceName) {
+		command.deactiveAtBoot(serviceName);
+	}
+	
+	/**
 	 * Install or update a package.
 	 * <p>
 	 * This method is capable to install three types of packages depending on the parameter it receives:
@@ -1162,16 +1207,47 @@ public abstract class Hook extends Script {
 
 	// ------ methods used by the framework only ----
 	
-    /** Used only by {@link HookEvaluator} to set variables */
-	void setConf(Configuration conf) {
+    /**
+     * Not a public API.<br> 
+     * Used only by {@link HookEvaluator} to set variables 
+     */
+	final void setConf(Configuration conf) {
 		this.conf = conf;
 		this.envs = conf.getEnvironments();
 		this.props = conf.getProperties();
 		this.temporaryProps = conf.getTemporaryProperties();
 	}
 	
-	/** Used unically by {@link HookEvaluator} to cleanup transient properties */
-	void finish() {
+	
+	/**
+     * Not a public API.<br> 
+	 * Used unically by {@link HookEvaluator} to call the pre condition closure 
+	 */
+	final Action _pre() {
+		if (pre != null) {
+			Action action = pre.call();
+			if (action == null)
+				return CONTINUE_INSTALLATION;
+			return action;
+		}
+		return CONTINUE_INSTALLATION;
+	}	
+	
+	/**
+     * Not a public API.<br> 
+	 * Used unically by {@link HookEvaluator} to call the post condition closure 
+	 */
+	final void _post() {
+		if(post!=null){
+			post.call(); 
+		}
+	}	
+	
+	/**
+     * Not a public API.<br> 
+	 * Used unically by {@link HookEvaluator} to cleanup transient properties 
+	 */
+	final void _finish() {
 		temporaryProps.forEach((k, v) -> props.remove(k) );
 		temporaryProps.clear();
 	}

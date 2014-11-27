@@ -47,6 +47,16 @@ public class UbuntuCommand extends LinuxCommand {
 	}
 	
 	@Override
+	public void activeAtBoot(String serviceName) {
+		run("update-rc.d " + serviceName + " defaults");
+	}
+	
+	@Override
+	public void deactiveAtBoot(String serviceName) {
+		run("update-rc.d -f " + serviceName + " remove");
+	}
+	
+	@Override
 	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
 		String fullpack = pack + (version!=null? "=" + version : "");
