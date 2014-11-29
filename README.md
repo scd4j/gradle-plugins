@@ -23,11 +23,6 @@ plugins {
   id "com.datamaio.scd4j" version "0.1.7"
 }
 
-repositories {
-	mavenCentral()
-	maven {url my_repo}
-}
-
 dependencies {
 	// dependencies we desire to install - Must be in your own repo (my_repo in this case)
 	scd4j url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')

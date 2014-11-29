@@ -21,7 +21,7 @@ bintray {
 	pkg {
 		repo = 'maven'
 		name = 'SCD4J'
-		desc = 'Simple Continuous Delivery for Java and Groovy Developer'
+		desc = 'Simple Continuous Delivery for Java and Groovy Developers'
 		websiteUrl = 'https://github.com/scd4j/gradle-plugins'
 		issueTrackerUrl = 'https://github.com/scd4j/gradle-plugins/issues'
 		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
