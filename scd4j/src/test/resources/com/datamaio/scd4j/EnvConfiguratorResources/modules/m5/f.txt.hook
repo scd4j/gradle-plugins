@@ -3,5 +3,5 @@ pre {
 	if ("aaaaaa".equals(get("favlang")))	  
   		CONTINUE_INSTALLATION
 	else
-		SKIP_INSTALLATION
+		SKIP_FILE_INSTALLATION
 }
