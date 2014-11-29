@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j.hooks;
 
+import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;
 import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
 import groovy.lang.Closure;
 import groovy.lang.Script;
@@ -84,6 +85,9 @@ public abstract class Hook extends Script {
 	protected Map<String, String> props;	
 	protected Map<String, String> temporaryProps;
 	protected final Command command;
+	
+	protected Closure<Action> pre;
+	protected Closure<Void> post;
 
 	/** Default constructor */
 	public Hook(){
@@ -105,21 +109,19 @@ public abstract class Hook extends Script {
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @return <code>CONTINUE_INSTALLATION</code> to install the respective module or file,
-	 *         SKIP_INSTALLATION otherwise. Default is <code>CONTINUE_INSTALLATION</code>
+	 * @param closure closure containing pre-condition logic.<br>
+	 * 		Returning options are:
+	 * 		<ul>
+	 * 			<li><code>CONTINUE_INSTALLATION</code> to install the respective module or file,
+	 * 			<li><code>SKIP_INSTALLATION</code> otherwise. 
+	 * 		</ul>
+	 * 		Default is <code>CONTINUE_INSTALLATION</code>. I.e. if it returns nothing or <code>null</code>, the 
+	 * 		installation will proceed
 	 */
-	public Action pre() {
-		if(preClosure!=null){
-			return preClosure.call(); 
-		}
-		return CONTINUE_INSTALLATION;
-	}
-	
-	private Closure<Action> preClosure;
-	protected void pre(Closure<Action> preClosure){
-		this.preClosure = preClosure;
+	protected void pre(Closure<Action> closure){
+		this.pre = closure;
 	}	
-	
+
 	/**
 	 * Override this method whenever you need to:
 	 * <ul>
@@ -131,16 +133,11 @@ public abstract class Hook extends Script {
 	 *  <li> and others
 	 * </ul>
 	 * </ul>
+	 * 
+	 * @param closure closure containing post-condition logic.<br>
 	 */	
-	public void post() {
-		if(postClosure!=null){
-			postClosure.call(); 
-		}
-	}	
-	
-	private Closure<Void> postClosure;
-	protected void post(Closure<Void> postClosure){
-		this.postClosure = postClosure;
+	protected void post(Closure<Void> closure){
+		this.post = closure;
 	}
 
 	//---------------- init command delegates ---------------
@@ -1222,11 +1219,47 @@ public abstract class Hook extends Script {
 		this.temporaryProps = conf.getTemporaryProperties();
 	}
 	
-    /**
+	
+	/**
      * Not a public API.<br> 
-	 * Used unically by {@link HookEvaluator} to cleanup transient properties 
+	 * Used only by {@link HookEvaluator} to call the pre condition closure 
 	 */
-	void finish() {
+	final Action _pre(){
+		if (pre != null) {
+			Action action = pre.call();
+			if (action == null) { 
+				// pre{} does not return anything				
+				return CONTINUE_INSTALLATION;
+			} 
+			
+			validateAction(action);
+			return action;	
+		}
+		
+		// pre{} was not defined
+		return CONTINUE_INSTALLATION;
+	}
+
+	/**
+     * Not a public API.<br>   
+	 */
+	protected abstract void validateAction(Action action);
+	
+	/**
+     * Not a public API.<br> 
+	 * Used only by {@link HookEvaluator} to call the post condition closure 
+	 */
+	final void _post() {
+		if(post!=null){
+			post.call(); 
+		}
+	}	
+	
+	/**
+     * Not a public API.<br> 
+	 * Used only by {@link HookEvaluator} to cleanup transient properties 
+	 */
+	final void _finish() {
 		temporaryProps.forEach((k, v) -> props.remove(k) );
 		temporaryProps.clear();
 	}

@@ -23,13 +23,18 @@
  */
 package com.datamaio.scd4j.gradle
 
+import javax.swing.JOptionPane;
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.tasks.TaskAction
 
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.ConfEnvironments
 import com.datamaio.scd4j.EnvConfigurator;
+
+import groovy.swing.SwingBuilder
 
 /**
  * Task used to start SCD4J
@@ -39,6 +44,7 @@ import com.datamaio.scd4j.EnvConfigurator;
  * <p> 
  *
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 class Scd4jTask extends DefaultTask {
 	
@@ -54,17 +60,17 @@ class Scd4jTask extends DefaultTask {
 		println "Pack Name     : ${project.archivesBaseName} "
 		println "Pack Version  : ${project.version} "
 		println "====== Environment Configuration ======"
-        println "IP PROD LIST  : ${env.prod}" 
-        println "IP HOM  LIST  : ${env.hom}" 
-        println "IP TEST LIST  : ${env.test}" 
-		println "IP DES  LIST  : [ANY OTHER]"
+        println "IP PRODUCTION LIST : ${env.production}" 
+        println "IP STAGIN  LIST  	: ${env.staging}" 
+        println "IP TESTING LIST  	: ${env.testing}" 
+		println "IP DESENV  LIST  	: [ANY OTHER]"
 		println "====== Instalation Configuration ======"
         println "CONFIG FILE   : $config" 
         println "MODULE DIRS   : $modules" 
 		println "=================================================================="
 		
 		if( Input.validate(modules, config) ) {
-			def console = System.console()			
+			def console = System.console()
 			if (assumeYes(project)) {
 				run(env, modules, config)
 			} else if(console) {
@@ -77,13 +83,16 @@ class Scd4jTask extends DefaultTask {
 					println "============================"
 				}
 			} else {
-				// Running inside of eclipse, for example..
-				println "DEV ONLY: Cannot get console - Will keep processing, but will not accept cryptography in any configuration property"
-				def environments = new ConfEnvironments(env.prod, env.hom, env.test)
-				def dependencies = mapDependencies2Path();
-				for(module in modules) {
-					new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
-				}
+					//If console returns null it will open dialog for requesting the confirmation
+					def msg = "Review the above config. Click YES to procceed and NO to abort: "
+					def option =JOptionPane.showConfirmDialog (null, msg ,"Warning", JOptionPane.YES_NO_OPTION);
+					if(option == JOptionPane.YES_OPTION){
+						run(env, modules, config)
+					} else {
+						println "============================"
+						println "=== Instalation aborted! ==="
+						println "============================"
+					}
 			}
 		} else {
 			println "============================"
@@ -93,7 +102,7 @@ class Scd4jTask extends DefaultTask {
     }
 
 	def run(env, modules, config) {
-		def environments = new ConfEnvironments(env.prod, env.hom, env.test)
+		def environments = new ConfEnvironments(env.production, env.staging, env.testing)
 		def dependencies = mapDependencies2Path();
 		for(module in modules) {						
 			new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();

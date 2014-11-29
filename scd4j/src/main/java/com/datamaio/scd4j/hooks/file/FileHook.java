@@ -23,10 +23,13 @@
  */
 package com.datamaio.scd4j.hooks.file;
 
+import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.datamaio.scd4j.hooks.Action;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
@@ -134,6 +137,19 @@ public abstract class FileHook extends Hook {
 	}
 
 	// ------ methods used by the framework only ----
+	
+	@Override
+	protected final void validateAction(Action action) {
+		if (CANCEL_INSTALLATION.equals(action)){
+			throw new RuntimeException("Installation was cancelled!");
+		}
+		
+		if(!action.isValidForFileHook()){
+			throw new RuntimeException("File hook '" + src 
+					+ "' has returned the invalid action '" + action 
+					+ "' at pre{...} script! Please, read Action javadoc for more information.");
+		}
+	}
 	
 	/** Used only by {@link HookEvaluator} to set variables */
 	void setSrc(String srcPath) {

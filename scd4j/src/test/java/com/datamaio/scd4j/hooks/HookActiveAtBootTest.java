@@ -46,6 +46,7 @@ import com.datamaio.junit.IsLinux;
 import com.datamaio.junit.RunIfRule;
 import com.datamaio.junit.RunIfRule.RunIf;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.hooks.module.ModuleHook;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
@@ -64,7 +65,7 @@ public class HookActiveAtBootTest {
 	@Mock
 	Configuration conf;
 	@Spy
-	private Hook hook = new Hook() {		
+	private Hook hook = new ModuleHook() {		
 		@Override
 		public Object run() {
 			return null;
@@ -140,7 +141,7 @@ public class HookActiveAtBootTest {
 	
 	private static Path createEnv() throws Exception{
 		Path tmp = createTempDir();
-		FileUtils.copy(Paths.get(HookInstallUninstallTest.class.getResource("/com/datamaio/scd4j/hooks/activeatboot").toURI()), tmp);		
+		FileUtils.copy(Paths.get(HookActiveAtBootTest.class.getResource("/com/datamaio/scd4j/hooks/activeatboot").toURI()), tmp);		
 		return tmp;
 	}
 
