@@ -67,7 +67,12 @@ dependencies {
 	compile gradleApi(),localGroovy()
 	compile 'org.jasypt:jasypt:1.9.2', 
 			'org.codehaus.groovy:groovy-all:2.3.6',
-			'commons-configuration:commons-configuration:+'
+			'commons-configuration:commons-configuration:+',
+			// other template engines
+			'com.github.spullara.mustache.java:compiler:+',
+			'com.github.jknack:handlebars:+',
+			'org.apache.velocity:velocity:+'
+			
     testCompile 'junit:junit:4.+',
 				'org.mockito:mockito-core:+'
 }

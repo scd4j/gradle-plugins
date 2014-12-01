@@ -24,61 +24,62 @@
 package com.datamaio.scd4j.tmpl.impl;
 
 
-import groovy.text.SimpleTemplateEngine;
-
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.datamaio.scd4j.tmpl.Template;
 import com.datamaio.scd4j.tmpl.TemplateEngine;
 import com.datamaio.scd4j.tmpl.Writable;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+
 
 /**
- * Template documentation at http://groovy.codehaus.org/Groovy+Templates
- * <p>
- * Issue: https://jira.codehaus.org/browse/GROOVY-2939
- * <br>
- * Using GroovyTemplate, we need to encode in .tmpl files:
- * <ul>
- * 	<li> all '\' as '\\'
- * 	<li> all '$' as '\$' (not because of the issue, but because it is a char to execute the EL)
- * </ul>  
+ * Template documentation at https://github.com/spullara/mustache.java
+ * 
+ * @author Fernando Rubbo
  */
-public class GroovyTemplate extends TemplateEngine implements Template, Writable {
-	public static final String NAME = "groovy";
+public class MustacheTemplate extends TemplateEngine implements Template, Writable {
+	public static final String NAME = "mustache";
 	
-	private final SimpleTemplateEngine engine = new SimpleTemplateEngine();
-	private groovy.text.Template template;
-	private groovy.lang.Writable writable; 
+	private static final MustacheFactory FACTORY = new DefaultMustacheFactory();
+	private Mustache mustache; 		
+	private Map<String, ? extends Object> binding;
 	
 	@Override
 	public Template createTemplate(Path path) {
 		try {
-			this.template = engine.createTemplate(path.toFile());
-		} catch (Exception e) {
+			Reader reader = new FileReader(path.toFile());
+			this.mustache = FACTORY.compile(reader, path.toString());
+			return this;
+		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		return this;
 	}
 
 	@Override
 	public Writable make() {
-		this.writable = template.make();
+		this.binding = new HashMap<>();
 		return this;
 	}
 
 	@Override
 	public Writable make(Map<String, ? extends Object> binding) {
-		this.writable = template.make(binding);
+		this.binding = binding;
 		return this;
 	}
 
 	@Override
 	public Writer writeTo(Writer out){
 		try {
-			Writer to = writable.writeTo(out);
+			Writer to = mustache.execute(out, binding);
 			to.flush();
 			return to;
 		} catch (IOException e) {

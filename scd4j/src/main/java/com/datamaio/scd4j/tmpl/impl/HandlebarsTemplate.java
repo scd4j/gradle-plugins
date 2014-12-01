@@ -24,39 +24,36 @@
 package com.datamaio.scd4j.tmpl.impl;
 
 
-import groovy.text.SimpleTemplateEngine;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.datamaio.scd4j.tmpl.Template;
 import com.datamaio.scd4j.tmpl.TemplateEngine;
 import com.datamaio.scd4j.tmpl.Writable;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.io.URLTemplateSource;
+
 
 /**
- * Template documentation at http://groovy.codehaus.org/Groovy+Templates
- * <p>
- * Issue: https://jira.codehaus.org/browse/GROOVY-2939
- * <br>
- * Using GroovyTemplate, we need to encode in .tmpl files:
- * <ul>
- * 	<li> all '\' as '\\'
- * 	<li> all '$' as '\$' (not because of the issue, but because it is a char to execute the EL)
- * </ul>  
+ * Template documentation at https://github.com/jknack/handlebars.java
+ * 
+ * @author Fernando Rubbo
  */
-public class GroovyTemplate extends TemplateEngine implements Template, Writable {
-	public static final String NAME = "groovy";
-	
-	private final SimpleTemplateEngine engine = new SimpleTemplateEngine();
-	private groovy.text.Template template;
-	private groovy.lang.Writable writable; 
-	
+public class HandlebarsTemplate extends TemplateEngine implements Template, Writable {
+	public static final String NAME = "handlebars";
+
+	private static final Handlebars HANDLEBARS = new Handlebars();
+	private com.github.jknack.handlebars.Template template;
+	private Map<String, ? extends Object> binding;
+		
 	@Override
 	public Template createTemplate(Path path) {
 		try {
-			this.template = engine.createTemplate(path.toFile());
+			this.template = HANDLEBARS.compile(new URLTemplateSource(path.toString(), path.toUri().toURL()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -65,22 +62,23 @@ public class GroovyTemplate extends TemplateEngine implements Template, Writable
 
 	@Override
 	public Writable make() {
-		this.writable = template.make();
+		this.binding = new HashMap<>();
 		return this;
 	}
 
 	@Override
 	public Writable make(Map<String, ? extends Object> binding) {
-		this.writable = template.make(binding);
+		this.binding = binding;
 		return this;
 	}
 
 	@Override
 	public Writer writeTo(Writer out){
 		try {
-			Writer to = writable.writeTo(out);
-			to.flush();
-			return to;
+			Context context = Context.newContext(binding);
+			template.apply(context, out);
+			out.flush();
+			return out;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
