@@ -125,6 +125,18 @@ public class CommandTest {
 		assertThat(exists(PathUtils.get(toDir, file1.getFileName())), is(true));
 		assertThat(exists(PathUtils.get(toDir, file2.getFileName())), is(true));
 	}
+	
+	@Test
+	public void exist() throws Exception {
+		Path fromDir = Files.createTempDirectory(root, "fromDir");
+		assertThat(Command.get().exists(fromDir.toString()), is(true));
+	}
+	
+	@Test
+	public void noExist() throws Exception {
+		Path fromDir = Files.createTempDirectory(root, "fromDir");
+		assertThat(Command.get().exists(fromDir.toString()+File.separator+"invalid"), is(false));
+	}
 
 	@Test
 	public void mvFile() throws Exception {
