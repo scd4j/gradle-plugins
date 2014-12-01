@@ -59,4 +59,17 @@ public class WindowsCommandTest {
 		Path img = PathUtils.get(targetDir, "/dir/subdir/img.jpg");
 		assertThat(exists(img), is(true));
 	}
+	
+	@Test
+	@RunIf(IsWindows.class)
+	public void installLocalPack() throws Exception {
+		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/copy.bat");
+		Path run = Paths.get(urlRun.toURI());
+		Path fromDir = Files.createTempDirectory(root, "fromDir");
+		Path cpfile = createTempFile(fromDir, "FILE_1", ".tmp");
+		Path toDir = Files.createTempDirectory(root, "toDir");
+		Command.get().installLocalPack(run.toString() +" "+cpfile.toString() + " "+toDir.toString());
+		
+		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
+	}
 }
