@@ -29,7 +29,6 @@ import static com.datamaio.scd4j.conf.Configuration.HOOK_SUFFIX;
 import static com.datamaio.scd4j.conf.Configuration.TEMPLATE_SUFFIX;
 import static java.nio.file.Files.exists;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import groovy.text.SimpleTemplateEngine;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,6 +48,8 @@ import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.file.FileHookEvaluator;
 import com.datamaio.scd4j.hooks.module.ModuleHookEvaluator;
+import com.datamaio.scd4j.tmpl.TemplateEngine;
+import com.datamaio.scd4j.tmpl.TemplateEngineConfig;
 import com.datamaio.scd4j.util.BackupHelper;
 import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.PathHelper;
@@ -242,10 +243,11 @@ public class EnvConfigurator {
 	 * {@link Hook#pre()} and {@link Hook#post()}
 	 */
 	protected void copyFiles() {
-		Path module = conf.getModuleDir();
+		final Path module = conf.getModuleDir();
 		final Map<String, String> properties = conf.getProperties();
 		
-		final SimpleTemplateEngine engine = new SimpleTemplateEngine();
+		final TemplateEngineConfig engineConfig = new TemplateEngineConfig("groovy");
+		final TemplateEngine engine = TemplateEngine.get(engineConfig);
 		final Path target = pathHelper.getTarget(module);
 		
 		FileUtils.copy(new CopyVisitor(module, target, "*" + DELETE_SUFFIX){
@@ -280,7 +282,7 @@ public class EnvConfigurator {
 						File resolvedTargetFile = new File(target.toString().replace(TEMPLATE_SUFFIX, ""));
 						backupHelper.backupFile(resolvedTargetFile.toPath());
 					    try (Writer out = new BufferedWriter(new FileWriter(resolvedTargetFile))) {
-							engine.createTemplate(source.toFile())
+							engine.createTemplate(source)
 								.make(properties)
 								.writeTo(out);
 						} catch (Exception e) {

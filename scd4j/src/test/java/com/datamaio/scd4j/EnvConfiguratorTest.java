@@ -31,9 +31,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import groovy.lang.Writable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,245 +74,270 @@ public class EnvConfiguratorTest {
 		Path fs = paths[1];
 		Path module = paths[2];
 		
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir2")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
-		
-		new EnvConfigurator(new HashMap<>(), module).deleteFiles();
-
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir2")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
-		
-		FileUtils.delete(root);
+		try {
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir2")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
+			
+			new EnvConfigurator(new HashMap<>(), module).deleteFiles();
+	
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir2")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
 
 	@Test
-	public void testSimpleCopy() throws Exception {
+	public void testCopyWithoutTmpl() throws Exception {
 		Path[] paths = createEnv(2);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
-		
-		new EnvConfigurator(new HashMap<>(), module).copyFiles();		
-
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
-		
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-
-		FileUtils.delete(root);
+		try {
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
+			
+			new EnvConfigurator(new HashMap<>(), module).copyFiles();		
+	
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
+			
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
 	
 	@Test
-	public void testComplexCopy() throws Exception {
+	public void testCopyWithTmpl() throws Exception {
 		Path[] paths = createEnv(3);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Path result = paths[3];
 		
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
-		
-		Map<String, String> ext = new HashMap<>();
-		ext.put("favlang", "aaaaaa");
-		ext.put("favlang2", "bbbbbb");
-		new EnvConfigurator(ext, module).copyFiles();		
-
-		checkResult(fs, result, "dir1/f1.txt");
-		checkResult(fs, result, "dir2/dir21/f21.txt");
-		checkResult(fs, result, "f.txt");
-		checkResult(fs, result, "ff.txt");
-		checkResult(fs, result, "dir3/f3.txt");
-
-		FileUtils.delete(root);
+		try {
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
+			
+			Map<String, String> ext = new HashMap<>();
+			ext.put("favlang", "aaaaaa");
+			ext.put("favlang2", "bbbbbb");
+			new EnvConfigurator(ext, module).copyFiles();		
+	
+			checkResult(fs, result, "dir1/f1.txt");
+			checkResult(fs, result, "dir2/dir21/f21.txt");
+			checkResult(fs, result, "f.txt");
+			checkResult(fs, result, "ff.txt");
+			checkResult(fs, result, "dir3/f3.txt");
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
 	
 
 	@Test
-	public void testExec() throws Exception {
+	public void testExecWithTmplAndDelete() throws Exception {
 		Path[] paths = createEnv(4);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Path result = paths[3];
 		
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
-		
-		Map<String, String> ext = new HashMap<>();
-		ext.put("favlang", "aaaaaa");
-		ext.put("favlang2", "bbbbbb");
-		new EnvConfigurator(ext, module).exec();		
-
-		checkResult(fs, result, "dir1/f1.txt");
-		checkResult(fs, result, "dir2/dir21/f21.txt");
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
-		checkResult(fs, result, "f.txt");
-		checkResult(fs, result, "ff.txt");
-		
-		FileUtils.delete(root);
+		try {
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir2/f2.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
+			
+			Map<String, String> ext = new HashMap<>();
+			ext.put("favlang", "aaaaaa");
+			ext.put("favlang2", "bbbbbb");
+			new EnvConfigurator(ext, module).exec();		
+	
+			checkResult(fs, result, "dir1/f1.txt");
+			checkResult(fs, result, "dir2/dir21/f21.txt");
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
+			checkResult(fs, result, "f.txt");
+			checkResult(fs, result, "ff.txt");
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
 	
 	@Test
-	public void testExecWithPreCondition() throws Exception {
+	public void testExecWithFilePreCondition() throws Exception {
 		Path[] paths = createEnv(5);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-		
-		Map<String, String> ext = new HashMap<>();
-		ext.put("favlang", "aaaaaa");
-		new EnvConfigurator(ext, module).exec();		
-
-		assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-		
-		FileUtils.delete(root);
+		try{ 
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+			
+			Map<String, String> ext = new HashMap<>();
+			ext.put("favlang", "aaaaaa");
+			new EnvConfigurator(ext, module).exec();		
+	
+			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+		} finally {		
+			FileUtils.delete(root);
+		}
 	}
 	
 	@Test
-	public void testExecWithPostCondition() throws Exception {
+	public void testExecWithFilePostCondition() throws Exception {
 		Path[] paths = createEnv(6);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));	
-		Set<PosixFilePermission> before = null;
-		
-		if (!isWindows()) {
-			before = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+		try {
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));	
+			Set<PosixFilePermission> before = null;
+			
+			if (!isWindows()) {
+				before = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+			}
+			
+			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+			
+			Map<String, String> ext = new HashMap<>();
+			ext.put("favlang", "aaaaaa");
+			ext.put("favlang2", "bbbbbb");
+			new EnvConfigurator(ext, module).exec();		
+	
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
+			
+			if (!isWindows()) {
+				Set<PosixFilePermission> after = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
+				assertThat(after, is(not(equalTo(before))));
+			}
+			assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt.postexecuted")), is(true));
+		} finally {		
+			FileUtils.delete(root);
 		}
-		
-		assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-		
-		Map<String, String> ext = new HashMap<>();
-		ext.put("favlang", "aaaaaa");
-		ext.put("favlang2", "bbbbbb");
-		new EnvConfigurator(ext, module).exec();		
-
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		
-		if (!isWindows()) {
-			Set<PosixFilePermission> after = Files.getPosixFilePermissions(PathUtils.get(fs, "f.txt"));
-			assertThat(after, is(not(equalTo(before))));
-		}
-		assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt.postexecuted")), is(true));
-		
-		FileUtils.delete(root);
 	}
 	
 	@Test
-	public void testExecWithExecPreCondition() throws Exception {
+	public void testExecWithModulePreCondition() throws Exception {
 		Path[] paths = createEnv(7);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPre()); 
-				
-		Map<String, String> ext = new HashMap<>();
-		ext.put("var", "var errada");
-		new EnvConfigurator(ext, module).exec();		
 
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
-		
-		FileUtils.delete(root);
+		try {
+			Map<String, String> ext = new HashMap<>();
+			ext.put("var", "var errada");
+			new EnvConfigurator(ext, module).exec();		
+	
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
+		} finally {		
+			FileUtils.delete(root);
+		}
 	}
 	
 	@Test
-	public void testExecWithExecPostCondition() throws Exception {
+	public void testExecWithExecModulePostCondition() throws Exception {
 		Path[] paths = createEnv(8);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPost()); 
-				
-		Map<String, String> ext = new HashMap<>();
-		new EnvConfigurator(ext, module).exec();		
 
-		assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
-		assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
-		assertThat(exists(PathUtils.get(module, "Module.postexecuted")), is(true));		
-		
-		FileUtils.delete(root);
+		try {
+			Map<String, String> ext = new HashMap<>();
+			new EnvConfigurator(ext, module).exec();		
+	
+			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
+			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
+			assertThat(exists(PathUtils.get(module, "Module.postexecuted")), is(true));		
+		} finally {		
+			FileUtils.delete(root);
+		}
 	}
 	
 	/**
-	 * Make sure the behavior will not be changed in the future. 
-	 *    Issue: https://jira.codehaus.org/browse/GROOVY-2939
-	 *    Because of this issue the creators do not want to fix, we need to encode in .tmpl files:
-	 *      - all '\' as '\\' 
-	 *      - all '$' as '\$' (not because of the issue, but because it is a char to execute the EL)  
-	 * 
-	 * If we change this, it should be configurable
+	 * Issue: https://jira.codehaus.org/browse/GROOVY-2939
+	 * Using GroovyTemplate, we need to encode in .tmpl files:
+	 * - all '\' as '\\' 
+	 * - all '$' as '\$' (not because of the issue, but because it is a char to execute the EL)  
 	 */
 	@Test
-	public void testComplexTmplFiles() throws Exception {
+	public void testGroovyTmplFilesWithSpecialChars() throws Exception {
 		Path[] paths = createEnv(9);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Path result = paths[3];
 		
-		assertThat(exists(PathUtils.get(fs, "f1.txt")), is(false));
-		
-		Map<String, String> ext = new HashMap<>();
-		new EnvConfigurator(ext, module).exec();		
-
-		assertThat(exists(PathUtils.get(fs, "f1.txt")), is(true));
-		checkResult(fs, result, "f1.txt");
-		
-		FileUtils.delete(root);
+		try {
+			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(false));
+			
+			Map<String, String> ext = new HashMap<>();
+			new EnvConfigurator(ext, module).exec();		
+	
+			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(true));
+			checkResult(fs, result, "f1.txt");
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
 	
-	
+	/**
+	 * Issue: https://jira.codehaus.org/browse/GROOVY-2939
+	 * Using GroovyTemplate, we need to encode in .tmpl files:
+	 * - all '\' as '\\' 
+	 * - all '$' as '\$' (not because of the issue, but because it is a char to execute the EL)  
+	 */	
 	@Test
-	public void testSubstitutionProperty() throws IOException, URISyntaxException {
+	public void testGroovyTmplFilesWithElExpression() throws IOException, URISyntaxException {
 		Path[] paths = createEnv(10);
 		Path root = paths[0];
 		Path fs = paths[1];
 		Path module = paths[2];
 		Path result = paths[3];
 		
-		Map<String, String> ext = new HashMap<>();
-		ext.put("test", "TESTADO!");
-		new EnvConfigurator(ext, module).exec();
-		assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
-		checkResult(fs, result, "dir1/f10.txt");
-		FileUtils.delete(root);
+		try {
+			Map<String, String> ext = new HashMap<>();
+			ext.put("test", "TESTADO!");
+			new EnvConfigurator(ext, module).exec();
+			assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
+			checkResult(fs, result, "dir1/f10.txt");
+		} finally {
+			FileUtils.delete(root);
+		}
 	}
+	
+	// ------------ private methods ---------
 	
 	private byte[] buildModuleHookPre() {
 		return ("pre {"
