@@ -16,9 +16,11 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.datamaio.junit.IsWindows;
+import com.datamaio.junit.RunIfRule;
 import com.datamaio.junit.RunIfRule.RunIf;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
@@ -31,6 +33,9 @@ import com.datamaio.scd4j.util.io.ZipUtilsTest;
  */
 public class WindowsCommandTest {
 	private Path root;
+	
+	@Rule
+	public RunIfRule rule = new RunIfRule();
 	
 	@Before
 	public void setup() throws IOException {
