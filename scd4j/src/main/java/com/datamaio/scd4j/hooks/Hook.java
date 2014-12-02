@@ -198,8 +198,8 @@ public abstract class Hook extends Script {
 	}
 
 	/** 
-	 * Creates a group of users.
-	 * 
+	 * Creates a group of users. <br /> 
+	 * Note: Currently Linux only	 * 
 	 * @param group The name of the group.
 	 */
 	public void groupadd(final String group) {
@@ -207,66 +207,68 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Creates a group of users with options.
-	 * <p>
-	 * Note: Currently Linux only
+	 * Creates a group of users with options. <br /> 
+	 * Note: Currently Linux only.
 	 * 
-	 * @param group the name of the group
-	 * @param options the same options you would like to use in the command line
+	 * @param group The name of the group.
+	 * @param options The same options you would like to use in the command line
 	 */
 	public void groupadd(final String group, final String options) {
 		command.groupadd(group, options);
 	}
 
 	/** 
-	 * Creates an user
-	 * <p>
-	 * Note: Currently Linux only
+	 * Creates an user. <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param user the user name
+	 * @param User The user name.
 	 */
 	public void useradd(final String user) {
 		command.useradd(user);
 	}
 
 	/**
-	 * Creates an user with options.
-	 * <p>
-	 * Note: Currently Linux only
+	 * Creates an user with options. <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param user the user name
-	 * @param options the same options you would like to use in the command line
+	 * @param user The user name.
+	 * @param options The same options you would like to use in the command line.
 	 */
 	public void useradd(final String user, final String options) {
 		command.useradd(user, options);
 	}
 
 	/**
-	 * Sets the user password
-	 * <p>
-	 * Iportant Notes:
+	 * Sets the user password.
+	 * <br />
+	 * <br />
+	 * Important Notes:
 	 * <ol>
-	 * 	<li>Currently Linux only<br>
-	 * 	<li>For prod environments it is a good practice to encrypt passwords in order to ensure that non authorized 
-	 * 	people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>. <br>
-	 * 	To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
-	 * 	more interested in those which show up under <code>'Scd4j Tools tasks'</code> group<br>
-	 * 	<li>In Linux, if SELinux is turned on, thi execution will fail
+	 * 		<li>Currently Linux only;</li>
+	 * 		<li>For Production environments it is a good practice to encrypt passwords in order to ensure that non authorized 
+	 * 		people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>; <br />
+	 * 		To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
+	 * 		more interested in those which show up under <code>'Scd4j Tools tasks'</code> group
+	 * 		<li>In Linux, if SELinux is turned on, this execution will fail.</li>
 	 * </ol>
+	 * 
+	 * @param user The user name.
+	 * @param passwd User's password.
 	 */
 	public void passwd(final String user, final String passwd) {
 		command.passwd(user, passwd);
 	}
 
 	/** 
-	 * Changes the Posix File Permissions<br>
-	 * <p>
-	 * Note: Linux only. On windows it will do nothing
+	 * Changes the POSIX file permissions.
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param mode is the posix definition, ex: "777"
-	 * @param file is the file which we would like to change the permissions 
+	 * @param mode Is the POSIX definition (ex: "777").
+	 * @param file Is the file which we would like to change the permissions.
 	 */
-	public void chmod(String mode, String file) {
+	public void chmod(final String mode, final String file) {
 		command.chmod(mode, file);
 	}
 

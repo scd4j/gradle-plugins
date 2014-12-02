@@ -122,6 +122,8 @@ public class WindowsCommand extends Command {
 	@Override
 	public void chmod(String mode, String file) {
 		// do nothing
+		// TODO - Look at: http://technet.microsoft.com/en-us/library/bb490872.aspx
+		// TODO - Look at: http://technet.microsoft.com/en-us/library/cc753525%28WS.10%29.aspx
 	}
 
 	@Override
@@ -169,7 +171,8 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void useradd(String user) {
-		// do nothing
+		// TODO - Can use this: net user UserName password /add. Look at: http://support.microsoft.com/kb/251394
+		// This was tested in Windows 7 and worked...
 	}
 
 	@Override
