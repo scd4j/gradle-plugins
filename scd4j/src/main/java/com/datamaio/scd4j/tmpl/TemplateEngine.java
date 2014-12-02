@@ -25,10 +25,10 @@ package com.datamaio.scd4j.tmpl;
 
 import java.nio.file.Path;
 
-import com.datamaio.scd4j.tmpl.impl.GroovyTemplate;
-import com.datamaio.scd4j.tmpl.impl.HandlebarsTemplate;
-import com.datamaio.scd4j.tmpl.impl.MustacheTemplate;
-import com.datamaio.scd4j.tmpl.impl.VelocityTemplate;
+import com.datamaio.scd4j.tmpl.impl.GroovyTemplateEngine;
+import com.datamaio.scd4j.tmpl.impl.HandlebarsTemplateEngine;
+import com.datamaio.scd4j.tmpl.impl.MustacheTemplateEngine;
+import com.datamaio.scd4j.tmpl.impl.VelocityTemplateEngine;
 
 /**
  * @author Fernando Rubbo
@@ -36,14 +36,14 @@ import com.datamaio.scd4j.tmpl.impl.VelocityTemplate;
 public abstract class TemplateEngine {
 	
 	public static TemplateEngine get(TemplateEngineConfig conf) {
-		if(GroovyTemplate.NAME.equalsIgnoreCase(conf.getName())){
-			return new GroovyTemplate();
-		} else if(HandlebarsTemplate.NAME.equalsIgnoreCase(conf.getName())){
-			return new HandlebarsTemplate();
-		} else if(MustacheTemplate.NAME.equalsIgnoreCase(conf.getName())){
-			return new MustacheTemplate();
-		} else if(VelocityTemplate.NAME.equalsIgnoreCase(conf.getName())){
-			return new VelocityTemplate();
+		if(GroovyTemplateEngine.NAME.equalsIgnoreCase(conf.getName())){
+			return new GroovyTemplateEngine();
+		} else if(HandlebarsTemplateEngine.NAME.equalsIgnoreCase(conf.getName())){
+			return new HandlebarsTemplateEngine();
+		} else if(MustacheTemplateEngine.NAME.equalsIgnoreCase(conf.getName())){
+			return new MustacheTemplateEngine();
+		} else if(VelocityTemplateEngine.NAME.equalsIgnoreCase(conf.getName())){
+			return new VelocityTemplateEngine();
 		}
 		throw new RuntimeException("Templete engine '" + conf.getName() 
 				+ "' not found! Check options in package 'com.datamaio.scd4j.tmpl.impl'");
