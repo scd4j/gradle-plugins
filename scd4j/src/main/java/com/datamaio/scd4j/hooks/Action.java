@@ -24,15 +24,15 @@
 package com.datamaio.scd4j.hooks;
 
 /**
- * Actions taken during pre Module and File installations
+ * Actions taken during pre Module and File installations.
  * 
  * @author Fernando Rubbo
  */
 public enum Action {
 	/**
-	 * Keep executing the installation
+	 * Keep executing the installation.
 	 * <br>
-	 * Can be used in both Module and File Hooks
+	 * Can be used in both Module and File Hooks.
 	 */
 	CONTINUE_INSTALLATION,
 	/**
@@ -42,13 +42,13 @@ public enum Action {
 	 * <br>
 	 * INPORTANT: although it can be used in File Hooks we strongly recommend
 	 * not to do it because this option abruptly stops the installation. Prefer
-	 * use this <code>CANCEL_INSTALLATION</code> in Module Hooks
+	 * use this <code>CANCEL_INSTALLATION</code> in Module Hooks.
 	 */
 	CANCEL_INSTALLATION, 
 	/**
-	 * Skip current file, but Keep executing the installation
+	 * Skip current file, but keep executing the installation.
 	 * <br>
-	 * Can be used only in File Hooks 
+	 * Can be used only in File Hooks.
 	 */
 	SKIP_FILE_INSTALLATION;
 	

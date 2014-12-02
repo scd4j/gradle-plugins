@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;
 import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
 import groovy.lang.Closure;
 import groovy.lang.Script;
@@ -59,7 +58,7 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
 
 /**
  * This class is the "father" of all hook scripts. A hook script is where you
- * can put complex configuration/installation logic. In scd4j we have two types of
+ * can put complex configuration/installation logic. In SCD4J we have two types of
  * hooks:
  * <ol>
  * <li> {@link ModuleHook}: one per module (optional);
@@ -68,8 +67,8 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
  * <p>
  * This class publishes the following:
  * <ul>
- * <li> {@link #pre()} and {@link #post()} methods to be overriden in order to
- * define hooks semantics, pre and post respectively;
+ * <li> {@link #pre()} and {@link #post()} methods to be overridden in order to
+ * define hooks semantics, pre (before) and post (after) respectively;
  * <li> Delegate and helper functions to be used in the {@link #pre()} and
  * {@link #post()} implementation.
  * </ul>
@@ -84,8 +83,7 @@ public abstract class Hook extends Script {
 	protected ConfEnvironments envs;
 	protected Map<String, String> props;	
 	protected Map<String, String> temporaryProps;
-	protected final Command command;
-	
+	protected final Command command;	
 	protected Closure<Action> pre;
 	protected Closure<Void> post;
 
@@ -99,24 +97,17 @@ public abstract class Hook extends Script {
 	/**
 	 * Override this method whenever you need to:
 	 * <ul>
-	 * <li>Conditionally install a module or a file;
-	 * <li>Execute any programming logic before installing a module or a file. For example:
-	 * <ul>
-	 *  <li> Execute different logic according to the environment in which you are running on (dev, test, hom, prod);
-	 *  <li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOS, Windows);
-	 * 	<li> Stop a service (sometimes required to update a file);
-	 *  <li> and others...
-	 * </ul>
+	 * 		<li>Conditionally install a module or a file;
+	 * 		<li>Execute any programming logic before installing a module or a file. For example:
+	 * 		<ul>
+	 * 			<li> Execute different logic according to the environment in which you are running on (dev, testing, staging and/or production);
+	 * 			<li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOS, Windows);
+	 * 			<li> Stop a service (sometimes required to update a file);
+	 * 			<li> and others...
+	 * 		</ul>
 	 * </ul>
 	 * 
-	 * @param closure closure containing pre-condition logic.<br>
-	 * 		Returning options are:
-	 * 		<ul>
-	 * 			<li><code>CONTINUE_INSTALLATION</code> to install the respective module or file,
-	 * 			<li><code>SKIP_INSTALLATION</code> otherwise. 
-	 * 		</ul>
-	 * 		Default is <code>CONTINUE_INSTALLATION</code>. I.e. if it returns nothing or <code>null</code>, the 
-	 * 		installation will proceed
+	 * @param closure Closure containing pre-condition logic.
 	 */
 	protected void pre(Closure<Action> closure){
 		this.pre = closure;
@@ -125,16 +116,16 @@ public abstract class Hook extends Script {
 	/**
 	 * Override this method whenever you need to:
 	 * <ul>
-	 * <li>Execute any programming logic after installing a module or a file. For example:
-	 * <ul>
-	 * 	<li> Change the file permission
-	 * 	<li> Rename or link a file
-	 * 	<li> Start up a service
-	 *  <li> and others
-	 * </ul>
+	 * 		<li>Execute any programming logic after installing a module or a file. For example:
+	 * 		<ul>
+	 * 			<li> Change the file permission;
+	 * 			<li> Rename or link a file;
+	 * 			<li> Start up a service;
+	 *  		<li> and others...
+	 * 		</ul>
 	 * </ul>
 	 * 
-	 * @param closure closure containing post-condition logic.<br>
+	 * @param closure Closure containing post-condition logic.
 	 */	
 	protected void post(Closure<Void> closure){
 		this.post = closure;
@@ -143,60 +134,73 @@ public abstract class Hook extends Script {
 	//---------------- init command delegates ---------------
 	
 	/** 
-	 * Rerturns the name of the operational system. 
-	 * This looks at Java System Property "os.name" 
+	 * Returns the name of the operational system (as OS). This looks at Java System Property "os.name".
+	 * @return The OS simple name.
 	 */
 	public String osname() {
 		return Command.osname();
 	}
+	
+	/**
+	 * Return the operational system version number.
+	 * @return The operational system version number.
+	 */
+	public String osVersion() {
+		throw new UnsupportedOperationException("This is not programmed yet!");
+	}
 
-	/** Returns <code>true</code> if you are running on a Linux environment */
+	/** 
+	 * Returns <code>true</code> if you are running on a Linux environment; false, otherwise.
+	 * @return As above.
+	 */
 	public boolean isLinux() {
 		return Command.isLinux();
 	}
 	
-	/** Returns <code>true</code> if you are running on a Windows environment */
+	/** 
+	 * Returns <code>true</code> if you are running on a Windows environment; false, otherwise. 
+	 * @return As above.
+	 */
 	public boolean isWindows(){
         return Command.isWindows();
     }
 
 	/** 
 	 * Returns the distribution of the operational system.<br>
-	 * For example, it may return "CentOS", "Ubuntu", "Windows XYZ", "N/A", etc 
+	 * For example, it may return "CentOS", "Ubuntu", "Windows XYZ", "N/A", etc.
+	 * @return OS distribution ID.
 	 */
 	public String distribution() {
 		return command.distribution();
 	}
 	
 	/** 
-	 * Execute a file. <br>
+	 * Execute a file. <br />
 	 * If the file is not executable, we try to make it executable. 
-	 * If it is not possible, an exception is thrown
+	 * If it is not possible, an exception is thrown.
 	 * 
-	 * @param file the file path
+	 * @param file The file path (as text).
 	 */
-	public void execute(String file) {
+	public void execute(final String file) {
 		command.execute(file);
 	}
 	
 	/** 
-	 * Converts a text file into the patterns defined by the operational system you are running on.<br>
-	 * This is mostly required whenever you create a file in windows and then run it on Linux, or vice and versa.
-	 * <p>
-	 * Note: Usually configuration files are not an issue, but executable files are!!
+	 * Converts a text file (usually script file) into the particular patterns (special and control characters) and format (ISO, ASCII, etc.) defined by the 
+	 * operational system that you are running on. <br />
+	 * This is mostly required whenever you create a file in Windows and then run it on Linux, or vice and versa.
+	 * Note: Usually configuration files are not an issue, but executable scripts files are!
 	 * 
-	 * @param file the text file path
+	 * @param textFile The text file path.
 	 */
-	public void normalize(String file) {
-		command.normalizeTextContent(file);		
+	public void normalize(final String textFile) {
+		command.normalizeTextContent(textFile);		
 	}
 
 	/** 
-	 * Creates a group of users
-	 * <p>
-	 * Note: Currently Linux only
+	 * Creates a group of users.
 	 * 
-	 * @param group the name of the group
+	 * @param group The name of the group.
 	 */
 	public void groupadd(final String group) {
 		command.groupadd(group);

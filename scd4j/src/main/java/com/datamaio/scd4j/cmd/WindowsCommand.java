@@ -151,12 +151,15 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void ln(String file, String link) {
+		// TODO - Can use this: mklink. Look at: http://technet.microsoft.com/en-us/library/cc753194.aspx
+		// This was tested in Windows 7 and worked...
 		throw new RuntimeException("Function 'ln' is not implemented for windows");
 	}
 
 	@Override
 	public void groupadd(String group) {
-		// do nothing
+		// TODO - Can use this: net localgroup GroupNameToAdd /add. Look at: http://technet.microsoft.com/en-us/library/cc725622.aspx
+		// This was tested in Windows 7 and worked...
 	}
 
 	@Override
