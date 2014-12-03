@@ -24,8 +24,10 @@
 package com.datamaio.scd4j.tmpl.impl;
 
 
+import java.io.File;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
@@ -41,14 +43,14 @@ import com.datamaio.scd4j.tmpl.Writable;
  * Template documentation at https://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class VelocityTemplateEngine extends TemplateEngine implements Template, Writable {
 	public static final String NAME = "velocity";
 
     static {
         Velocity.setProperty(Velocity.RESOURCE_LOADER, "file");
-        //TODO: probably this will be a issue in windows machine when we are running in a different drive than c:/
-        Velocity.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, "/");
+        Velocity.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, getRoot());
         Velocity.setProperty(Velocity.RUNTIME_REFERENCES_STRICT, "true");
         Velocity.init();
     }
@@ -60,7 +62,7 @@ public class VelocityTemplateEngine extends TemplateEngine implements Template, 
 	public Template createTemplate(Path path) {
 		// final String encoding = encodingUtil.getEncoding(vmTemplate);
         // template = Velocity.getTemplate(vmTemplate, encoding);
-
+		
 		this.template = Velocity.getTemplate(path.toAbsolutePath().toString());
 		return this;
 	}
@@ -89,5 +91,10 @@ public class VelocityTemplateEngine extends TemplateEngine implements Template, 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	
+	private static String getRoot() {
+		return Paths.get(System.getProperty("user.home")).getRoot().toAbsolutePath().toString();
 	}
 }
