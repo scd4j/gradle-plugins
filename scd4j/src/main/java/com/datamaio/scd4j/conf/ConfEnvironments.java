@@ -32,36 +32,36 @@ import java.util.List;
  * @author Fernando Rubbo
  */
 public class ConfEnvironments {
-	private List<String> ipProd;
-	private List<String> ipHom;
-	private List<String> ipTest;
+	private List<String> ipProduction;
+	private List<String> ipStaging;
+	private List<String> ipTesting;
 	
 	public ConfEnvironments() {
 		this((List<String>)null, null, null);
 	}
 	
-	public ConfEnvironments(String[] ipProd, String[] ipHom, String[] ipTst) {
-		this(ipProd!=null ? Arrays.asList(ipProd) : null,
-			ipHom!=null ? Arrays.asList(ipHom) : null,
-			ipTst!=null ? Arrays.asList(ipTst) : null);
+	public ConfEnvironments(String[] ipProduction, String[] ipStaging, String[] ipTesting) {
+		this(ipProduction!=null ? Arrays.asList(ipProduction) : null,
+			ipStaging!=null ? Arrays.asList(ipStaging) : null,
+			ipTesting!=null ? Arrays.asList(ipTesting) : null);
 	}
 	
-	public ConfEnvironments(List<String> ipProd, List<String> ipHom, List<String> ipTst) {
+	public ConfEnvironments(List<String> ipProduction, List<String> ipStaging, List<String> ipTesting) {
 		super();
-		this.ipProd = ipProd!=null ? ipProd : new ArrayList<String>();
-		this.ipHom = ipHom!=null ? ipHom : new ArrayList<String>();
-		this.ipTest = ipTst!=null ? ipTst : new ArrayList<String>();
+		this.ipProduction = ipProduction!=null ? ipProduction : new ArrayList<String>();
+		this.ipStaging = ipStaging!=null ? ipStaging : new ArrayList<String>();
+		this.ipTesting = ipTesting!=null ? ipTesting : new ArrayList<String>();
 	}
 
-	public boolean isProd(final String address) {
-        return ipProd.contains(address);
+	public boolean isProduction(final String address) {
+        return ipProduction.contains(address);
 	}
 	
-	public boolean isHom(final String address) {
-        return ipHom.contains(address);
+	public boolean isStagging(final String address) {
+        return ipStaging.contains(address);
 	}
 	
-	public boolean isTest(final String address) {
-        return ipTest.contains(address);
+	public boolean isTesting(final String address) {
+        return ipTesting.contains(address);
 	}
 }

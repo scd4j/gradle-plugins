@@ -515,10 +515,10 @@ public abstract class Hook extends Script {
 	 * In other words, if it is NOT Test environment, NOT Homologation
 	 * environment and NOT Production environment.
 	 * 
-	 * @see {@link #isTest()}, {@link #isHom()}, {@link #isProd()}
+	 * @see {@link #isTesting()}, {@link #isStaging()}, {@link #isProduction()}
 	 */
-	protected boolean isDesenv(){
-		return !isTest() && !isHom() && !isProd();
+	protected boolean isDevelopment(){
+		return !isTesting() && !isStaging() && !isProduction();
 	}
 
 	/** 
@@ -546,9 +546,9 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isTest(){
+	protected boolean isTesting(){
 		final String address = whatIsMyIp();
-		return envs.isTest(address);
+		return envs.isTesting(address);
 	}
 
 	/** 
@@ -576,9 +576,9 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isHom(){
+	protected boolean isStaging(){
 		final String address = whatIsMyIp();
-		return envs.isHom(address);
+		return envs.isStagging(address);
 	}
 
 	/**
@@ -608,9 +608,9 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isProd(){
+	protected boolean isProduction(){
 		final String address = whatIsMyIp();
-		return envs.isProd(address);
+		return envs.isProduction(address);
 	}
 
 	/**
