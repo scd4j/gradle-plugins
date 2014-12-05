@@ -40,7 +40,7 @@ public final class PathHelper {
 	private Path module;
 
 	public PathHelper(Configuration conf){
-		this(conf.getProperties(), conf.getModuleDir());
+		this(conf.getProps(), conf.getModule());
 	}
 	
 	PathHelper(Map<String, String> properties, Path module){

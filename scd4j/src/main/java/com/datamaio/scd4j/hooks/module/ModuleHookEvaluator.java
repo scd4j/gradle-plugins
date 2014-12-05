@@ -47,7 +47,7 @@ public class ModuleHookEvaluator extends HookEvaluator {
 	
 	public ModuleHookEvaluator(final Configuration conf) {
 		super(buildModuleHookName(conf), buildBinding(conf), conf);
-		this.moduleDir = conf.getModuleDir();
+		this.moduleDir = conf.getModule();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ModuleHookEvaluator extends HookEvaluator {
 	
 	private static Map<String, Object> buildBinding(final Configuration conf) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("moduleDir", conf.getModuleDir().toString());
+		map.put("moduleDir", conf.getModule().toString());
 		return map;
 	}
 
@@ -92,6 +92,6 @@ public class ModuleHookEvaluator extends HookEvaluator {
 	}
 	
 	private static Path buildModuleHookName(Configuration conf) {
-		return PathUtils.get(conf.getModuleDir(), "Module" + HOOK_SUFFIX);
+		return PathUtils.get(conf.getModule(), "Module" + HOOK_SUFFIX);
 	}	
 }

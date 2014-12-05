@@ -23,45 +23,31 @@
  */
 package com.datamaio.scd4j.conf;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * 
  * @author Fernando Rubbo
  */
-public class ConfEnvironments {
-	private List<String> ipProduction;
-	private List<String> ipStaging;
-	private List<String> ipTesting;
+public class Settings {
+	private Template template;
 	
-	public ConfEnvironments() {
-		this((List<String>)null, null, null);
+	public Settings() {
+		this(new Template());
 	}
 	
-	public ConfEnvironments(String[] ipProduction, String[] ipStaging, String[] ipTesting) {
-		this(ipProduction!=null ? Arrays.asList(ipProduction) : null,
-			ipStaging!=null ? Arrays.asList(ipStaging) : null,
-			ipTesting!=null ? Arrays.asList(ipTesting) : null);
-	}
-	
-	public ConfEnvironments(List<String> ipProduction, List<String> ipStaging, List<String> ipTesting) {
+	public Settings(Template template) {
 		super();
-		this.ipProduction = ipProduction!=null ? ipProduction : new ArrayList<String>();
-		this.ipStaging = ipStaging!=null ? ipStaging : new ArrayList<String>();
-		this.ipTesting = ipTesting!=null ? ipTesting : new ArrayList<String>();
+		this.template = template;
+	}
+	
+	protected Template getTemplate() {
+		return template;
 	}
 
-	public boolean isProduction(final String address) {
-        return ipProduction.contains(address);
+	protected void setTemplate(Template template) {
+		this.template = template;
 	}
-	
-	public boolean isStagging(final String address) {
-        return ipStaging.contains(address);
-	}
-	
-	public boolean isTesting(final String address) {
-        return ipTesting.contains(address);
+
+	@Override
+	public String toString() {
+		return "Settings [template=" + template + "]";
 	}
 }

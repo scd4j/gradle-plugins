@@ -23,8 +23,6 @@
  */
 package com.datamaio.scd4j.conf;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,75 +51,74 @@ public class Configuration {
 	public static final String DELETE_SUFFIX = ".del";
 	public static final String TEMPLATE_SUFFIX = ".tmpl";
 		
-	/** path for the config file */
-	private Path configPath;
-	/** all the properties allowed to be used during installaiton. Includes, config file and system properties */
-	private final Map<String, String> properties;
-	private final Map<String, String> temporaryProperties = new HashMap<>();	
-	/** Module directory */
-	private Path moduleDir;
-	/** The environments IPs */
-	private ConfEnvironments environments;
-	/** Dependencies. Where the key is the gradle dependency and the value is the cache path */
-	private Map<String, Path> dependencies;
+	private final Install install; 
+	private final Settings settings;
+	/** Dependencies. Where the key is the gradle dependency and the value is the file path */
+	private final Map<String, Path> dependencies;
 	
-	public Configuration(Path properties, Path module) {
-		this(properties, module, new ConfEnvironments(), new HashMap<>());
+	public static final Configuration build(Path module){
+		Install install = new Install(module);
+		return new Configuration(install);
 	}
 	
-	public Configuration(Path properties, Path module, ConfEnvironments environments, Map<String, Path> dependencies) {
-		this(properties, toMaps(properties), module, environments, dependencies);
+	public static final Configuration build(Path module, Map<String, String> props){
+		Install install = new Install(module, props);
+		return new Configuration(install);
 	}
 
-	private static Map<String, String> toMaps(Path properties) {
-		ConfProperties props = new ConfProperties().load(properties);
-		return props.entrySet().stream()
-				.collect(toMap(e -> e.getKey().toString()
-							  ,e -> e.getValue().toString()));
+	public static final Configuration build(Path[] modules){
+		Install install = new Install(modules);
+		return new Configuration(install);
 	}
 	
-	public Configuration(Path propertiesPath, Map<String, String> properties, Path module) {
-		this(propertiesPath, properties, module, new ConfEnvironments(), new HashMap<>());
+	private Configuration(Install install) {
+		this(install, new Settings(), new HashMap<>());
 	}
 	
-	public Configuration(Path confiPath, Map<String, String> properties, Path module, 
-			ConfEnvironments environments, Map<String, Path> dependencies) {
-		this.configPath = confiPath;
-		this.properties = properties;
-		this.moduleDir = module;
-		this.environments = environments;
+	public Configuration(Install install, Settings settings, Map<String, Path> dependencies) {
+		this.install = install;
+		this.settings = settings;
 		this.dependencies = dependencies;
 	}
 
-	public Path getConfigPath() {
-		return configPath;
+	public Path getConfig() {
+		return install.getConfig();
 	}
 
-	public Map<String, String> getProperties() {
-		return properties;
+	public Map<String, String> getProps() {
+		return install.getProps();
 	}
 	
-	public Map<String, String> getTemporaryProperties() {
-		return temporaryProperties;
+	public Map<String, String> getTempProps() {
+		return install.getTempProps();
 	}
 
-	public Path getModuleDir() {
-		return moduleDir;
+	public Path getModule() {
+		return install.getModules()[0];
 	}
 
-	public ConfEnvironments getEnvironments() {
-		return environments;
+	public Path[] getModules() {
+		return install.getModules();
+	}
+	
+	public Env getEnv() {
+		return install.getEnv();
 	}
 
 	public Path getDependency(String name) {
 		return dependencies.get(name);
 	}
 	
-	public void printProperties() {
+	public void prettyPrint() {
+		LOGGER.info("========================================================================================================");
+		LOGGER.info("======================================== Configuration =================================================");
+		LOGGER.info("========================================================================================================");
+		LOGGER.info(install.toString());
+		LOGGER.info(settings.toString());
 		LOGGER.info("========================================================================================================");
 		LOGGER.info("============ Properties allowed to be used during installation (i.e *.hook and *.tmpl) =================");
 		LOGGER.info("========================================================================================================");
-		Map<String, String> props = getProperties();
+		Map<String, String> props = getProps();
 		Set<String> keys = props.keySet();
 		for (String key : keys) {
 			LOGGER.info(String.format("%s = %s", key, props.get(key)));
@@ -130,31 +127,41 @@ public class Configuration {
 	}
 	
 	public Path getLogFile() {
-		Path baseDir = new File(".").getAbsoluteFile().toPath();
 		String currentExecutionPath = buildCurrentExecutionPath();
 		String fileName = currentExecutionPath + ".log";
-		return PathUtils.get(baseDir, LOG_FOLDER, fileName).normalize();
+		return PathUtils.get(workspace(), LOG_FOLDER, fileName).normalize();
 	}
 
 	public Path getBackupDir() {
-		Path baseDir = new File(".").getAbsoluteFile().toPath();
 		String currentExecutionPath = buildCurrentExecutionPath();
-		return PathUtils.get(baseDir, BACKUP_FOLDER, currentExecutionPath).normalize();
+		return PathUtils.get(workspace(), BACKUP_FOLDER, currentExecutionPath).normalize();
 	}
 
+	private Path workspace() {
+		return new File(".").getAbsoluteFile().toPath();
+	}
+	
 	private String currentExecutionPath;
 	private synchronized String buildCurrentExecutionPath() {
 		if(currentExecutionPath==null) {		
 			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-			Path baseDir = new File(".").getAbsoluteFile().toPath();				
-			String fileName = baseDir.relativize(getConfigPath()).toString().replace("config/", "");
+			
+			Path workspace = workspace();
+			Path config = getConfig();
+			String fileName;
+			if(config!=null) {
+				fileName = workspace.relativize(config).toString().replace("config/", "");
+			} else {
+				fileName = workspace.toString().replace("config/", "");
+			}
+			
 			if(fileName.endsWith(".conf")) {
 				fileName = fileName.replace(".conf", "");
 			}
 			if(fileName.endsWith(".properties")) {
 				fileName = fileName.replace(".properties", "");
 			}
-			String module = getModuleDir().getFileName().toString();
+			String module = getModule().getFileName().toString();
 			currentExecutionPath = Paths.get(module, fileName + "_" + df.format(new Date())).toString();
 		}
 		

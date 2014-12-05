@@ -23,18 +23,16 @@
  */
 package com.datamaio.scd4j.gradle
 
-import javax.swing.JOptionPane;
+import javax.swing.JOptionPane
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.InvalidUserDataException
-import org.gradle.api.artifacts.Dependency
 import org.gradle.api.tasks.TaskAction
 
-import com.datamaio.scd4j.cmd.Command;
-import com.datamaio.scd4j.conf.ConfEnvironments
-import com.datamaio.scd4j.EnvConfigurator;
-
-import groovy.swing.SwingBuilder
+import com.datamaio.scd4j.EnvConfigurator
+import com.datamaio.scd4j.conf.Configuration
+import com.datamaio.scd4j.conf.Env
+import com.datamaio.scd4j.conf.Install
+import com.datamaio.scd4j.conf.Settings;
 
 /**
  * Task used to start SCD4J
@@ -101,11 +99,14 @@ class Scd4jTask extends DefaultTask {
 		}		
     }
 
-	def run(env, modules, config) {
-		def environments = new ConfEnvironments(env.production, env.staging, env.testing)
+	def run(envs, modules, config) {
+		def env = new Env(envs.production, envs.staging, envs.testing)
 		def dependencies = mapDependencies2Path();
-		for(module in modules) {						
-			new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+		for(module in modules) {	
+			Install install = new Install(module.toPath(), config.toPath(), env);
+			Settings settings = new Settings();
+			Configuration conf = new Configuration(install, settings, dependencies);
+			new EnvConfigurator(conf).execute();
 		}
 	}
 

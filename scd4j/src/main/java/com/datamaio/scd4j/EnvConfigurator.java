@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j;
 
-import static com.datamaio.scd4j.conf.Configuration.CONFIG_FOLDER;
 import static com.datamaio.scd4j.conf.Configuration.DELETE_SUFFIX;
 import static com.datamaio.scd4j.conf.Configuration.HOOK_SUFFIX;
 import static com.datamaio.scd4j.conf.Configuration.TEMPLATE_SUFFIX;
@@ -37,13 +36,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.datamaio.scd4j.conf.ConfEnvironments;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.file.FileHookEvaluator;
@@ -73,18 +69,6 @@ public class EnvConfigurator {
 	private Configuration conf;
 	private final PathHelper pathHelper;
 	private final BackupHelper backupHelper;
-
-	public EnvConfigurator(Path properties, Path module2Install) {
-		this(properties, module2Install, new ConfEnvironments(), new HashMap<>());
-	}
-	
-	EnvConfigurator(Map<String, String> instalationProperties, Path module2Install) {
-		this(new Configuration(Paths.get(new File(".").getAbsolutePath(), CONFIG_FOLDER), instalationProperties, module2Install));
-	}
-	
-	public EnvConfigurator(Path properties, Path module2Install, ConfEnvironments environments, Map<String, Path> dependencies) {
-		this(new Configuration(properties, module2Install, environments, dependencies));
-	}
 	
 	public EnvConfigurator(Configuration conf) {
 		this.conf = conf;
@@ -101,9 +85,9 @@ public class EnvConfigurator {
 	 * <code>post()<code> semantics of the module
 	 * installation/configuration.
 	 */
-	public void exec() {
-		conf.printProperties();
-		Path module = conf.getModuleDir();
+	public void execute() {
+		conf.prettyPrint();
+		Path module = conf.getModule();
 		try {			
 			final ModuleHookEvaluator hook = new ModuleHookEvaluator(conf);
 			try{
@@ -158,7 +142,7 @@ public class EnvConfigurator {
 	 * {@link Hook#pre()} and {@link Hook#post()}
 	 */
 	protected void deleteFiles() {		
-		Path module = conf.getModuleDir();
+		Path module = conf.getModule();
 		
 		FileUtils.deleteDir(module, new DeleteVisitor("*" + DELETE_SUFFIX){
 			private FileHookEvaluator hook;
@@ -243,8 +227,8 @@ public class EnvConfigurator {
 	 * {@link Hook#pre()} and {@link Hook#post()}
 	 */
 	protected void copyFiles() {
-		final Path module = conf.getModuleDir();
-		final Map<String, String> properties = conf.getProperties();
+		final Path module = conf.getModule();
+		final Map<String, String> properties = conf.getProps();
 		
 		final TemplateEngineConfig engineConfig = new TemplateEngineConfig("groovy");
 		final TemplateEngine engine = TemplateEngine.get(engineConfig);
