@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.datamaio.scd4j.tmpl.TemplateEngine;
+import com.datamaio.scd4j.tmpl.TemplateEngineConfig;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
@@ -124,6 +126,12 @@ public class Configuration {
 			LOGGER.info(String.format("%s = %s", key, props.get(key)));
 		}
 		LOGGER.info("========================================================================================================");
+	}
+	
+	public TemplateEngine getTemplateEngine() {
+		Template template = settings.getTemplate();
+		final TemplateEngineConfig engineConfig = new TemplateEngineConfig(template.getEngine());
+		return TemplateEngine.get(engineConfig);
 	}
 	
 	public Path getLogFile() {

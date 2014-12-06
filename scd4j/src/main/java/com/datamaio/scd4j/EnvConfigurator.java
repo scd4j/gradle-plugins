@@ -45,7 +45,6 @@ import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.file.FileHookEvaluator;
 import com.datamaio.scd4j.hooks.module.ModuleHookEvaluator;
 import com.datamaio.scd4j.tmpl.TemplateEngine;
-import com.datamaio.scd4j.tmpl.TemplateEngineConfig;
 import com.datamaio.scd4j.util.BackupHelper;
 import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.PathHelper;
@@ -66,12 +65,14 @@ import com.datamaio.scd4j.util.io.FileUtils;
 public class EnvConfigurator {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
-	private Configuration conf;
+	private final Configuration conf;
+	private final TemplateEngine engine;
 	private final PathHelper pathHelper;
 	private final BackupHelper backupHelper;
 	
 	public EnvConfigurator(Configuration conf) {
 		this.conf = conf;
+		this.engine = conf.getTemplateEngine();
 		this.pathHelper = new PathHelper(conf);
 		this.backupHelper = new BackupHelper(conf);
 		new LogHelper(conf).startup();
@@ -230,8 +231,6 @@ public class EnvConfigurator {
 		final Path module = conf.getModule();
 		final Map<String, String> properties = conf.getProps();
 		
-		final TemplateEngineConfig engineConfig = new TemplateEngineConfig("groovy");
-		final TemplateEngine engine = TemplateEngine.get(engineConfig);
 		final Path target = pathHelper.getTarget(module);
 		
 		FileUtils.copy(new CopyVisitor(module, target, "*" + DELETE_SUFFIX){
