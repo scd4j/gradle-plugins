@@ -23,18 +23,17 @@
  */
 package com.datamaio.scd4j.gradle
 
-import javax.swing.JOptionPane;
+import javax.swing.JOptionPane
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.InvalidUserDataException
-import org.gradle.api.artifacts.Dependency
 import org.gradle.api.tasks.TaskAction
 
-import com.datamaio.scd4j.cmd.Command;
-import com.datamaio.scd4j.conf.ConfEnvironments
-import com.datamaio.scd4j.EnvConfigurator;
-
-import groovy.swing.SwingBuilder
+import com.datamaio.scd4j.EnvConfigurator
+import com.datamaio.scd4j.conf.Configuration
+import com.datamaio.scd4j.conf.Env
+import com.datamaio.scd4j.conf.Install
+import com.datamaio.scd4j.conf.Settings
+import com.datamaio.scd4j.conf.Template
 
 /**
  * Task used to start SCD4J
@@ -50,6 +49,7 @@ class Scd4jTask extends DefaultTask {
 	
 	@TaskAction
     def action() {		
+		def settings = project.scd4j.settings;
     	def env = project.scd4j.install.env		
 		def config = Input.config(project);
 		def modules = Input.modules(project)
@@ -72,11 +72,11 @@ class Scd4jTask extends DefaultTask {
 		if( Input.validate(modules, config) ) {
 			def console = System.console()
 			if (assumeYes(project)) {
-				run(env, modules, config)
+				run(settings, env, modules, config)
 			} else if(console) {
 				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed and "no/n" to abort: ')
 				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
-					run(env, modules, config)
+					run(settings, env, modules, config)
 				} else {
 					println "============================"
 					println "=== Instalation aborted! ==="
@@ -87,7 +87,7 @@ class Scd4jTask extends DefaultTask {
 					def msg = "Review the above config. Click YES to procceed and NO to abort: "
 					def option =JOptionPane.showConfirmDialog (null, msg ,"Warning", JOptionPane.YES_NO_OPTION);
 					if(option == JOptionPane.YES_OPTION){
-						run(env, modules, config)
+						run(settings, env, modules, config)
 					} else {
 						println "============================"
 						println "=== Instalation aborted! ==="
@@ -101,11 +101,15 @@ class Scd4jTask extends DefaultTask {
 		}		
     }
 
-	def run(env, modules, config) {
-		def environments = new ConfEnvironments(env.production, env.staging, env.testing)
+	def run(sett, envs, modules, config) {
+		def env = new Env(envs.production, envs.staging, envs.testing)
 		def dependencies = mapDependencies2Path();
-		for(module in modules) {						
-			new EnvConfigurator(config.toPath(), module.toPath(), environments, dependencies).exec();
+		for(module in modules) {	
+			Install install = new Install(module.toPath(), config.toPath(), env);
+			Settings settings = new Settings();
+			settings.setTemplate(new Template(sett.template.engine));
+			Configuration conf = new Configuration(install, settings, dependencies);
+			new EnvConfigurator(conf).execute();
 		}
 	}
 

@@ -50,7 +50,7 @@ import javax.naming.directory.InitialDirContext;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Command.Interaction;
 import com.datamaio.scd4j.cmd.LinuxCommand;
-import com.datamaio.scd4j.conf.ConfEnvironments;
+import com.datamaio.scd4j.conf.Env;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
 import com.datamaio.scd4j.hooks.file.FileHook;
@@ -80,7 +80,7 @@ public abstract class Hook extends Script {
 	private static final Map<String, String> HOSTS = new HashMap<String, String>();
 	
 	protected Configuration conf;
-	protected ConfEnvironments envs;
+	protected Env envs;
 	protected Map<String, String> props;	
 	protected Map<String, String> temporaryProps;
 	protected final Command command;	
@@ -1220,9 +1220,9 @@ public abstract class Hook extends Script {
      */
 	final void setConf(Configuration conf) {
 		this.conf = conf;
-		this.envs = conf.getEnvironments();
-		this.props = conf.getProperties();
-		this.temporaryProps = conf.getTemporaryProperties();
+		this.envs = conf.getEnv();
+		this.props = conf.getProps();
+		this.temporaryProps = conf.getTempProps();
 	}
 	
 	

@@ -32,7 +32,7 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
-import com.datamaio.scd4j.conf.ConfProperties;
+import com.datamaio.scd4j.conf.Config;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class ConfPropertiesTest {
 
 	@Test
 	public void testSipleProp() throws Exception {
-		ConfProperties props = new ConfProperties();
+		Config props = new Config();
 		props.load(reader);
 
 		assertThat(props.resolve("${key1}"), is(equalTo("value1")));
@@ -55,7 +55,7 @@ public class ConfPropertiesTest {
 
 	@Test
 	public void testTwoOrMoreProps() throws Exception {
-		ConfProperties props = new ConfProperties();
+		Config props = new Config();
 		props.load(reader);
 
 		assertThat(props.resolve("${key1}--basdf--${key1}"), is(equalTo("value1--basdf--value1")));
@@ -65,7 +65,7 @@ public class ConfPropertiesTest {
 
 	@Test
 	public void testRecursiveProps() throws Exception {
-		ConfProperties props = new ConfProperties();
+		Config props = new Config();
 		props.load(reader);
 
 		assertThat(props.resolve("${key1}--basdf--${key3}"), is(equalTo("value1--basdf--value3")));
@@ -77,7 +77,7 @@ public class ConfPropertiesTest {
 	public void testRecursiveSystemPriorityProps() throws Exception {
 		try {
 			System.setProperty("key4", "systemkey4");
-			ConfProperties props = new ConfProperties();
+			Config props = new Config();
 			props.load(reader);
 
 			assertThat(props.resolve("${key1}--basdf--${key3}"), is(equalTo("value1--basdf--value3")));
@@ -93,7 +93,7 @@ public class ConfPropertiesTest {
 
 		try {
 			System.setProperty("key1", "systemkey1");
-			ConfProperties props = new ConfProperties();
+			Config props = new Config();
 			props.load(reader);
 
 			assertThat(props.resolve("${key1}--basdf--${key2}--basdf--${key3}"), is(equalTo("systemkey1--basdf--value2--basdf--value3")));

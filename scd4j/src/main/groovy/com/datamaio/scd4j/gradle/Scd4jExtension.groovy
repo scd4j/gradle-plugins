@@ -60,6 +60,14 @@ class SettingsNestedExtention{
  *
  * @author Fernando Rubbo
  */
+class TemplateNestedExtention{
+	String engine="groovy"
+}
+
+/**
+ *
+ * @author Fernando Rubbo
+ */
 class LinuxNestedExtention{
 	boolean usesudo=false
 }

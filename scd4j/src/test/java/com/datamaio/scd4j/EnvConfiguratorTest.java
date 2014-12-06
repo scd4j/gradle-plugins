@@ -25,17 +25,16 @@
 package com.datamaio.scd4j;
 
 import static com.datamaio.scd4j.cmd.Command.isWindows;
+import static com.datamaio.scd4j.conf.Configuration.build;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import groovy.lang.Writable;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,7 +80,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
 			
-			new EnvConfigurator(new HashMap<>(), module).deleteFiles();
+			new EnvConfigurator(build(module)).deleteFiles();
 	
 			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
@@ -109,7 +108,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			new EnvConfigurator(new HashMap<>(), module).copyFiles();		
+			new EnvConfigurator(build(module)).copyFiles();		
 	
 			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
@@ -137,10 +136,10 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			Map<String, String> ext = new HashMap<>();
-			ext.put("favlang", "aaaaaa");
-			ext.put("favlang2", "bbbbbb");
-			new EnvConfigurator(ext, module).copyFiles();		
+			Map<String, String> props = new HashMap<>();
+			props.put("favlang", "aaaaaa");
+			props.put("favlang2", "bbbbbb");
+			new EnvConfigurator(build(module, props)).copyFiles();		
 	
 			checkResult(fs, result, "dir1/f1.txt");
 			checkResult(fs, result, "dir2/dir21/f21.txt");
@@ -168,10 +167,10 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			Map<String, String> ext = new HashMap<>();
-			ext.put("favlang", "aaaaaa");
-			ext.put("favlang2", "bbbbbb");
-			new EnvConfigurator(ext, module).exec();		
+			Map<String, String> props = new HashMap<>();
+			props.put("favlang", "aaaaaa");
+			props.put("favlang2", "bbbbbb");
+			new EnvConfigurator(build(module, props)).execute();		
 	
 			checkResult(fs, result, "dir1/f1.txt");
 			checkResult(fs, result, "dir2/dir21/f21.txt");
@@ -195,9 +194,9 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
 			
-			Map<String, String> ext = new HashMap<>();
-			ext.put("favlang", "aaaaaa");
-			new EnvConfigurator(ext, module).exec();		
+			Map<String, String> props = new HashMap<>();
+			props.put("favlang", "aaaaaa");
+			new EnvConfigurator(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
@@ -226,10 +225,10 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
 			
-			Map<String, String> ext = new HashMap<>();
-			ext.put("favlang", "aaaaaa");
-			ext.put("favlang2", "bbbbbb");
-			new EnvConfigurator(ext, module).exec();		
+			Map<String, String> props = new HashMap<>();
+			props.put("favlang", "aaaaaa");
+			props.put("favlang2", "bbbbbb");
+			new EnvConfigurator(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			
@@ -254,9 +253,9 @@ public class EnvConfiguratorTest {
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPre()); 
 
 		try {
-			Map<String, String> ext = new HashMap<>();
-			ext.put("var", "var errada");
-			new EnvConfigurator(ext, module).exec();		
+			Map<String, String> props = new HashMap<>();
+			props.put("var", "var errada");
+			new EnvConfigurator(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
@@ -274,8 +273,7 @@ public class EnvConfiguratorTest {
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPost()); 
 
 		try {
-			Map<String, String> ext = new HashMap<>();
-			new EnvConfigurator(ext, module).exec();		
+			new EnvConfigurator(build(module)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
@@ -302,8 +300,7 @@ public class EnvConfiguratorTest {
 		try {
 			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(false));
 			
-			Map<String, String> ext = new HashMap<>();
-			new EnvConfigurator(ext, module).exec();		
+			new EnvConfigurator(build(module)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(true));
 			checkResult(fs, result, "f1.txt");
@@ -327,9 +324,9 @@ public class EnvConfiguratorTest {
 		Path result = paths[3];
 		
 		try {
-			Map<String, String> ext = new HashMap<>();
-			ext.put("test", "TESTADO!");
-			new EnvConfigurator(ext, module).exec();
+			Map<String, String> props = new HashMap<>();
+			props.put("test", "TESTADO!");
+			new EnvConfigurator(build(module, props)).execute();
 			assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
 			checkResult(fs, result, "dir1/f10.txt");
 		} finally {

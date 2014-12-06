@@ -20,7 +20,7 @@ Use by your own risk
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.1.7"
+  id "com.datamaio.scd4j" version "0.2"
 }
 
 dependencies {

@@ -43,7 +43,7 @@ import com.datamaio.scd4j.util.Encryptor;
  * 
  * @author Fernando Rubbo
  */
-public class ConfProperties extends Properties {
+public class Config extends Properties {
 	
 	private static final long serialVersionUID = 1L;
 	private static final EncodingHelper encodingHelper = new EncodingHelper();
@@ -68,7 +68,7 @@ public class ConfProperties extends Properties {
 		merge();
 	}
 	
-	public synchronized ConfProperties load(final Path configFile) {
+	public synchronized Config load(final Path configFile) {
         if (configFile!=null) {
         	final Charset cs = inferFileCharset(configFile);
     		try (BufferedReader reader = Files.newBufferedReader(configFile, cs)) {
