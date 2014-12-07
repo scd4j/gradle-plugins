@@ -77,4 +77,37 @@ public class WindowsCommandTest {
 		
 		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
 	}
+	
+	@Test
+	@RunIf(IsWindows.class)
+	public void execute() throws Exception {
+		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/copy.bat");
+		Path run = Paths.get(urlRun.toURI());
+		Path fromDir = Files.createTempDirectory(root, "fromDir");
+		Path cpfile = createTempFile(fromDir, "FILE_1", ".tmp");
+		Path toDir = Files.createTempDirectory(root, "toDir");
+		Command.get().execute(run.toString() +" "+cpfile.toString() + " "+toDir.toString());
+		
+		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
+	}
+	
+	@Test
+	@RunIf(IsWindows.class)
+	public void runPrint() throws Exception {
+		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/copy.bat");
+		Path run = Paths.get(urlRun.toURI());
+		Path fromDir = Files.createTempDirectory(root, "fromDir");
+		Path cpfile = createTempFile(fromDir, "FILE_1", ".tmp");
+		Path toDir = Files.createTempDirectory(root, "toDir");
+		String print = Command.get().run(run.toString() +" "+cpfile.toString() + " "+toDir.toString(), true);
+		
+		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
+		assertThat(print.contains("1 arquivo(s) copiado(s)."), is(true));
+		assertThat(print.contains(toDir.toString()), is(true));
+	}
+	
+	
+	public void distribution() {
+		
+	}
 }
