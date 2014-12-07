@@ -106,8 +106,26 @@ public class WindowsCommandTest {
 		assertThat(print.contains(toDir.toString()), is(true));
 	}
 	
+	@Test
+	@RunIf(IsWindows.class)
+	public void runSuccessfulExec() throws Exception {
+		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/success.bat");
+		Path run = Paths.get(urlRun.toURI());
+		String print = Command.get().run(run.toString() +" 200", 200);
+		assertThat(print.contains(">EXIT 200 "), is(true));
+	}
 	
-	public void distribution() {
+	@Test
+	@RunIf(IsWindows.class)
+	public void runSuccessfulExecWithError() throws Exception {
+		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/success.bat");
+		Path run = Paths.get(urlRun.toURI());
 		
+		try{
+			Command.get().run(run.toString() +" 100", 200);
+		}catch(RuntimeException e) {
+			assertThat(e.getMessage().contains("Error executing command:"), is(true));
+			assertThat(e.getMessage().contains("success.bat 100"), is(true));
+		}		
 	}
 }
