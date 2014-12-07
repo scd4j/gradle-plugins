@@ -128,4 +128,11 @@ public class WindowsCommandTest {
 			assertThat(e.getMessage().contains("success.bat 100"), is(true));
 		}		
 	}
+	
+	@Test
+	@RunIf(IsWindows.class)
+	public void distribution() {
+		String distribution = Command.get().distribution();
+		assertThat(distribution.equals(System.getProperty("os.name")),  is(true));
+	}
 }

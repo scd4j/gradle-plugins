@@ -34,6 +34,7 @@ import com.datamaio.scd4j.util.io.ZipUtils;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public class WindowsCommand extends Command {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -75,23 +76,7 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public String distribution() {
-		String OS_NAME = "OS Name:";
-		try {
-			Runtime rt = Runtime.getRuntime();
-			Process pr = rt.exec("SYSTEMINFO");
-			BufferedReader in = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-
-			String line = "";
-			while ((line = in.readLine()) != null) {
-				if (line.contains(OS_NAME)) {
-					return line.substring(line.lastIndexOf(OS_NAME) + OS_NAME.length(), line.length() - 1);
-				}
-			}
-
-			return "N/A";
-		} catch (IOException ioe) {
-			throw new RuntimeException(ioe);
-		}
+		return System.getProperty("os.name");
 	}
 	
 	@Override
