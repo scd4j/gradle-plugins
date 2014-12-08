@@ -27,4 +27,11 @@ public class UbuntuCommandTest {
 		Command command = Command.get();
 		assertThat(command instanceof UbuntuCommand, is(true));
 	}
+	
+	@Test
+	@RunIf(IsUbuntu.class)
+	public void distribution() {
+		String distribution = Command.get().distribution();
+		assertThat(distribution.equals(UbuntuCommand.DIST_NAME),  is(true));
+	}
 }

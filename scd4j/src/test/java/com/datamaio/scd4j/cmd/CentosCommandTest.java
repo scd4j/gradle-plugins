@@ -28,4 +28,11 @@ public class CentosCommandTest {
 		Command command = Command.get();
 		assertThat(command instanceof CentosCommand, is(true));
 	}
+	
+	@Test
+	@RunIf(IsCentos.class)
+	public void distribution() {
+		String distribution = Command.get().distribution();
+		assertThat(distribution.equals(CentosCommand.DIST_NAME),  is(true));
+	}
 }
