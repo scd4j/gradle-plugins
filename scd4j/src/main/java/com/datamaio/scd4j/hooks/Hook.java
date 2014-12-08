@@ -345,6 +345,7 @@ public abstract class Hook extends Script {
 	/** 
 	 * DSL for {@link #ln(String, String)}.
 	 * <br />
+	 * <br />
 	 * How to use this DSL:
 	 * 
 	 * <pre>
@@ -395,17 +396,16 @@ public abstract class Hook extends Script {
 	}
 
 	/** 
-	 * Creates a directory.
-	 * FIXME - Deve criar todo o caminho também? Ou só o último diretório?
+	 * Creates a directory and all nonexistent parent directories first.
 	 * 
-	 * @param Directory path to create.
+	 * @param dir Directory path to create.
 	 */
 	public void mkdir(final String dir) {
 		command.mkdir(dir);
 	}
 
 	/** 
-	 * DSL for {@link #mv(String, String)}
+	 * DSL for {@link #mv(String, String)}.
 	 * <br />
 	 * <br />
 	 * How to use this DSL:
@@ -424,7 +424,7 @@ public abstract class Hook extends Script {
 	}
 
 	/**  
-	 * Move a origin patrh (file or a directory) to another path (must be the same type as <code>from</code> parameter).
+	 * Move a origin path (file or a directory) to another path (must be the same type as <code>from</code> parameter).
 	 * 
 	 * @param from Origin/source path.
 	 * @param to Destination path.
@@ -486,7 +486,7 @@ public abstract class Hook extends Script {
 	 * copy "/opt/test/my_existing_dir" to "/opt/test2"
 	 * </pre>  
 	 */
-	public Destination copy(String from) {
+	public Destination copy(final String from) {
 		return new Destination() {
 			@Override
 			public void to(String to) {
@@ -496,20 +496,24 @@ public abstract class Hook extends Script {
 	}
 	
 	/** 
-	 * Copy a file or a directory from a destination to another<br>
+	 * Copy a file or a directory from a destination to another.
+	 * <br />
+	 * <br />
 	 * 
-	 * @param from Accepts a a file path OR a dependency
+	 * @param from Accepts a file path or a dependency.
 	 * @param to The destination directory
 	 */
-	public void cp(String from, String to) {
-		if(!Files.exists(Paths.get(from))) {
+	public void cp(final String from, final String to) {
+		String newFrom = null;
+		if (!Files.exists(Paths.get(from))) {
 			try {
-				from = resolve(from);
+				newFrom = resolve(from);
 			} catch (DependencyNotFoundException e) {
 				throw new RuntimeException("It was not possible to find file/dir '" + from + "' to copy!");
 			}
 		}
-		command.cp(from, to);
+		newFrom = from;		
+		command.cp(newFrom, to);
 	}
 	
 	// --- run ----
