@@ -81,13 +81,13 @@ public abstract class LinuxCommand extends Command {
 	}
 	
 	@Override
-	public void chmod(String mode, String file) {
+	public void chmod(final String mode, final String file) {
 		chmod(mode, file, false);
 	}
 
 	@Override
-	public void chmod(String mode, String file, boolean recursive) {
-		List<String> cmd = new ArrayList<String>();
+	public void chmod(final String mode, final String file, final boolean recursive) {
+		List<String> cmd = new ArrayList<>();
 		cmd.add("chmod");
 		if (recursive) {
 			cmd.add("-R");
@@ -116,18 +116,25 @@ public abstract class LinuxCommand extends Command {
 	}
 
 	@Override
-	public void chown(String user, String file) {
-		chown(user, file, true);
+	public void chown(final String user, final String file) {
+		chown(user, null, file, false);
+		// Old impl. - chown(user, file, true);		
 	}
 
 	@Override
-	public void chown(String user, String file, boolean recursive) {
-		chown(user, user, file, recursive);
+	public void chown(final String user, final String file, final boolean recursive) {
+		chown(user, null, file, recursive);
+		// Old impl. - chown(user, user, file, recursive);
+	}
+	
+	@Override
+	public void chown(final String user, final String group, final String file) {
+		chown(user, group, file, false);
 	}
 
 	@Override
-	public void chown(String user, String group, String file, boolean recursive) {
-		List<String> cmd = new ArrayList<String>();
+	public void chown(final String user, final String group, final String file, final boolean recursive) {
+		List<String> cmd = new ArrayList<>();
 		cmd.add("chown");
 		if (recursive) {
 			cmd.add("-R");

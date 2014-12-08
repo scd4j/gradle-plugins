@@ -88,7 +88,7 @@ public abstract class Hook extends Script {
 	protected Closure<Void> post;
 
 	/** Default constructor */
-	public Hook(){
+	public Hook() {
 		this.command = Command.get();
 	}
 	
@@ -143,7 +143,7 @@ public abstract class Hook extends Script {
 	
 	/**
 	 * Return the operational system version number.
-	 * @return The operational system version number.
+	 * @return As in method's description.
 	 */
 	public String osVersion() {
 		throw new UnsupportedOperationException("This is not programmed yet!");
@@ -151,7 +151,7 @@ public abstract class Hook extends Script {
 
 	/** 
 	 * Returns <code>true</code> if you are running on a Linux environment; false, otherwise.
-	 * @return As above.
+	 * @return As in method's description.
 	 */
 	public boolean isLinux() {
 		return Command.isLinux();
@@ -159,7 +159,7 @@ public abstract class Hook extends Script {
 	
 	/** 
 	 * Returns <code>true</code> if you are running on a Windows environment; false, otherwise. 
-	 * @return As above.
+	 * @return As in method's description.
 	 */
 	public boolean isWindows(){
         return Command.isWindows();
@@ -168,7 +168,7 @@ public abstract class Hook extends Script {
 	/** 
 	 * Returns the distribution of the operational system.<br>
 	 * For example, it may return "CentOS", "Ubuntu", "Windows XYZ", "N/A", etc.
-	 * @return OS distribution ID.
+	 * @return As in method's description.
 	 */
 	public String distribution() {
 		return command.distribution();
@@ -199,7 +199,7 @@ public abstract class Hook extends Script {
 
 	/** 
 	 * Creates a group of users. <br /> 
-	 * Note: Currently Linux only	 * 
+	 * Note: Currently Linux only. 
 	 * @param group The name of the group.
 	 */
 	public void groupadd(final String group) {
@@ -211,7 +211,7 @@ public abstract class Hook extends Script {
 	 * Note: Currently Linux only.
 	 * 
 	 * @param group The name of the group.
-	 * @param options The same options you would like to use in the command line
+	 * @param options The same options you would like to use in the command line.
 	 */
 	public void groupadd(final String group, final String options) {
 		command.groupadd(group, options);
@@ -221,7 +221,7 @@ public abstract class Hook extends Script {
 	 * Creates an user. <br />
 	 * Note: Currently Linux only.
 	 * 
-	 * @param User The user name.
+	 * @param user The user name.
 	 */
 	public void useradd(final String user) {
 		command.useradd(user);
@@ -248,7 +248,7 @@ public abstract class Hook extends Script {
 	 * 		<li>For Production environments it is a good practice to encrypt passwords in order to ensure that non authorized 
 	 * 		people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>; <br />
 	 * 		To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
-	 * 		more interested in those which show up under <code>'Scd4j Tools tasks'</code> group
+	 * 		more interested in those which show up under <code>'Scd4j Tools tasks'</code> group;
 	 * 		<li>In Linux, if SELinux is turned on, this execution will fail.</li>
 	 * </ol>
 	 * 
@@ -273,52 +273,85 @@ public abstract class Hook extends Script {
 	}
 
 	/** 
-	 * Changes the Posix File Permissions<br>
-	 * <p>
-	 * Note: Linux only. On windows it will do nothing
+	 * Changes the POSIX file Permissions<br>
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param mode is the posix definition, ex: "777"
-	 * @param file is the file which we would like to change the permissions
-	 * @param recursive if <code>true</code> apply the same rule for all sub dirs 
+	 * @param mode Is the POSIX definition, ex: "777".
+	 * @param file Is the file which we would like to change the permissions.
+	 * @param recursive Iif <code>true</code> apply the same rule for all sub directories and files.
 	 */
-	public void chmod(String mode, String file, boolean recursive) {
+	public void chmod(final String mode, final String file, final boolean recursive) {
 		command.chmod(mode, file, recursive);
 	}
 
 	/** 
-	 * Changes ownership of a file<br>
-	 * <p>
-	 * Note: Linux only. On windows it will do nothing
+	 * Changes ownership of a file. It is not recursive and doesn't change the file/directory group. 
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param user the new owner. The same information is used for the group
-	 * @param file the file to change ownership 
+	 * @param user The new file's owner.
+	 * @param file The path (file or directory) to change ownership. 
 	 */
-	public void chown(String user, String file) {
+	public void chown(final String user, final String file) {
 		command.chown(user, file);
+	}
+	
+	/** 
+	 * Changes ownership of a file, possibly recursively. It doesn't change the file/directory group. 
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
+	 * 
+	 * @param user The new file's owner.
+	 * @param file The file to change ownership.
+	 * @param recursive If <code>true</code> apply the same rule for all sub directories and files.
+	 */
+	public void chown(final String user, final String file, final boolean recursive) {
+		command.chown(user, file, recursive);
+	}
+	
+	/** 
+	 * Changes ownership of a file. It is not recursive.
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
+	 * 
+	 * @param user The new file's owner.
+	 * @param group The new group.
+	 * @param file The file to change ownership.
+	 */
+	public void chown(final String user, final String group, final String file) {
+		// TODO - Implement command.chown(user, group, file);
 	}
 
 	/** 
-	 * Changes ownership of a file<br>
-	 * <p>
-	 * Note: Linux only. On windows it will do nothing
+	 * Changes ownership of a file, possibly recursively.
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param user the new owner 
-	 * @param group the new group
-	 * @param file the file to change ownership 
-	 * @param recursive if <code>true</code> apply the same rule for all sub dirs
+	 * @param user The new file's owner.
+	 * @param group The new group.
+	 * @param file The file to change ownership.
+	 * @param recursive If <code>true</code> apply the same rule for all sub directories and files.
 	 */
-	public void chown(String user, String group, String file, boolean recursive) {
+	public void chown(final String user, final String group, final String file, final boolean recursive) {
 		command.chown(user, group, file, recursive);
 	}
 
 	/** 
-	 * DSL for {@link #ln(String, String)}
-	 * <p>
+	 * DSL for {@link #ln(String, String)}.
+	 * <br />
 	 * How to use this DSL:
 	 * 
 	 * <pre>
 	 * link "/etc/init.d/my_text_link" to "/opt/test/my_existing_file" 
 	 * </pre> 
+	 * 
+	 * @param link The link to path (file or directory).
 	 */
 	public Destination link(final String link) {
 		return new Destination() {
@@ -330,42 +363,58 @@ public abstract class Hook extends Script {
 	}
 	
 	/** 
-	 * Create a symbolic link<br>
-	 * <p>
-	 * Note: Currently Linux only
+	 * Create a symbolic link
+	 * <br />
+	 * <br />
+	 * Note: Currently Linux only.
 	 * 
-	 * @param link the link path
-	 * @param targetFile the target file path to be linked 
+	 * @param link The link path.
+	 * @param targetFile The target path (file or directory) to be linked.
 	 */
 	public void ln(final String link, final String targetFile) {
 		command.ln(link, targetFile);
 	}
 	
-	/** Checks if the given file exists */
-	public boolean exists(String file){
+	/** 
+	 * Checks if the given path (file or directory) exists.
+	 * 
+	 * @param file The target path (file or directory).
+	 * @return As in method's description.
+	 */
+	public boolean exists(final String file) {
 		return command.exists(file);
 	}
 	
-	/** Returns the current user name */
+	/** 
+	 * Returns the current user name.
+	 * 
+	 * @return As in method's description.
+	 */
 	public String whoami() {
 		return Command.whoami();
 	}
 
-	/** Creates a directory */
-	public void mkdir(String dir) {
+	/** 
+	 * Creates a directory.
+	 * FIXME - Deve criar todo o caminho também? Ou só o último diretório?
+	 * 
+	 * @param Directory path to create.
+	 */
+	public void mkdir(final String dir) {
 		command.mkdir(dir);
 	}
 
 	/** 
 	 * DSL for {@link #mv(String, String)}
-	 * <p>
+	 * <br />
+	 * <br />
 	 * How to use this DSL:
 	 * <pre>
 	 * move "/opt/test/my_existing_file" to "/opt/test/new_name" 
 	 * move "/opt/test/my_existing_dir" to "/opt/test/new_name"
 	 * </pre> 
 	 */
-	public Destination move(String from) {
+	public Destination move(final String from) {
 		return new Destination() {
 			@Override
 			public void to(String to) {
@@ -374,36 +423,57 @@ public abstract class Hook extends Script {
 		};		
 	}
 
-	/**  Move a file or a directory */
-	public void mv(String from, String to) {
+	/**  
+	 * Move a origin patrh (file or a directory) to another path (must be the same type as <code>from</code> parameter).
+	 * 
+	 * @param from Origin/source path.
+	 * @param to Destination path.
+	 */
+	public void mv(final String from, final String to) {
 		command.mv(from, to);
 	}
 	
-	/** DSL for {@link #ln(String, String)} */
-	public List<String> list(String path) {
+	/** 
+	 * DSL for {@link #ls(String)}.
+	 * 
+	 * @param path Path to list entries.
+	 */
+	public List<String> list(final String path) {
 		return ls(path);
 	}
 	
-	/** List the files of a directory */
-	public List<String> ls(String path) {
+	/** 
+	 * List the entries (files and directories) of a given directory path.
+	 * 
+	 * @param path Path to list entries.
+	 * @return List of all files and directories matched.
+	 */
+	public List<String> ls(final String path) {
 		return command.ls(path);
 	}
 
 	/** 
-	 * DSL for {@link #rm(String)}
-	 * <p> 
+	 * DSL for {@link #rm(String)}.
+	 * <br />
+	 * <br />
 	 * How to use this DSL:
 	 * <pre>
 	 * remove "/opt/test/my_existing_file" 
 	 * remove "/opt/test/my_existing_dir"
-	 * </pre>  
+	 * </pre>
+	 * 
+	 * @param path Path to remove.
 	 */
-	public void remove(String path) {
+	public void remove(final String path) {
 		rm(path);
 	}
 
-	/** Remove a file or a directory */
-	public void rm(String path) {
+	/** 
+	 * Remove a file or a directory (include the parameterized path and all of its sub entries).
+	 * 
+	 * @param path Path to file or directory to be exclude.
+	 */
+	public void rm(final String path) {
 		command.rm(path);
 	}
 	

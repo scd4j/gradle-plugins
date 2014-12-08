@@ -57,7 +57,7 @@ public abstract class TemplateEngineTest {
 	
 	@AfterClass
 	public static void afterClass() throws Exception {
-		FileUtils.delete(root);
+		// FileUtils.delete(root);
 	}
 
 	
@@ -141,11 +141,30 @@ public abstract class TemplateEngineTest {
 		}
 	}
 		
-	private static Path createEnv(){
+	private static Path createEnv() {
 		try {
-			Path tmp = Files.createTempDirectory("root");
-			FileUtils.copy(Paths.get(GroovyTemplateEngineTest.class.getResource("/com/datamaio/scd4j/tmpl/impl").toURI()), tmp);		
-			return tmp;
+			Path to = Files.createTempDirectory("root");
+			copyTemplateFiles("groovy", to);
+			copyTemplateFiles("handlebars", to);
+			copyTemplateFiles("mustache", to);
+			copyTemplateFiles("velocity", to);
+			return to;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Locate and copy the template's files used in unit tests.  
+	 * 
+	 * @param templateName The template name. Must be a directory (as from) with same name containing the files.
+	 * @param to Directory to copy.
+	 */
+	private static void copyTemplateFiles(final String templateName, final Path to) {
+		try {
+			FileUtils.copy(
+				Paths.get(TemplateEngineTest.class.getClassLoader().getResource("com/datamaio/scd4j/tmpl/impl/" + templateName).toURI()), 
+				Paths.get(to.toString(), templateName));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

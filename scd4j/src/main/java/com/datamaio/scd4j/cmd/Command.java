@@ -135,15 +135,16 @@ public abstract class Command {
 	public abstract void useradd(final String user, final String options);
 	public abstract void passwd(final String user, final String passwd);
 	
-	public abstract void chmod(String mode, String file);
-	public abstract void chmod(String mode, String file, boolean recursive);
-	public abstract void chown(String user, String file);
-	public abstract void chown(String user, String file, boolean recursive);
-	public abstract void chown(String user, String group, String file, boolean recursive);
+	public abstract void chmod(final String mode, final String file);
+	public abstract void chmod(final String mode, final String file, boolean recursive);
+	public abstract void chown(final String user, final String file);
+	public abstract void chown(final String user, final String file, final boolean recursive);
+	public abstract void chown(final String user, final String group, final String file);
+	public abstract void chown(final String user, final String group, final String file, final boolean recursive);
 
 	public abstract void ln(final String link, final String targetFile);
 	
-	public boolean exists(String file){
+	public boolean exists(final String file){
 		return Files.exists(Paths.get(file));
 	}
 	

@@ -24,6 +24,8 @@
 package com.datamaio.scd4j.conf;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -146,7 +148,17 @@ public class Configuration {
 	}
 
 	private Path workspace() {
-		return new File(".").getAbsoluteFile().toPath();
+		Path currentExecPath = Paths.get(".").toAbsolutePath();
+		Path portableCurrentExecPath = null;
+		for (Path rootPath : currentExecPath.getFileSystem().getRootDirectories()) {
+			if (currentExecPath.startsWith(rootPath)) {
+				portableCurrentExecPath = Paths.get("/" + rootPath.relativize(currentExecPath).toString());
+			}
+		}
+		if (portableCurrentExecPath == null) {
+			throw new IllegalStateException();
+		}
+		return portableCurrentExecPath;
 	}
 	
 	private String currentExecutionPath;

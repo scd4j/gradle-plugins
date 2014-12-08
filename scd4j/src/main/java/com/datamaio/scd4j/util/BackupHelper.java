@@ -38,7 +38,7 @@ import com.datamaio.scd4j.util.io.PathUtils;
 public class BackupHelper {
 	private final Path dir;
 
-	public BackupHelper(Configuration conf){
+	public BackupHelper(Configuration conf) {
 		this.dir = conf.getBackupDir();
 	}
 

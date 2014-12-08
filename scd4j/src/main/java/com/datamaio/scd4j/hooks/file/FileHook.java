@@ -98,7 +98,7 @@ public abstract class FileHook extends Hook {
 	 * @param group the new group
 	 * @param recursive if <code>true</code> apply the same rule for all sub dirs
 	 */	
-	protected void chown(String user, String group, boolean recursive) {
+	public void chown(String user, String group, boolean recursive) {
 		chown(user, group, target, recursive);
 	}
 	
