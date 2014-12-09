@@ -39,10 +39,25 @@ import java.util.logging.Logger;
  * @author Fernando Rubbo
  */
 public abstract class LinuxCommand extends Command {
-
+	public static final String OS_NAME = "Linux";
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	public abstract String getPackExtension();
+	
+	@Override
+	public String osname() {
+		return OS_NAME;
+	}
+	
+	@Override
+	public boolean isLinux() {
+		return true;
+	}
+	
+	@Override
+	public boolean isWindows() {
+		return false;
+	}
 	
 	@Override
 	public void serviceStart(String name){
@@ -99,12 +114,12 @@ public abstract class LinuxCommand extends Command {
 		if (file.endsWith(".sh")) {
 			// executa este cara apenas para garantir que se alguem salvou no windows
 			// este arquivo possa ser executado no Linux
-			normalizeTextContent(file);
+			fixTextContent(file);
 		}
 	}
 
 	@Override
-	public void normalizeTextContent(String file) {
+	public void fixTextContent(String file) {
 		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
 			installRemotePack("dos2unix");
 		}
@@ -116,31 +131,29 @@ public abstract class LinuxCommand extends Command {
 	}
 
 	@Override
-	public void chown(final String user, final String file) {
-		chown(user, null, file, false);
-		// Old impl. - chown(user, file, true);		
+	public void chown(final String user, final String path) {
+		chown(user, path, false);	
 	}
 
 	@Override
-	public void chown(final String user, final String file, final boolean recursive) {
-		chown(user, null, file, recursive);
-		// Old impl. - chown(user, user, file, recursive);
+	public void chown(final String user, final String path, final boolean recursive) {
+		chown(user, null, path, recursive);
 	}
 	
 	@Override
-	public void chown(final String user, final String group, final String file) {
-		chown(user, group, file, false);
+	public void chown(final String user, final String group, final String path) {
+		chown(user, group, path, false);
 	}
 
 	@Override
-	public void chown(final String user, final String group, final String file, final boolean recursive) {
+	public void chown(final String user, final String group, final String path, final boolean recursive) {
 		List<String> cmd = new ArrayList<>();
 		cmd.add("chown");
 		if (recursive) {
 			cmd.add("-R");
 		}
-		cmd.add(user + ":" + group);
-		cmd.add(file);
+		cmd.add(user + (group!=null ? ":" + group : ""));
+		cmd.add(path);
 		run(cmd);
 	}
 	

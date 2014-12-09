@@ -58,19 +58,19 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
 
 /**
  * This class is the "father" of all hook scripts. A hook script is where you
- * can put complex configuration/installation logic. In SCD4J we have two types of
+ * can put your configuration/installation logic. In SCD4J we have two types of
  * hooks:
  * <ol>
- * <li> {@link ModuleHook}: one per module (optional);
- * <li> {@link FileHook}: one per file (optional).
+ * <li> {@link ModuleHook}: one per module (optional)
+ * <li> {@link FileHook}: one per file (optional)
  * </ol>
  * <p>
  * This class publishes the following:
  * <ul>
- * <li> {@link #pre()} and {@link #post()} methods to be overridden in order to
- * define hooks semantics, pre (before) and post (after) respectively;
- * <li> Delegate and helper functions to be used in the {@link #pre()} and
- * {@link #post()} implementation.
+ * <li> {@link #pre(Closure)} and {@link #post(Closure)} methods. Those methods
+ * may or may not be called into hook files in order to pre-define before and after
+ * installation semantics, respectively
+ * <li>Delegate and helper functions to be used inside of hook files
  * </ul>
  * 
  * @author Fernando Rubbo
@@ -92,136 +92,154 @@ public abstract class Hook extends Script {
 		this.command = Command.get();
 	}
 	
-	//--------- method which can be overridden in hook files ------------
-
+	//---------------- pre and post closure setters ---------------
+	
 	/**
-	 * Override this method whenever you need to:
+	 * This method sets the closure that must be executed before the module/file
+	 * installation
+	 * <p>
+	 * You must call this method whenever you need to:
 	 * <ul>
-	 * 		<li>Conditionally install a module or a file;
-	 * 		<li>Execute any programming logic before installing a module or a file. For example:
-	 * 		<ul>
-	 * 			<li> Execute different logic according to the environment in which you are running on (dev, testing, staging and/or production);
-	 * 			<li> Execute different logic depending on the operational system you are running on (Ubuntu, CentOS, Windows);
-	 * 			<li> Stop a service (sometimes required to update a file);
-	 * 			<li> and others...
-	 * 		</ul>
+	 * <li>Conditionally install a module or a file
+	 * <li>Execute any programming logic before a module or a file installation.
+	 * For example:
+	 * <ul>
+	 * <li>Execute different logic according to the environment in which you are
+	 * running on (development, testing, staging and/or production)
+	 * <li>Execute different logic depending on the operational system you are
+	 * running on (Ubuntu, CentOS, Windows)
+	 * <li>Stop a service (sometimes required to update a file)
+	 * <li>and many others...
+	 * </ul>
 	 * </ul>
 	 * 
-	 * @param closure Closure containing pre-condition logic.
+	 * @param closure
+	 *            The closure containing the pre-condition logic. <br>
+	 *            Note that this closure must return an {@link Action}. If your
+	 *            implementation does not return anything we assume
+	 *            {@link Action#CONTINUE_INSTALLATION}
 	 */
-	protected void pre(Closure<Action> closure){
+	protected final void pre(Closure<Action> closure) {
 		this.pre = closure;
 	}	
 
 	/**
-	 * Override this method whenever you need to:
+	 * This method sets the closure that must be executed after the module/file
+	 * installation
+	 * <p>
+	 * You must call this method whenever you need to:
 	 * <ul>
-	 * 		<li>Execute any programming logic after installing a module or a file. For example:
-	 * 		<ul>
-	 * 			<li> Change the file permission;
-	 * 			<li> Rename or link a file;
-	 * 			<li> Start up a service;
-	 *  		<li> and others...
-	 * 		</ul>
+	 * <li>Execute any programming logic after installing a module or a file.
+	 * For example:
+	 * <ul>
+	 * <li>Change the file permission
+	 * <li>Rename or link the just installed file
+	 * <li>Start up a service
+	 * <li>and many others...
+	 * </ul>
 	 * </ul>
 	 * 
-	 * @param closure Closure containing post-condition logic.
-	 */	
-	protected void post(Closure<Void> closure){
+	 * @param closure
+	 *            The closure containing the post-condition logic.
+	 */
+	protected final void post(Closure<Void> closure){
 		this.post = closure;
 	}
 
-	//---------------- init command delegates ---------------
+	//---------------- helper and delegates methods ---------------
 	
-	/** 
-	 * Returns the name of the operational system (as OS). This looks at Java System Property "os.name".
-	 * @return The OS simple name.
+	/**
+	 * Returns the name of the operational system 
+	 * 
+	 * @return The OS name (i.e. Linux or Windows)
 	 */
 	public String osname() {
-		return Command.osname();
+		return command.osname();
 	}
 	
 	/**
-	 * Return the operational system version number.
-	 * @return As in method's description.
-	 */
-	public String osVersion() {
-		throw new UnsupportedOperationException("This is not programmed yet!");
-	}
-
-	/** 
-	 * Returns <code>true</code> if you are running on a Linux environment; false, otherwise.
-	 * @return As in method's description.
+	 * Returns <code>true</code> if you are running on a Linux environment,
+	 * false otherwise.
 	 */
 	public boolean isLinux() {
-		return Command.isLinux();
+		return command.isLinux();
 	}
 	
-	/** 
-	 * Returns <code>true</code> if you are running on a Windows environment; false, otherwise. 
-	 * @return As in method's description.
+	/**
+	 * Returns <code>true</code> if you are running on a Windows environment,
+	 * false otherwise.
 	 */
-	public boolean isWindows(){
-        return Command.isWindows();
-    }
+	public boolean isWindows() {
+		return command.isWindows();
+	}
 
-	/** 
-	 * Returns the distribution of the operational system.<br>
-	 * For example, it may return "CentOS", "Ubuntu", "Windows XYZ", "N/A", etc.
-	 * @return As in method's description.
+	/**
+	 * Returns the distribution of the operational system
+	 * <br>
+	 * For example, it may return "CentOS", "Ubuntu" OR "Windows <version>"
 	 */
 	public String distribution() {
 		return command.distribution();
 	}
 	
-	/** 
-	 * Execute a file. <br />
-	 * If the file is not executable, we try to make it executable. 
-	 * If it is not possible, an exception is thrown.
+	/**
+	 * Executes the given file <br>
+	 * If the file is not executable, we try to make it so (Linux only). If it is not
+	 * possible, an exception is thrown.
 	 * 
-	 * @param file The file path (as text).
+	 * @param file
+	 *            The executable file path
 	 */
 	public void execute(final String file) {
 		command.execute(file);
 	}
 	
-	/** 
-	 * Converts a text file (usually script file) into the particular patterns (special and control characters) and format (ISO, ASCII, etc.) defined by the 
-	 * operational system that you are running on. <br />
-	 * This is mostly required whenever you create a file in Windows and then run it on Linux, or vice and versa.
-	 * Note: Usually configuration files are not an issue, but executable scripts files are!
+	/**
+	 * Converts the given text file (usually a script file) into the pattern
+	 * defined by the operational system that you are running on.
+	 * <p>
+	 * This is mostly required whenever you create a file on Windows and then
+	 * run it on Linux, or vice and versa. Note: Usually configuration files are
+	 * not an issue (because they are read by a program that already understand
+	 * those difference), but executable scripts on Linux are!
 	 * 
-	 * @param textFile The text file path.
+	 * @param textFile
+	 *            The text file path
 	 */
-	public void normalize(final String textFile) {
-		command.normalizeTextContent(textFile);		
+	public void fixText(final String textFile) {
+		command.fixTextContent(textFile);
 	}
 
-	/** 
-	 * Creates a group of users. <br /> 
-	 * Note: Currently Linux only. 
-	 * @param group The name of the group.
+	/**
+	 * Creates a group of users. <br />
+	 * Note: Currently Linux only.
+	 * 
+	 * @param group
+	 *            The name of the group.
 	 */
 	public void groupadd(final String group) {
 		command.groupadd(group);
 	}
 
 	/**
-	 * Creates a group of users with options. <br /> 
+	 * Creates a group of users with options. <br />
 	 * Note: Currently Linux only.
 	 * 
-	 * @param group The name of the group.
-	 * @param options The same options you would like to use in the command line.
+	 * @param group
+	 *            The name of the group.
+	 * @param options
+	 *            The same options you would like to use in the command line.
 	 */
 	public void groupadd(final String group, final String options) {
 		command.groupadd(group, options);
 	}
 
-	/** 
+	/**
 	 * Creates an user. <br />
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The user name.
+	 * @param user
+	 *            The user name.
 	 */
 	public void useradd(final String user) {
 		command.useradd(user);
@@ -231,128 +249,140 @@ public abstract class Hook extends Script {
 	 * Creates an user with options. <br />
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The user name.
-	 * @param options The same options you would like to use in the command line.
+	 * @param user
+	 *            The user name.
+	 * @param options
+	 *            The same options you would like to use in the command line.
 	 */
 	public void useradd(final String user, final String options) {
 		command.useradd(user, options);
 	}
 
 	/**
-	 * Sets the user password.
-	 * <br />
+	 * Sets the user password. <br />
 	 * <br />
 	 * Important Notes:
 	 * <ol>
-	 * 		<li>Currently Linux only;</li>
-	 * 		<li>For Production environments it is a good practice to encrypt passwords in order to ensure that non authorized 
-	 * 		people could read it. To accomplish that, use the command line <code>'gradlew encrypt'</code>; <br />
-	 * 		To see other possibilities, type <code>'gradlew tasks'</code> in the command line. Probably you will be 
-	 * 		more interested in those which show up under <code>'Scd4j Tools tasks'</code> group;
-	 * 		<li>In Linux, if SELinux is turned on, this execution will fail.</li>
+	 * <li>Currently Linux only
+	 * <li>if SELinux is turned on, this execution will fail
+	 * <li>For Production environments it is a good practice to encrypt
+	 * passwords in order to ensure that non authorized people could NOT read
+	 * it. To accomplish that, use the command line
+	 * <code>'gradlew encrypt'</code>. This will generate an encrypted
+	 * property so that you can use it in your installation <br>
+	 * In order to see other possibilities, type <code>'gradlew tasks'</code> in
+	 * the command line. Probably you will be more interested in those which
+	 * show up under <code>'Scd4j Tools tasks'</code> group
 	 * </ol>
 	 * 
-	 * @param user The user name.
-	 * @param passwd User's password.
+	 * @param user
+	 *            The user name.
+	 * @param passwd
+	 *            User's password.
 	 */
 	public void passwd(final String user, final String passwd) {
 		command.passwd(user, passwd);
 	}
 
-	/** 
-	 * Changes the POSIX file permissions.
-	 * <br />
-	 * <br />
+	/**
+	 * Changes the POSIX file permissions. It is not recursive.<br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param mode Is the POSIX definition (ex: "777").
-	 * @param file Is the file which we would like to change the permissions.
+	 * @param mode
+	 *            The POSIX definition (for example: "777").
+	 * @param file
+	 *            The file which you would like to change the permissions.
 	 */
 	public void chmod(final String mode, final String file) {
 		command.chmod(mode, file);
 	}
 
-	/** 
+	/**
 	 * Changes the POSIX file Permissions<br>
-	 * <br />
-	 * <br />
 	 * Note: Currently Linux only.
 	 * 
-	 * @param mode Is the POSIX definition, ex: "777".
-	 * @param file Is the file which we would like to change the permissions.
-	 * @param recursive Iif <code>true</code> apply the same rule for all sub directories and files.
+	 * @param mode
+	 *            The POSIX definition (for example: "777")
+	 * @param file
+	 *            The file which you would like to change the permissions.
+	 * @param recursive
+	 *            If <code>true</code> apply the same rule for all sub
+	 *            directories and files.
 	 */
 	public void chmod(final String mode, final String file, final boolean recursive) {
 		command.chmod(mode, file, recursive);
 	}
 
-	/** 
-	 * Changes ownership of a file. It is not recursive and doesn't change the file/directory group. 
-	 * <br />
-	 * <br />
+	/**
+	 * Changes ownership of a file or a directory. It is not recursive.<br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The new file's owner.
-	 * @param file The path (file or directory) to change ownership. 
+	 * @param user
+	 *            The new file's owner.
+	 * @param path
+	 *            The path (file or directory) to change the ownership
 	 */
-	public void chown(final String user, final String file) {
-		command.chown(user, file);
+	public void chown(final String user, final String path) {
+		command.chown(user, path);
 	}
 	
-	/** 
-	 * Changes ownership of a file, possibly recursively. It doesn't change the file/directory group. 
-	 * <br />
-	 * <br />
+	/**
+	 * Changes ownership of a file, possibly recursively. <br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The new file's owner.
-	 * @param file The file to change ownership.
-	 * @param recursive If <code>true</code> apply the same rule for all sub directories and files.
+	 * @param user
+	 *            The new file's owner.
+	 * @param path
+	 *            The path (file or directory) to change the ownership.
+	 * @param recursive
+	 *            If <code>true</code> apply the same rule for all sub
+	 *            directories and files.
 	 */
-	public void chown(final String user, final String file, final boolean recursive) {
-		command.chown(user, file, recursive);
+	public void chown(final String user, final String path, final boolean recursive) {
+		command.chown(user, path, recursive);
 	}
 	
-	/** 
-	 * Changes ownership of a file. It is not recursive.
-	 * <br />
-	 * <br />
+	/**
+	 * Changes ownership of a file. It is not recursive.<br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The new file's owner.
-	 * @param group The new group.
-	 * @param file The file to change ownership.
+	 * @param user
+	 *            The new file's owner.
+	 * @param group
+	 *            The new group.
+	 * @param path
+	 *            The path (file or directory) to change ownership.
 	 */
-	public void chown(final String user, final String group, final String file) {
-		// TODO - Implement command.chown(user, group, file);
+	public void chown(final String user, final String group, final String path) {
+		command.chown(user, path, path);
 	}
 
-	/** 
-	 * Changes ownership of a file, possibly recursively.
-	 * <br />
-	 * <br />
+	/**
+	 * Changes ownership of a file, possibly recursively.<br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param user The new file's owner.
-	 * @param group The new group.
-	 * @param file The file to change ownership.
-	 * @param recursive If <code>true</code> apply the same rule for all sub directories and files.
+	 * @param user
+	 *            The new file's owner.
+	 * @param group
+	 *            The new group.
+	 * @param path
+	 *            The path (file or directory) to change ownership.
+	 * @param recursive
+	 *            If <code>true</code> apply the same rule for all sub
+	 *            directories and files.
 	 */
-	public void chown(final String user, final String group, final String file, final boolean recursive) {
-		command.chown(user, group, file, recursive);
+	public void chown(final String user, final String group, final String path, final boolean recursive) {
+		command.chown(user, group, path, recursive);
 	}
 
-	/** 
-	 * DSL for {@link #ln(String, String)}.
-	 * <br />
+	/**
+	 * DSL for {@link #ln(String, String)}. <br />
 	 * <br />
 	 * How to use this DSL:
 	 * 
 	 * <pre>
-	 * link "/etc/init.d/my_text_link" to "/opt/test/my_existing_file" 
-	 * </pre> 
-	 * 
-	 * @param link The link to path (file or directory).
+	 * link "/etc/init.d/my_text_link" to "/opt/test/my_existing_file"
+	 * </pre>
 	 */
 	public Destination link(final String link) {
 		return new Destination() {
@@ -363,51 +393,75 @@ public abstract class Hook extends Script {
 		};		
 	}
 	
-	/** 
-	 * Create a symbolic link
-	 * <br />
-	 * <br />
+	/**
+	 * Create a symbolic link <br>
 	 * Note: Currently Linux only.
 	 * 
-	 * @param link The link path.
-	 * @param targetFile The target path (file or directory) to be linked.
+	 * @param link
+	 *            The link path.
+	 * @param targetFile
+	 *            The target path (file or directory) to be linked.
 	 */
 	public void ln(final String link, final String targetFile) {
 		command.ln(link, targetFile);
 	}
+
+	/**
+	 * Returns the current user name.
+	 */
+	public String whoami() {
+		return command.whoami();
+	}
 	
-	/** 
+	/**
 	 * Checks if the given path (file or directory) exists.
 	 * 
-	 * @param file The target path (file or directory).
-	 * @return As in method's description.
+	 * @param file
+	 *            The target path (file or directory).
+	 * @return <code>true</code> if the file exists, <code>false</code>
+	 *         otherwise
 	 */
 	public boolean exists(final String file) {
 		return command.exists(file);
 	}
-	
-	/** 
-	 * Returns the current user name.
-	 * 
-	 * @return As in method's description.
-	 */
-	public String whoami() {
-		return Command.whoami();
-	}
 
-	/** 
+	/**
 	 * Creates a directory and all nonexistent parent directories first.
 	 * 
-	 * @param dir Directory path to create.
+	 * @param dir
+	 *            Directory path to create.
 	 */
 	public void mkdir(final String dir) {
 		command.mkdir(dir);
 	}
+	
+	/** 
+	 * DSL for {@link #rm(String)} 
+	 * <p>
+	 * How to use this DSL:
+	 * <pre>
+	 * remove "/opt/test/my_existing_file" 
+	 * remove "/opt/test/my_existing_dir"
+	 * </pre>
+	 */
+	public void remove(final String path) {
+		rm(path);
+	}
+
+	/**
+	 * Remove a file or a directory (include the parameterized path and all of
+	 * its sub entries).
+	 * 
+	 * @param path
+	 *            Path to file or directory to be exclude.
+	 */
+	public void rm(final String path) {
+		command.rm(path);
+	}
 
 	/** 
 	 * DSL for {@link #mv(String, String)}.
-	 * <br />
-	 * <br />
+	 * <p>
 	 * How to use this DSL:
 	 * <pre>
 	 * move "/opt/test/my_existing_file" to "/opt/test/new_name" 
@@ -423,58 +477,17 @@ public abstract class Hook extends Script {
 		};		
 	}
 
-	/**  
-	 * Move a origin path (file or a directory) to another path (must be the same type as <code>from</code> parameter).
+	/**
+	 * Move a origin path (file or a directory) to another path (must be the
+	 * same type as <code>from</code> parameter).
 	 * 
-	 * @param from Origin/source path.
-	 * @param to Destination path.
+	 * @param from
+	 *            Origin/source path.
+	 * @param to
+	 *            Destination path.
 	 */
 	public void mv(final String from, final String to) {
 		command.mv(from, to);
-	}
-	
-	/** 
-	 * DSL for {@link #ls(String)}.
-	 * 
-	 * @param path Path to list entries.
-	 */
-	public List<String> list(final String path) {
-		return ls(path);
-	}
-	
-	/** 
-	 * List the entries (files and directories) of a given directory path.
-	 * 
-	 * @param path Path to list entries.
-	 * @return List of all files and directories matched.
-	 */
-	public List<String> ls(final String path) {
-		return command.ls(path);
-	}
-
-	/** 
-	 * DSL for {@link #rm(String)}.
-	 * <br />
-	 * <br />
-	 * How to use this DSL:
-	 * <pre>
-	 * remove "/opt/test/my_existing_file" 
-	 * remove "/opt/test/my_existing_dir"
-	 * </pre>
-	 * 
-	 * @param path Path to remove.
-	 */
-	public void remove(final String path) {
-		rm(path);
-	}
-
-	/** 
-	 * Remove a file or a directory (include the parameterized path and all of its sub entries).
-	 * 
-	 * @param path Path to file or directory to be exclude.
-	 */
-	public void rm(final String path) {
-		command.rm(path);
 	}
 	
 	/** 
@@ -495,16 +508,16 @@ public abstract class Hook extends Script {
 		};
 	}
 	
-	/** 
+	/**
 	 * Copy a file or a directory from a destination to another.
-	 * <br />
-	 * <br />
 	 * 
-	 * @param from Accepts a file path or a dependency.
-	 * @param to The destination directory
+	 * @param from
+	 *            Accepts a file path or a dependency.
+	 * @param to
+	 *            The destination directory
 	 */
 	public void cp(final String from, final String to) {
-		String newFrom = null;
+		String newFrom = from;
 		if (!Files.exists(Paths.get(from))) {
 			try {
 				newFrom = resolve(from);
@@ -512,10 +525,31 @@ public abstract class Hook extends Script {
 				throw new RuntimeException("It was not possible to find file/dir '" + from + "' to copy!");
 			}
 		}
-		newFrom = from;		
 		command.cp(newFrom, to);
 	}
 	
+	/** 
+	 * DSL for {@link #ls(String)}
+	 * <p>
+	 * How to use this DSL:
+	 * <pre>
+	 * def files = list "/opt/test" 
+	 * </pre>
+	 */
+	public List<String> list(final String path) {
+		return ls(path);
+	}
+	
+	/** 
+	 * List the entries (files and directories) of a given directory path.
+	 * 
+	 * @param path Path to list entries.
+	 * @return List of all files and directories matched.
+	 */
+	public List<String> ls(final String path) {
+		return command.ls(path);
+	}
+
 	// --- run ----
 
 	/** 

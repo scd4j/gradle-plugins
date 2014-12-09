@@ -46,10 +46,7 @@ import com.datamaio.scd4j.util.io.FileUtils;
  * @author Fernando Rubbo
  */
 public abstract class Command {
-	public static final String OS_LINUX = "Linux";
-	public static final String OS_WINDOWS = "Windows";
-
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);	
 	private static final Interaction NO_PRINTING = new Interaction() {
 		@Override
 		boolean shouldPrintCommand() {
@@ -79,7 +76,8 @@ public abstract class Command {
 	public static Command INSTANCE;
 	public static synchronized final Command get() {
 		if(INSTANCE==null) {
-			if(isLinux()) {
+			String os = System.getProperty("os.name");
+			if(os.toUpperCase().contains("LINUX")) {
 				List<String> cmdList = Arrays.asList("uname -a".split(" "));			
 				String dist = _run(cmdList, NO_PRINTING);
 				if(dist.contains(UbuntuCommand.DIST_NAME)) {
@@ -96,19 +94,10 @@ public abstract class Command {
 		return INSTANCE;
 	}
 
-	public static String osname() {
-		return System.getProperty("os.name");
-	}
-
-	public static boolean isLinux() {
-		String os = osname();
-		return os != null ? os.toUpperCase().contains(OS_LINUX.toUpperCase()) : false;
-	}
+	public abstract String osname();
+	public abstract boolean isLinux();
+	public abstract boolean isWindows();
 	
-	public static boolean isWindows(){
-        return !isLinux();
-    }
-
 	public abstract void serviceStart(String name);
 	public abstract void serviceStop(String name);
 	public abstract void serviceRestart(String name);
@@ -127,7 +116,7 @@ public abstract class Command {
 	public abstract void uninstallRemotePack(String pack);
 	public abstract void uninstallLocalPack(String pack);
 	public abstract void unzip(String from, String toDir);
-	public abstract void normalizeTextContent(String file);
+	public abstract void fixTextContent(String file);
 	
 	public abstract void groupadd(final String group);
 	public abstract void groupadd(final String group, final String options);
@@ -137,10 +126,10 @@ public abstract class Command {
 	
 	public abstract void chmod(final String mode, final String file);
 	public abstract void chmod(final String mode, final String file, boolean recursive);
-	public abstract void chown(final String user, final String file);
-	public abstract void chown(final String user, final String file, final boolean recursive);
-	public abstract void chown(final String user, final String group, final String file);
-	public abstract void chown(final String user, final String group, final String file, final boolean recursive);
+	public abstract void chown(final String user, final String path);
+	public abstract void chown(final String user, final String path, final boolean recursive);
+	public abstract void chown(final String user, final String group, final String path);
+	public abstract void chown(final String user, final String group, final String path, final boolean recursive);
 
 	public abstract void ln(final String link, final String targetFile);
 	
@@ -148,7 +137,7 @@ public abstract class Command {
 		return Files.exists(Paths.get(file));
 	}
 	
-	public static String whoami() {
+	public String whoami() {
 		return System.getProperty("user.name");
 	}
 

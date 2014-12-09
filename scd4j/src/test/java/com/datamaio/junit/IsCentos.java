@@ -1,12 +1,11 @@
 package com.datamaio.junit;
 
-import com.datamaio.junit.RunIfRule.RunIfCondition;
 import com.datamaio.scd4j.cmd.CentosCommand;
 import com.datamaio.scd4j.cmd.Command;
 
-public class IsCentos implements RunIfCondition {
+public class IsCentos extends IsLinux {
 	@Override
 	public boolean condition() {
-		return Command.isLinux() && CentosCommand.DIST_NAME.equals(Command.get().distribution());
+		return super.condition() && CentosCommand.DIST_NAME.equals(Command.get().distribution());
 	}
 }

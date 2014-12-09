@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.cmd.Command.whoami;
 import static org.mockito.Mockito.reset;
 
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class HookActiveAtBootTest {
 	private static Path root;
 	
 	@Mock
-	Configuration conf;
+	private Configuration conf;
 	@Spy
 	private Hook hook = new ModuleHook() {		
 		@Override
@@ -133,7 +132,7 @@ public class HookActiveAtBootTest {
 	}
 	
 	private void checkRoot() {
-		String whoami = whoami();
+		String whoami = System.getProperty("user.name");
 		if (!"root".equals(whoami)) {
 			throw new RuntimeException("This Automated Test must run with root. You are " + whoami);
 		}

@@ -24,7 +24,6 @@
 
 package com.datamaio.scd4j;
 
-import static com.datamaio.scd4j.cmd.Command.isWindows;
 import static com.datamaio.scd4j.conf.Configuration.build;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -48,6 +47,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.datamaio.scd4j.cmd.WindowsCommand;
 import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
@@ -411,5 +411,10 @@ public class EnvConfiguratorTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	private boolean isWindows() {
+		String os = System.getProperty("os.name");
+		return os.toUpperCase().contains("WINDOWS");
 	}
 }

@@ -74,8 +74,8 @@ public abstract class FileHook extends Hook {
 	 * <p>
 	 * Note: Usually config files are not an issue, but executable files are!!
 	 */
-	protected void normalize() {
-		normalize(target);	
+	protected void fixTargetText() {
+		fixText(target);	
 	}
 	
 	/** 

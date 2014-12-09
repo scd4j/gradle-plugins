@@ -23,9 +23,6 @@
  */
 package com.datamaio.scd4j.cmd;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
@@ -37,8 +34,24 @@ import com.datamaio.scd4j.util.io.ZipUtils;
  * @author Mateus M. da Costa
  */
 public class WindowsCommand extends Command {
+	public static final String OS_NAME = "Windows";
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
+	@Override
+	public  String osname() {
+		return OS_NAME;
+	}
+	
+	@Override
+	public  boolean isLinux() {
+		return false;
+	}
+	
+	@Override
+	public  boolean isWindows() {
+		return true;
+	}
+	
 	@Override
 	public void serviceStart(String name){
 		throw new RuntimeException("Function 'service start' not implemented for windows");
@@ -117,7 +130,7 @@ public class WindowsCommand extends Command {
 	}
 
 	@Override
-	public void normalizeTextContent(String file) {
+	public void fixTextContent(String file) {
 		throw new RuntimeException("Function 'normalizeTextContent' not implemented for windows");
 	}
 

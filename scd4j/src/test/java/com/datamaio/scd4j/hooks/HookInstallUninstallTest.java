@@ -23,7 +23,6 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.cmd.Command.whoami;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -181,7 +180,7 @@ public class HookInstallUninstallTest {
 	
 	
 	private void checkRoot() {
-		String whoami = whoami();
+		String whoami = System.getProperty("user.name");
 		if (!"root".equals(whoami)) {
 			throw new RuntimeException("This Automated Test must run with root. You are " + whoami);
 		}

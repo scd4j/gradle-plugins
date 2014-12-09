@@ -4,10 +4,10 @@ import com.datamaio.junit.RunIfRule.RunIfCondition;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
 
-public class IsUbuntu implements RunIfCondition {
+public class IsUbuntu extends IsLinux implements RunIfCondition {
 	@Override
 	public boolean condition() {
-		return Command.isLinux() && UbuntuCommand.DIST_NAME.equals(Command.get().distribution());
+		return super.condition() && UbuntuCommand.DIST_NAME.equals(Command.get().distribution());
 	}
 
 }
