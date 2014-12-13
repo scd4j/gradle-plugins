@@ -51,7 +51,7 @@ public abstract class FileHook extends Hook {
 	 * @param mode
 	 *            is the posix definition, e.g. "777"
 	 */
-	protected void chmod(String mode) {
+	public void chmod(String mode) {
 		chmod(mode, target);
 	}
 	
@@ -65,7 +65,7 @@ public abstract class FileHook extends Hook {
 	 * @param recursive
 	 *            if <code>true</code> apply the same rule for all sub dirs
 	 */
-	protected void chmod(String mode, boolean recursive) {
+	public void chmod(String mode, boolean recursive) {
 		chmod(mode, target, recursive);
 	}
 	
@@ -78,7 +78,7 @@ public abstract class FileHook extends Hook {
 	 * not an issue (because they are read by a program that already understand
 	 * those difference), but executable scripts on Linux are!
 	 */
-	protected void fixText() {
+	public void fixText() {
 		fixText(target);	
 	}
 	
@@ -90,7 +90,7 @@ public abstract class FileHook extends Hook {
 	 * @param user
 	 *            The new file's owner.
 	 */
-	protected void chown(String user) {
+	public void chown(String user) {
 		chown(user, target);
 	}
 	
@@ -117,7 +117,7 @@ public abstract class FileHook extends Hook {
 	 * @param link
 	 *            the link path
 	 */
-	protected void linkToTarget(String link) {
+	public void linkToTarget(String link) {
 		ln(link);
 	}
 	
@@ -129,12 +129,12 @@ public abstract class FileHook extends Hook {
 	 * @param link
 	 *            the link path
 	 */
-	protected void ln(String link) {
+	public void ln(String link) {
 		ln(link, target);
 	}
 	
 	/** Rename the target file/dir. Very useful in the post{..} hook */
-	protected void renameTo(String to) {
+	public void renameTo(String to) {
         mv(target, to);
     }
 	
@@ -143,7 +143,7 @@ public abstract class FileHook extends Hook {
 	 * If the file is not executable, we try to make it executable. 
 	 * If it was not possible, an exception is thrown  
 	 */
-	protected void reloadFile() {
+	public void reloadFile() {
 		execute(target);
 	}
 	
@@ -151,7 +151,7 @@ public abstract class FileHook extends Hook {
 	 * returns the target directory. If the target is already a dir returns it,
 	 * otherwise return its parent
 	 */
-	protected String getTargetDirectory(){
+	public String getTargetDirectory(){
 		Path path = Paths.get(target);
 		if(Files.isDirectory(path)){
 			return target;

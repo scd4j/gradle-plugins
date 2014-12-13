@@ -638,7 +638,7 @@ public abstract class Hook extends Script {
 	 * 
 	 * @see {@link #isTesting()}, {@link #isStaging()}, {@link #isProduction()}
 	 */
-	protected boolean isDevelopment(){
+	public boolean isDevelopment(){
 		return !isTesting() && !isStaging() && !isProduction();
 	}
 
@@ -667,7 +667,7 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isTesting(){
+	public boolean isTesting(){
 		final String address = whatIsMyIp();
 		return envs.isTesting(address);
 	}
@@ -697,7 +697,7 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isStaging(){
+	public boolean isStaging(){
 		final String address = whatIsMyIp();
 		return envs.isStagging(address);
 	}
@@ -729,7 +729,7 @@ public abstract class Hook extends Script {
 	 * environment, just ignore it. Everything will be development
 	 * </ol>
 	 */
-	protected boolean isProduction(){
+	public boolean isProduction(){
 		final String address = whatIsMyIp();
 		return envs.isProduction(address);
 	}
@@ -743,7 +743,7 @@ public abstract class Hook extends Script {
 	 * 
 	 * @return the ip address
 	 */
-    protected String whatIsMyIp()
+    public String whatIsMyIp()
     {
         try {
 			final InetAddress addr = InetAddress.getLocalHost();
@@ -767,7 +767,7 @@ public abstract class Hook extends Script {
 	 * 
 	 * @return the ip address
 	 */
-    protected String whatIsMyHostName()
+    public String whatIsMyHostName()
     {
         try {
 			final InetAddress addr = InetAddress.getLocalHost();
@@ -818,7 +818,7 @@ public abstract class Hook extends Script {
 	 * set permanent: "my_key" with: 98.23	 
 	 * </pre>
 	 */
-    protected void set(Map<String, ? extends Object> values){
+    public void set(Map<String, ? extends Object> values){
     	Object value = values.get("with");
     	if(value==null){
     		throw new RuntimeException("Incorrect use of 'set' try: set temporary: \"MY_KEY\", with:\"MY_VALUE\"");
@@ -866,7 +866,7 @@ public abstract class Hook extends Script {
 	 * set "my_key" with 98.23  _as permanent
 	 * </pre>
 	 */
-    protected SetValue set(String key){
+    public SetValue set(String key){
     	return new SetValue(){
 			@Override
 			public SetDuration with(String value) {
@@ -976,7 +976,7 @@ public abstract class Hook extends Script {
 	 * }
 	 * </pre>
      */
-	protected String get(final String key){
+    public String get(final String key){
 		if(props==null)
 			return null;
 	    return props.get(key);
@@ -997,7 +997,7 @@ public abstract class Hook extends Script {
 	 * }
 	 * </pre>
 	 */
-	protected boolean contains(final String key){
+    public boolean contains(final String key){
         return props.get(key)!=null;
     }
 	
@@ -1160,7 +1160,7 @@ public abstract class Hook extends Script {
 	 * 	unzip "my_other_dependency.zip" to "/opt/my_other_dependency_dir"
 	 * </pre>
 	 */	
-	protected Destination unzip(String depName) {
+	public Destination unzip(String depName) {
 		return new Destination() {			
 			@Override
 			public void to(String dir) {
@@ -1209,7 +1209,7 @@ public abstract class Hook extends Script {
 	 * @param doDir
 	 * 				destination directory
 	 */	 
-	protected void unzip(String depName, String toDir) {
+	public void unzip(String depName, String toDir) {
 		String from = resolve(depName);
 		command.unzip(from, toDir);				
 	}
@@ -1269,7 +1269,7 @@ public abstract class Hook extends Script {
 	 *            the full dependency name
 	 * @return the full path where is located the file
 	 */		
-    protected String resolve(final String depName) {
+	public String resolve(final String depName) {
     	Path file = conf.getDependency(depName);
     	
     	if(file==null && isLinux()){
