@@ -8,7 +8,7 @@ For more details and advantages see documentation at [wiki](https://github.com/s
 Config Example:
 ```
 plugins {
-  id "com.datamaio.scd4j" version "0.3"
+  id "com.datamaio.scd4j" version "0.4"
 }
 
 dependencies {
@@ -18,12 +18,12 @@ dependencies {
 
 scd4j {
 	install {
-		modules = ["my_module_dir"] 	// should be any dir into modules dir
-		config = "my_config_file.conf"	// should be any property file into config dir. By convention we strongly suggest to put the extention .conf in the file
+		modules "my_module_dir" 	// should be any dir into modules dir
+		config  "my_config_file.conf"	// should be any properties file into config dir.
 		env {
-			production = ["192.168.10.21"]		  	  	  // your production ips
-			staging    = ["192.168.10.21"]		  	  	  // your staging ips
-			testing    = ["192.168.7.20", "192.168.7.21"]  // your test/stage ips
+			production  "192.168.10.21"		  	  	  // your production ips
+			staging     "192.168.10.21"		  	  	  // your staging ips
+			testing     "192.168.7.20", "192.168.7.21"  // your test/stage ips
 		}
 	}
 }
