@@ -38,7 +38,7 @@ import com.datamaio.scd4j.tmpl.Writable;
 
 
 /**
- * Template documentation at https://velocity.apache.org/engine/releases/velocity-1.5/user-guide.html
+ * Template documentation at https://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html
  * 
  * @author Fernando Rubbo
  * @author Mateus M. da Costa

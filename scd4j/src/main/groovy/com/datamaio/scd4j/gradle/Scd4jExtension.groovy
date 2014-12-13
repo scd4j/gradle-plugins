@@ -38,6 +38,15 @@ class EnvNestedExtension{
 	String[] production = []
 	String[] staging  = []
 	String[] testing = []
+	void production(String... ips) {
+		production = ips
+	}
+	void staging(String... ips) {
+		staging = ips
+	}
+	void testing(String... ips) {
+		testing = ips
+	}
 }
 
 /**
@@ -45,8 +54,14 @@ class EnvNestedExtension{
  * @author Fernando Rubbo
  */
 class InstallNestedExtension{
-	String config
+	String config = ""
 	String[] modules = []
+	void config(String conf){
+		config = conf
+	}
+	void modules(String... mods){
+		modules = mods
+	}
 }
 
 /**
@@ -61,7 +76,10 @@ class SettingsNestedExtention{
  * @author Fernando Rubbo
  */
 class TemplateNestedExtention{
-	String engine="groovy"
+	String engine = "groovy"
+	void engine(String eng){
+		engine = eng
+	}
 }
 
 /**
@@ -69,7 +87,7 @@ class TemplateNestedExtention{
  * @author Fernando Rubbo
  */
 class LinuxNestedExtention{
-	boolean usesudo=false
+//	boolean usesudo = false
 }
 
 /**

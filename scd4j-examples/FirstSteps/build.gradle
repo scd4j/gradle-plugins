@@ -1,0 +1,24 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url 'file:///opt/gradle-repo/maven-repo/' }
+	}
+	dependencies {
+		classpath 'com.datamaio:scd4j:+'
+	}
+}
+apply plugin: 'com.datamaio.scd4j'
+
+/*
+plugins {
+  id "com.datamaio.scd4j" version "0.3"
+}
+*/
+
+scd4j {
+	install {
+		modules "example-module1"
+		config "example.conf"		
+	}
+}
+

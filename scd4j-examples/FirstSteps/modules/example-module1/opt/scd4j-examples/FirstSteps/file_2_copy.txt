@@ -1,0 +1,1 @@
+This file will be copied as it is to the destination folder because it has no scd4j extensions

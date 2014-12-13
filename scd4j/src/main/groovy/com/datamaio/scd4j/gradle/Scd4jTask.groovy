@@ -60,7 +60,7 @@ class Scd4jTask extends DefaultTask {
 		println "Pack Name     : ${project.archivesBaseName} "
 		println "Pack Version  : ${project.version} "
 		println "====== Environment Configuration ======"
-        println "IP PRODUCTION LIST : ${env.production}" 
+        println "IP PRODUCTION LIST 	: ${env.production}" 
         println "IP STAGIN  LIST  	: ${env.staging}" 
         println "IP TESTING LIST  	: ${env.testing}" 
 		println "IP DESENV  LIST  	: [ANY OTHER]"
