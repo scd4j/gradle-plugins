@@ -18,11 +18,11 @@ dependencies {
 
 scd4j {
 	install {
-		modules "my_module_dir" 	// should be any dir into modules dir
+		modules "my_module_dir" 	    // should be any dir into modules dir
 		config  "my_config_file.conf"	// should be any properties file into config dir.
 		env {
-			production  "192.168.10.21"		  	  	  // your production ips
-			staging     "192.168.10.21"		  	  	  // your staging ips
+			production  "192.168.10.21"		  	  	    // your production ips
+			staging     "192.168.10.21"		  	  	    // your staging ips
 			testing     "192.168.7.20", "192.168.7.21"  // your test/stage ips
 		}
 	}
