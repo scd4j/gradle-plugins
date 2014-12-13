@@ -12,7 +12,7 @@ plugins {
 }
 
 dependencies {
-	// dependencies we desire to install - Must be in your own repo (my_repo in this case)
+	// dependencies we desire to install
 	scd4j url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
 }
 
