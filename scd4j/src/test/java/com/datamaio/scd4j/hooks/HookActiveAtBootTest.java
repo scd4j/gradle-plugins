@@ -107,7 +107,7 @@ public class HookActiveAtBootTest {
 
 		// isntall
 		hook.ln(srcPath.toString(), targetPath.toString()); 
-		hook.activeAtBoot(service);
+		hook.registryToBoot(service);
 		
 		// check
 		if( hook.ls("/etc/rc3.d").stream().filter(s -> s.contains(service)).count()==0 ) {
@@ -115,7 +115,7 @@ public class HookActiveAtBootTest {
 		} 
 		
 		// clean up		
-		hook.deactiveAtBoot(service);
+		hook.unregistryFromBoot(service);
 		hook.rm(targetPath.toString());
 		hook.rm(dir.toString());
 		

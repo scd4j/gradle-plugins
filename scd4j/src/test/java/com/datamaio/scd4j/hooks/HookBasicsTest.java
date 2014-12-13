@@ -23,14 +23,21 @@
  */
 package com.datamaio.scd4j.hooks;
 
+import static java.nio.file.Files.createTempFile;
+import static java.nio.file.Files.exists;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -238,20 +245,133 @@ public class HookBasicsTest {
 
 	
 	@Test
-	public void mv() {
-		Assert.fail("DODO");
+	public void moveFileToDir() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path targetDir = Files.createTempDirectory("DIR");
+		
+		try {
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			assertThat(exists(file), is(true));
+			assertThat(exists(targetFile), is(false));
+			hook.mv(file.toString(), targetDir.toString());
+			fail("Should not allow to move a file to a directory. You must provide the name of the target file");
+		} catch (Exception e) {
+			assertThat(e.getCause(), instanceOf(FileSystemException.class));			
+		} finally {		
+			FileUtils.delete(targetDir);
+			assertThat(exists(targetDir), is(false));
+		}
 	}
 	
 	@Test
-	public void cp() {
-		// TESTE all dependencies possibilities 
-		Assert.fail("DODO");
-	}
-	
-	@Test
-	public void ls() {
-		Assert.fail("DODO");
-	}
+	public void moveFile() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path targetDir = Files.createTempDirectory("DIR");
 
+		try {
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			assertThat(exists(file), is(true));		
+			assertThat(exists(targetFile), is(false));
+			hook.mv(file.toString(), targetFile.toString());
+			assertThat(exists(file), is(false));
+			assertThat(exists(targetFile), is(true));			
+		} finally {
+			FileUtils.delete(targetDir);
+			assertThat(exists(targetDir), is(false));
+		}
+	}
+	
+	@Test
+	public void moveFileToNonExistingDir() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path tempDir = Files.createTempDirectory("DIR");
+		try {	
+			Path targetDir = PathUtils.get(tempDir, "TO_BE_CREATED");	
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			assertThat(exists(file), is(true));
+			assertThat(exists(targetDir), is(false));
+			assertThat(exists(targetFile), is(false));
+			hook.mv(file.toString(), targetFile.toString());
+			fail("Should be thrown NoSuchFileException, because directory does not exists!");
+		} catch (Exception e) {
+			assertThat(e.getCause(), instanceOf(NoSuchFileException.class));
+		} finally {		
+			FileUtils.delete(tempDir);
+			assertThat(exists(tempDir), is(false));
+		}
+	}
+		
+
+	@Test
+	public void copyFileToDir() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path targetDir = Files.createTempDirectory("DIR");
+		
+		try {
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			assertThat(exists(targetFile), is(false));
+			hook.cp(file.toString(), targetDir.toString());
+			assertThat(exists(targetFile), is(true));
+		} finally {		
+			FileUtils.delete(file);
+			assertThat(exists(file), is(false));
+			FileUtils.delete(targetDir);
+			assertThat(exists(targetDir), is(false));
+		}
+	}
+	
+	@Test
+	public void copyFile() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path targetDir = Files.createTempDirectory("DIR");
+
+		try {
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			hook.cp(file.toString(), targetFile.toString());
+			assertThat(exists(targetFile), is(true));
+		} finally {
+			FileUtils.delete(file);
+			assertThat(exists(file), is(false));
+			FileUtils.delete(targetDir);
+			assertThat(exists(targetDir), is(false));
+		}
+	}
+	
+	@Test
+	public void copyFileToNonExistingDir() throws Exception {
+		Path file = createTempFile("FILE", ".tmp");
+		Path tempDir = Files.createTempDirectory("DIR");
+		try {	
+			Path targetDir = PathUtils.get(tempDir, "TO_BE_CREATED");	
+			Path targetFile = PathUtils.get(targetDir, file.getFileName());
+			hook.cp(file.toString(), targetFile.toString());
+			fail("Should be thrown NoSuchFileException, because directory does not exists!");
+		} catch (Exception e) {
+			assertThat(e.getCause(), instanceOf(NoSuchFileException.class));
+		} finally {		
+			// cleanup		
+			FileUtils.delete(file);
+			assertThat(exists(file), is(false));
+			FileUtils.delete(tempDir);
+			assertThat(exists(tempDir), is(false));
+		}
+	}
+		
+	@Test
+	public void ls() throws Exception {
+		Path parentdir = Files.createTempDirectory("DIR");	
+		try {
+			Path parentdirfile1 = createTempFile(parentdir, "FILE_1", ".tmp");
+			Path parentdirfile2 = createTempFile(parentdir, "FILE_2", ".tmp");
+			
+			List<String> files = hook.ls(parentdir.toString());
+			assertThat(files.size(), is(2));
+			assertThat(files, hasItem(parentdirfile1.toString()));		
+			assertThat(files, hasItem(parentdirfile2.toString()));
+		} finally {
+			FileUtils.delete(parentdir);
+			assertThat(exists(parentdir), is(false));			
+		}
+	}
 
 }

@@ -30,6 +30,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -203,6 +204,7 @@ public class FileUtilsTest {
 			Path targetDir = PathUtils.get(tempDir, "TO_BE_CREATED");	
 			Path targetFile = PathUtils.get(targetDir, file.getFileName());
 			FileUtils.copy(file, targetFile);
+			fail("Should be thrown NoSuchFileException, because directory does not exists!");
 		} catch (Exception e) {
 			assertThat(e.getCause(), instanceOf(NoSuchFileException.class));
 		} finally {		
@@ -270,6 +272,9 @@ public class FileUtilsTest {
 		assertThat(files.size(), is(2));
 		assertThat(files, hasItem(parentdirfile1));		
 		assertThat(files, hasItem(parentdirfile2));
+		
+		FileUtils.delete(parentdir);
+		assertThat(exists(parentdir), is(false));			
 	}
 	
 	@Test

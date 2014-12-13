@@ -195,10 +195,10 @@ public abstract class LinuxCommand extends Command {
 		List<String> cmd = Arrays.asList("passwd", user);
 		run(cmd, new Interaction() {
 			@Override
-			void execute(OutputStream out) throws Exception {
+			void interact(OutputStream out) throws Exception {
 				byte[] bytes = (passwd + "\n").getBytes();
-				out.write(bytes); // entra a senha
-				out.write(bytes); // confirma a senha
+				out.write(bytes); // write password
+				out.write(bytes); // confirm password
 			}
 		});
 	}

@@ -58,21 +58,6 @@ public abstract class Command {
 		}		
 	};
 	
-	public static class Interaction {
-		boolean shouldPrintCommand() {
-			return true;
-		}
-		boolean shouldPrintOutput() {
-			return true;
-		}		
-		void execute(OutputStream out) throws Exception {
-			// do nothing
-		}
-		boolean isExecutionSuccessful(int waitfor) {
-			return 0 == waitfor;
-		}
-	}
-	
 	public static Command INSTANCE;
 	public static synchronized final Command get() {
 		if(INSTANCE==null) {
@@ -103,8 +88,8 @@ public abstract class Command {
 	public abstract void serviceRestart(String name);
 	public abstract String serviceStatus(String name);
 
-	public abstract void activeAtBoot(String name);
-	public abstract void deactiveAtBoot(String name);
+	public abstract void startServiceAtSystemBoot(String name);
+	public abstract void doNotStartServiceAtSystemBoot(String name);
 	
 	public abstract String distribution();
 	public abstract void execute(String file);
@@ -200,7 +185,7 @@ public abstract class Command {
 	public String run(List<String> cmdList, final int... successfulExec) {
 		return run(cmdList, new Interaction() {
 			@Override
-			boolean isExecutionSuccessful(int waitfor) {
+			boolean isTheExecutionSuccessful(int waitfor) {
 				return Arrays.binarySearch(successfulExec, waitfor) != -1;
 			}
 		});
@@ -262,7 +247,7 @@ public abstract class Command {
 				errorHandler.start();
 
 				// se o usuario definiu algum tipo de interacao
-				interact.execute(out);
+				interact.interact(out);
 				out.flush();
 			}
 			int waitFor = process.waitFor();
@@ -282,7 +267,7 @@ public abstract class Command {
 			}
 
 			if (interact != null) {
-				if (!interact.isExecutionSuccessful(waitFor)) {
+				if (!interact.isTheExecutionSuccessful(waitFor)) {
 					throwExecutionException(errorHandler, waitFor);
 				}
 			} else if (waitFor != 0) {

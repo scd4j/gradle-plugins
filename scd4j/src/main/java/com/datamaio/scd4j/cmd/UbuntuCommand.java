@@ -47,12 +47,12 @@ public class UbuntuCommand extends LinuxCommand {
 	}
 	
 	@Override
-	public void activeAtBoot(String serviceName) {
+	public void startServiceAtSystemBoot(String serviceName) {
 		run("update-rc.d " + serviceName + " defaults");
 	}
 	
 	@Override
-	public void deactiveAtBoot(String serviceName) {
+	public void doNotStartServiceAtSystemBoot(String serviceName) {
 		run("update-rc.d -f " + serviceName + " remove");
 	}
 	

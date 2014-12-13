@@ -43,83 +43,103 @@ public abstract class FileHook extends Hook {
 	protected String src;
 	protected String target;
 	
-	/** 
-	 * Changes the Posix File Permissions for the target file. Very useful in the post() hook<br>
-	 * <p>
+	/**
+	 * Changes the Posix File Permissions for the target file/directory. Very useful in
+	 * the post{..} hook<br>
 	 * Note: Currently Linux only
 	 * 
-	 * @param mode is the posix definition, ex: "777"
+	 * @param mode
+	 *            is the posix definition, e.g. "777"
 	 */
 	protected void chmod(String mode) {
 		chmod(mode, target);
 	}
 	
-	/** 
-	 * Changes the Posix File Permissions for the target file. Very useful in the post() hook<br>
-	 * <p>
+	/**
+	 * Changes the Posix File Permissions for the target file/directory. Very useful in
+	 * the post{..} hook<br>
 	 * Note: Currently Linux only
 	 * 
-	 * @param mode is the posix definition, ex: "777"
-	 * @param recursive if <code>true</code> apply the same rule for all sub dirs
+	 * @param mode
+	 *            is the posix definition, e.g. "777"
+	 * @param recursive
+	 *            if <code>true</code> apply the same rule for all sub dirs
 	 */
 	protected void chmod(String mode, boolean recursive) {
 		chmod(mode, target, recursive);
 	}
 	
 	/**
-	 * Convert the target file into the patterns of the operational system your
-	 * are running on. Very useful in the post() hook.<br>
-	 * This is mostly required whenever you create a file in windows and than
-	 * run it on Linux
+	 * Converts the target text file (usually a script file) into the pattern
+	 * defined by the operational system that you are running on.
 	 * <p>
-	 * Note: Usually config files are not an issue, but executable files are!!
+	 * This is mostly required whenever you create a file on Windows and then
+	 * run it on Linux, or vice and versa. Note: Usually configuration files are
+	 * not an issue (because they are read by a program that already understand
+	 * those difference), but executable scripts on Linux are!
 	 */
-	protected void fixTargetText() {
+	protected void fixText() {
 		fixText(target);	
 	}
 	
-	/** 
-	 * Changes ownership of the target file.  Very useful in the post() hook<br>
-	 * <p>
-	 * Note: Currently Linux only
+	/**
+	 * Changes ownership of the target file. It is not recursive. Very useful in
+	 * the post{..} hook<br>
+	 * Note: Currently Linux only.
 	 * 
-	 * @param user the new owner. The same information is used for the group
+	 * @param user
+	 *            The new file's owner.
 	 */
 	protected void chown(String user) {
 		chown(user, target);
 	}
 	
-	/** 
-	 * Changes ownership of the target file.  Very useful in the post() hook<br>
-	 * <p>
+	/**
+	 * Changes ownership of the target file. Very useful in the post{..} hook<br>
 	 * Note: Currently Linux only
 	 * 
-	 * @param user the new owner 
-	 * @param group the new group
-	 * @param recursive if <code>true</code> apply the same rule for all sub dirs
+	 * @param user
+	 *            the new owner
+	 * @param group
+	 *            the new group
+	 * @param recursive
+	 *            if <code>true</code> apply the same rule for all sub dirs
 	 */	
 	public void chown(String user, String group, boolean recursive) {
 		chown(user, group, target, recursive);
 	}
 	
-	/** 
-	 * Create a simbolic link to the target file.  Very useful in the post() hook<br>
-	 * <p>
+	/**
+	 * Create a symbolic link to the target file. Very useful in the post{..}
+	 * hook<br>
 	 * Note: Currently Linux only
 	 * 
-	 * @param link the link path
+	 * @param link
+	 *            the link path
 	 */
 	protected void linkToTarget(String link) {
+		ln(link);
+	}
+	
+	/**
+	 * Create a symbolic link to the target file. Very useful in the post{..}
+	 * hook<br>
+	 * Note: Currently Linux only
+	 * 
+	 * @param link
+	 *            the link path
+	 */
+	protected void ln(String link) {
 		ln(link, target);
 	}
 	
-	/**  Rename the target file/dir. Very useful in the post() hook */
+	/** Rename the target file/dir. Very useful in the post{..} hook */
 	protected void renameTo(String to) {
         mv(target, to);
     }
 	
 	/** 
-	 * Execute the target file. Very useful in the post() hook<br>
+	 * Execute the target file. Very useful in the post{..} hook<br>
 	 * If the file is not executable, we try to make it executable. 
 	 * If it was not possible, an exception is thrown  
 	 */
@@ -127,7 +147,10 @@ public abstract class FileHook extends Hook {
 		execute(target);
 	}
 	
-	/** returns the target directory. If the target is already a dir returns it, otherwise return its parent */
+	/**
+	 * returns the target directory. If the target is already a dir returns it,
+	 * otherwise return its parent
+	 */
 	protected String getTargetDirectory(){
 		Path path = Paths.get(target);
 		if(Files.isDirectory(path)){
@@ -139,7 +162,7 @@ public abstract class FileHook extends Hook {
 	// ------ methods used by the framework only ----
 	
 	@Override
-	protected final void validateAction(Action action) {
+	protected final void validateReturningAction(Action action) {
 		if (CANCEL_INSTALLATION.equals(action)){
 			throw new RuntimeException("Installation was cancelled!");
 		}
@@ -151,13 +174,19 @@ public abstract class FileHook extends Hook {
 		}
 	}
 	
-	/** Used only by {@link HookEvaluator} to set variables */
-	void setSrc(String srcPath) {
+	/**
+	 * Not a public API.<br>
+	 * Used only by {@link HookEvaluator} to set variables
+	 */
+	final void setSrc(String srcPath) {
 		this.src = srcPath;
 	}
 
-	/** Used only by {@link HookEvaluator} to set variables */
-	void setTarget(String targetPath) {
+	/**
+	 * Not a public API.<br>
+	 * Used only by {@link HookEvaluator} to set variables
+	 */
+	final void setTarget(String targetPath) {
 		this.target = targetPath;
 	}	
 }

@@ -48,7 +48,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import com.datamaio.scd4j.cmd.Command;
-import com.datamaio.scd4j.cmd.Command.Interaction;
+import com.datamaio.scd4j.cmd.Interaction;
 import com.datamaio.scd4j.cmd.LinuxCommand;
 import com.datamaio.scd4j.conf.Env;
 import com.datamaio.scd4j.conf.Configuration;
@@ -358,7 +358,7 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Changes ownership of a file, possibly recursively.<br>
+	 * Changes ownership of a file, possibly recursively<br>
 	 * Note: Currently Linux only.
 	 * 
 	 * @param user
@@ -377,9 +377,8 @@ public abstract class Hook extends Script {
 
 	/**
 	 * DSL for {@link #ln(String, String)}. <br />
-	 * <br />
+	 * <p>
 	 * How to use this DSL:
-	 * 
 	 * <pre>
 	 * link "/etc/init.d/my_text_link" to "/opt/test/my_existing_file"
 	 * </pre>
@@ -395,7 +394,7 @@ public abstract class Hook extends Script {
 	
 	/**
 	 * Create a symbolic link <br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux only
 	 * 
 	 * @param link
 	 *            The link path.
@@ -407,14 +406,14 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Returns the current user name.
+	 * Returns the current user name
 	 */
 	public String whoami() {
 		return command.whoami();
 	}
 	
 	/**
-	 * Checks if the given path (file or directory) exists.
+	 * Checks if the given path (file or directory) exists
 	 * 
 	 * @param file
 	 *            The target path (file or directory).
@@ -426,7 +425,7 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Creates a directory and all nonexistent parent directories first.
+	 * Creates a directory and all nonexistent parent directories first
 	 * 
 	 * @param dir
 	 *            Directory path to create.
@@ -449,18 +448,18 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Remove a file or a directory (include the parameterized path and all of
-	 * its sub entries).
+	 * Remove a file or a directory. This method is recursive, in other words,
+	 * if you remove a directory it will remove all its subdirectories
 	 * 
 	 * @param path
-	 *            Path to file or directory to be exclude.
+	 *            the path of the file or of the directory to be exclude
 	 */
 	public void rm(final String path) {
 		command.rm(path);
 	}
 
 	/** 
-	 * DSL for {@link #mv(String, String)}.
+	 * DSL for {@link #mv(String, String)}
 	 * <p>
 	 * How to use this DSL:
 	 * <pre>
@@ -478,13 +477,13 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Move a origin path (file or a directory) to another path (must be the
-	 * same type as <code>from</code> parameter).
+	 * Move a origin path (file or a directory) to another path
 	 * 
 	 * @param from
-	 *            Origin/source path.
+	 *            Accepts a file or a directory
 	 * @param to
-	 *            Destination path.
+	 *            The destination directory or file. If <code>from</code> is a
+	 *            file, <code>to</code> must exists. Otherwise, an exception is thrown.
 	 */
 	public void mv(final String from, final String to) {
 		command.mv(from, to);
@@ -509,12 +508,13 @@ public abstract class Hook extends Script {
 	}
 	
 	/**
-	 * Copy a file or a directory from a destination to another.
+	 * Copy a file or a directory from a destination to another
 	 * 
 	 * @param from
-	 *            Accepts a file path or a dependency.
+	 *            Accepts a file, a directory or a dependency
 	 * @param to
-	 *            The destination directory
+	 *            The destination directory or file. If <code>from</code> is a
+	 *            file, <code>to</code> must exists. Otherwise, an exception is thrown.
 	 */
 	public void cp(final String from, final String to) {
 		String newFrom = from;
@@ -540,11 +540,12 @@ public abstract class Hook extends Script {
 		return ls(path);
 	}
 	
-	/** 
-	 * List the entries (files and directories) of a given directory path.
+	/**
+	 * List the entries (files and directories) of a given directory path
 	 * 
-	 * @param path Path to list entries.
-	 * @return List of all files and directories matched.
+	 * @param path
+	 *            the path to list entries
+	 * @return List of all files and directories matched
 	 */
 	public List<String> ls(final String path) {
 		return command.ls(path);
@@ -552,65 +553,77 @@ public abstract class Hook extends Script {
 
 	// --- run ----
 
-	/** 
-	 * Execute a command line. OS dependent.
+	/**
+	 * Execute a command line <br>
+	 * Note: Operational System dependent
 	 * 
-	 * @param cmd the command line  
+	 * @param cmd
+	 *            the command line
 	 */
 	public String run(String cmd) {
 		return command.run(cmd);
 	}
 
-	/** 
-	 * Execute a command line. OS dependent.
+	/**
+	 * Execute a command line <br>
+	 * Note: Operational System dependent
 	 * 
-	 * @param cmd the command line  
-	 * @param printOutput you can choose to not print output in logs informing <code>false</code>
+	 * @param cmd
+	 *            the command line
+	 * @param printOutput
+	 *            you can opt to not print the command output in the logs
+	 *            providing <code>false</code> to this parameter
 	 */
 	public String run(String cmd, final boolean printOutput) {
 		return command.run(cmd, printOutput);
 	}
 
-	/** 
-	 * Execute a command line. OS dependent.
+	/**
+	 * Execute a command line <br>
+	 * Note: Operational System dependent
 	 * 
-	 * @param cmd the command line  
-	 * @param successfulExec a list of successful results. Linux default is 0.
+	 * @param cmd
+	 *            the command line
+	 * @param successfulExec
+	 *            a list of successful results. The Linux default success result
+	 *            is 0.
 	 */
 	public String run(String cmd, final int... successfulExec) {
 		return command.run(cmd, successfulExec);
 	}
 
 	/**
-	 * Execute a command line. OS dependent.
-	 * 
-	 * <p>
-	 * Note: in Linux, if SELinux is turned on, this execution will fail
+	 * Execute a command line <br>
+	 * Note.1: Operational System dependent<br>
+	 * Note.2: In Linux, if SELinux is turned on, this execution will always
+	 * fail
 	 * 
 	 * @param cmd
-	 *            the command line 
+	 *            the command line
 	 * @param interact
 	 *            allow you to programmatically interact with the process
-	 *            similarly in the way a user would interact
+	 *            similarly in the way a user would do it. See
+	 *            {@link Interaction} for more implementation details.
 	 */
 	public String run(String cmd, Interaction interact) {
 		return command.run(cmd, interact);
 	}
 
 	/**
-	 * This method does no iteraction at all. In other words, it will only show
+	 * This method does no interaction at all. In other words, it will only show
 	 * the output after the process has finish.
 	 * <p>
 	 * Important Notes:
 	 * <ol>
-	 * 	<li>This method was created because, in very rare executions in
-	 * Linux, the process hangs reading output. We are still figuring out the
-	 * issue, but we are expecting to resolve this with Java 9 new Process API<br>
-	 * 	<li> If possible use {@link #run(String)} variant methods once this
-	 * one may be removed in future releases
+	 * <li>This method was created because, in very rare executions in Linux,
+	 * the process hangs reading output. We are still figuring out the issue,
+	 * but we are expecting to resolve this with Java 9 new Process API<br>
+	 * <li>If possible use {@link #run(String)} variant methods once this one
+	 * may be removed in future releases
 	 * </ol>
 	 * 
-	 * @param cmd the command line 
+	 * @param cmd
+	 *            the command line
 	 */
 	public String runWithNoInteraction(String cmd) {
 		return command.runWithNoInteraction(cmd);
@@ -620,8 +633,8 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Returns <code>true</code> if the environment is development<br>
-	 * In other words, if it is NOT Test environment, NOT Homologation
-	 * environment and NOT Production environment.
+	 * In other words, if it is NOT Testing, NOT Staging
+	 * and NOT Production environment.
 	 * 
 	 * @see {@link #isTesting()}, {@link #isStaging()}, {@link #isProduction()}
 	 */
@@ -630,7 +643,7 @@ public abstract class Hook extends Script {
 	}
 
 	/** 
-	 * Returns <code>true</code> if the environment is Test<br>
+	 * Returns <code>true</code> if the environment is Testing<br>
 	 * This is configured in the build.gradle file.
 	 * <p>
 	 * For example:
@@ -639,7 +652,7 @@ public abstract class Hook extends Script {
 	 * 	...
 	 * 	env {
 	 * 		...
-	 * 		test = ["192.168.3.20", "192.168.3.21"] 
+	 * 		testing = ["192.168.3.20", "192.168.3.21"] 
 	 * 	}
 	 * }
 	 * </pre>
@@ -660,7 +673,7 @@ public abstract class Hook extends Script {
 	}
 
 	/** 
-	 * Returns <code>true</code> if the environment is Homolog<br>
+	 * Returns <code>true</code> if the environment is Staging<br>
 	 * This is configured in the build.gradle file.
 	 * <p>
 	 * For example:
@@ -669,7 +682,7 @@ public abstract class Hook extends Script {
 	 * 	...
 	 * 	env {
 	 * 		...
-	 * 		hom  = ["192.168.7.20", "192.168.7.21"]
+	 * 		staging  = ["192.168.7.20", "192.168.7.21"]
 	 * 	}
 	 * }
 	 * </pre>
@@ -699,9 +712,9 @@ public abstract class Hook extends Script {
 	 * scd4j {
 	 * 	...
 	 * 	env {
-	 * 		prod = ["192.168.10.20", "192.168.10.21", "192.168.10.22", "192.168.10.23"]
-	 * 		hom  = ["192.168.7.20", "192.168.7.21"]
-	 * 		test = ["192.168.3.20", "192.168.3.21"] 
+	 * 		production = ["192.168.10.20", "192.168.10.21", "192.168.10.22", "192.168.10.23"]
+	 * 		staging    = ["192.168.7.20", "192.168.7.21"]
+	 * 		testing    = ["192.168.3.20", "192.168.3.21"] 
 	 * 	}
 	 * }
 	 * </pre>
@@ -767,8 +780,8 @@ public abstract class Hook extends Script {
     /**
 	 * Use this method for every log content. So it will be stored in the dir
 	 * log<br>
-	 * Please, do not use pintln. Otherwise you will print the log information
-	 * only in the starndard output and you will will lose it if you close the console.
+	 * Please, do not use println. Otherwise you will print the log information
+	 * only in the standard output and you will will lose it if you close the console.
 	 */
     public void log(String msg) {
         LOGGER.info("\t" + msg);
@@ -777,7 +790,7 @@ public abstract class Hook extends Script {
     // --- properties methods ---
     
     /**
-     * EXPERIMENTAL:
+     * EXPERIMENTAL - DO NOT USE IT:
      * <br>
 	 * Sets a temporary ({@link #setTempProperty(String, Object)}) or a
 	 * permanent ({@link #setPermanentProperty(String, Object)}) property.<br>
@@ -825,7 +838,7 @@ public abstract class Hook extends Script {
     }
 
     /**
-     * EXPERIMENTAL:
+     * EXPERIMENTAL - DO NOT USE IT:
      * <br>
 	 * Sets a temporary ({@link #setTempProperty(String, Object)}) or a
 	 * permanent ({@link #setPermanentProperty(String, Object)}) property.<br>
@@ -931,19 +944,19 @@ public abstract class Hook extends Script {
     
 	/**
 	 * Sets a temporary/transient property.<br>
-	 * A temporary/transient property stays only for a short period of time. In
-	 * other words, if it is set in Hook#pre() method, it will remain
-	 * until the end of Hook#post() method execution.
+	 * A temporary/transient property remains set only for a short period of time. In
+	 * other words, if it is set in Hook#pre() method, it will remain until the
+	 * end of Hook#post() method execution.
 	 */
     public void setTempProperty(String key, Object value) {
 		props.put(key, value.toString());
 		temporaryProps.put(key, value.toString());
     }
 
-    /**
+	/**
 	 * Sets a permanent/persistent property.<br>
-	 * A permanent/persistent property stays up until the end of the program.<br>
-     */
+	 * A permanent/persistent property remains up until the end of the program execution<br>
+	 */
     public void setPermanentProperty(String key, Object value) {
 		props.put(key, value.toString());
     }
@@ -952,7 +965,7 @@ public abstract class Hook extends Script {
      * Returns the value of a property.<br>
 	 * Properties can be set through programming (see
 	 * {@link #setTempProperty(String, Object)} and {@link #setPermanentProperty(String,
-	 * Object)} methods) or via configuration file:
+	 * Object)} methods) or via configuration file in <code>build.gradle</code>:
      * 
      * <pre>
 	 * scd4j {
@@ -973,7 +986,7 @@ public abstract class Hook extends Script {
 	 * Checks if a given key was set as a property.<br>
 	 * Properties can be set through programming (see
 	 * {@link #setTempProperty(String, Object)} and {@link #setPermanentProperty(String,
-	 * Object)} methods) or via configuration file:
+	 * Object)} methods) or via configuration file in <code>build.gradle</code>:
 	 * 
 	 * <pre>
 	 * scd4j {
@@ -999,8 +1012,8 @@ public abstract class Hook extends Script {
 	 *   	
 	 * @param serviceName the name of the service
 	 */
-	public void activeAtBoot(String serviceName) {
-		command.activeAtBoot(serviceName);
+	public void registryToBoot(String serviceName) {
+		command.startServiceAtSystemBoot(serviceName);
 	}
 
 	/**
@@ -1011,8 +1024,8 @@ public abstract class Hook extends Script {
 	 *   	
 	 * @param serviceName the name of the service
 	 */
-	public void deactiveAtBoot(String serviceName) {
-		command.deactiveAtBoot(serviceName);
+	public void unregistryFromBoot(String serviceName) {
+		command.doNotStartServiceAtSystemBoot(serviceName);
 	}
 	
 	/**
@@ -1021,44 +1034,48 @@ public abstract class Hook extends Script {
 	 * This method is capable to install three types of packages depending on the parameter it receives:
 	 * <ul>
 	 * 
-	 * 	<li> Install a package (rpm, deb or executable in windows) which is located inside of scd4j directory.
+	 * 	<li> Install a package (rpm, deb or an executable file on windows) which is located inside of scd4j directory.
 	 * 		<br>
 	 * 		In order to accomplish that, you need to configure the dependencies in build.gradle.
 	 * 		<br>
 	 * 		For example:
 	 * 		<pre>
-	 * 		dependencies {
-	 * 			scd4j files('dependencies/my_dependency.deb')
-	 * 		}
+	 * 	dependencies {
+	 * 		scd4j files('dependencies/my_dependency.deb')
+	 * 	}
 	 * 		</pre>
-	 * 		<br>
-	 * 		Then, in your hook file, you will need to call
-	 * 		<br>
+	 * 		Then, in your hook file, you will need to call. Note that, at this point, you must provide only the file name.
 	 * 		<pre>
-	 * 		install "my_dependency.deb"
+	 * 	install "my_dependency.deb"
 	 * 		</pre>
 	 * 
-	 * 	<li> Install a package (rpm, deb or executable in windows) which is located inside of Artifactory or Nexus binary repository.
+	 * 	<li> Install a package (rpm, deb or an executable file on windows) which is located inside of your Artifactory or Nexus binary repository.
 	 * 		<br>
 	 * 		In order to accomplish that, you need to configure the dependencies in build.gradle.
 	 * 		<br>
 	 * 		For example:
 	 * 		<pre>
-	 * 		dependencies {
-	 * 			scd4j 'my_group:my_pack_name:my_pack_version@rpm',
-	 * 		}
+	 * 	dependencies {
+	 * 		scd4j 'my_group:my_pack_name:my_pack_version@rpm',
+	 * 	}
 	 * 		</pre>
  	 *		Then, in your hook file, you will need to call
 	 * 		<pre>
-	 * 		install 'my_group:my_pack_name:my_pack_version@rpm'
+	 * 	install 'my_group:my_pack_name:my_pack_version@rpm'
 	 * 		</pre>
 	 * 
 	 * 	<li> Install an operational system package (not supported on Windows)
 	 * 		<br>
-	 * 		For example, in your hook file you will need to call:
+	 * 		In this case, there is no need to configure the dependency in build.gradle<br>
+	 * 		For example, in your hook file you only will need to call:
 	 * 		<pre>
 	 * 		install "lxde=0.5.0-4ubuntu4"
 	 * 		</pre>
+	 * 		It is a good practice to provide the package name and the version you are going to install:
+	 * 		<ul>
+	 * 			<li>Use "=" to separate the package and the version in Ubuntu: "lxde=0.5.0-4ubuntu4"
+	 * 			<li>Use "-" to separate the package and the version in Ubuntu: "lxde-0.5.0"
+	 * 		</ul> 		
 	 * </ol>
 	 * 
 	 * @param pack the package name
@@ -1104,9 +1121,10 @@ public abstract class Hook extends Script {
 	 * 		Where lxde is the name of your package in the OS repository
 	 * 
 	 * </ol>
-	 * 
 	 * <p>
-	 * Currently only supports Linux operational system packages uninstall 
+	 * --
+	 * <p>
+	 * Note: Currently only supports Linux operational system packages uninstall 
 	 * 
 	 * @param pack the package name without the version
 	 */
@@ -1117,7 +1135,8 @@ public abstract class Hook extends Script {
 			} catch (Exception e) {
 				e.printStackTrace();
 				// TODO: It would not be better to uninstall using the same strategy than installation?
-				// Asking this, because it is unistalling with uninstallLocalPack even though it has been installed using apt-get install
+				// I'm asking this because packs can be unistalling with uninstallLocalPack even though they was installed using apt-get install, for example
+				// As far as I know, behind the scenes it uses the same command.. need to be sure.
 				uninstallRemotePack(pack);
 			}
 		}
@@ -1134,32 +1153,12 @@ public abstract class Hook extends Script {
 	/**
 	 * DSL for {@link #unzip(String, String)}
 	 * <p>
-	 * Unzip a file which was put in the Artifactory, Nexus or which is located inside of scd4j directory.<br>
-	 * In order to accomplish that, you need to configure the dependency in
-	 * build.gradle.
-	 * <p>
-	 * 
-	 * For example:
-	 * <pre>
-	 * dependencies {
-	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
-	 *		files('dependencies/my_dependency.zip')
-	 * 	}
-	 * </pre>
-	 * 
-	 * Then, in your hook file, you will need to call
+	 * How to use this DSL:
 	 * <pre>
 	 * 	unzip "org.wildfly:wildfly:8.1.0.Final@zip" to "/opt/example_wildfly_dir"
-	 * 	unzip "my_dependency.zip" to "/opt/another_example_dir"
+	 * 	unzip "my_dependency.zip" to "/opt/my_dependency_dir"
+	 * 	unzip "my_other_dependency.zip" to "/opt/my_other_dependency_dir"
 	 * </pre>
-	 * 
-	 * Note that the first line will get the dependency from a binary
-	 * repository (Artifactory or Nexus) and the second line will get it from a scd4j 
-	 * relative directory
-	 * <p>
-	 * 
-	 * @param depName
-	 *            the full dependency name
 	 */	
 	protected Destination unzip(String depName) {
 		return new Destination() {			
@@ -1171,7 +1170,54 @@ public abstract class Hook extends Script {
 	}
 	
 	/**
-	 * Unzip a file which was put in the Artifactory, Nexus or which is located inside of scd4j directory.<br>
+	 * Unzip a dependency which in in a public url, in the Artifactory, Nexus or
+	 * which is located inside of scd4j directory.<br>
+	 * In order to accomplish that, you need to configure the dependency in
+	 * build.gradle.
+	 * <p>
+	 * 
+	 * For example:
+	 * 
+	 * <pre>
+	 * dependencies {
+	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
+	 * 	files('dependencies/my_dependency.zip'),
+	 * 	url('http://mysite.com/xxx/my_other_dependency.zip')
+	 * }
+	 * </pre>
+	 * 
+	 * Then, in your hook file, you will need to call
+	 * 
+	 * <pre>
+	 * 	unzip("org.wildfly:wildfly:8.1.0.Final@zip", "/opt/example_wildfly_dir")
+	 * 	unzip("my_dependency.zip", "/opt/another_example_dir")
+	 * 	unzip("my_other_dependency.zip", "/opt/my_other_dependency_dir")
+	 * </pre>
+	 * 
+	 * Note that the first line will get the dependency from a binary repository
+	 * (Artifactory or Nexus), the second line will get it from a scd4j relative
+	 * directory and the third will get it directly from an url
+	 * <p>
+	 * Important Note: We encourage to use <code>url(..)</code> only in the following cases:
+	 * <ol>
+	 * 	<li>If the location is an internal site and you are a 100% sure it will never change 
+	 * 	<li>OR for testing purpose only
+	 * </ol>
+	 * 
+	 * @param depName
+	 *            the dependency name as shown in above examples
+	 * @param doDir
+	 * 				destination directory
+	 */	 
+	protected void unzip(String depName, String toDir) {
+		String from = resolve(depName);
+		command.unzip(from, toDir);				
+	}
+	
+	/**
+	 * Downloads (uses cache to avoid downloading the same dependency many
+	 * times) a dependency which was put in the relative scd4j folder, in an url
+	 * or in your binary repository (i.e. Artifactory or Nexus). <br>
 	 * In order to accomplish that, you need to configure the dependency in
 	 * build.gradle.
 	 * <p>
@@ -1180,68 +1226,44 @@ public abstract class Hook extends Script {
 	 * <pre>
 	 * dependencies {
 	 * 	scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
-	 *		files('dependencies/my_dependency.zip')
-	 * 	}
-	 * </pre>
-	 * 
-	 * <br>
-	 * Then, in your hook file, you will need to call
-	 * <pre>
-	 * 	unzip("org.wildfly:wildfly:8.1.0.Final@zip", "/opt/example_wildfly_dir")
-	 * 	unzip("my_dependency.zip", "/opt/another_example_dir")
-	 * </pre>
-	 * 
-	 * Note that the first line will get the dependency from a binary
-	 * repository (Artifactory or Nexus) and the second line will get it from a scd4j 
-	 * relative directory
-	 * <p>
-	 * 
-	 * @param depName
-	 *            the full dependency name
-	 * @param doDir
-	 * 				destination directory
-	 */
-	protected void unzip(String depName, String toDir) {
-		String from = resolve(depName);
-		command.unzip(from, toDir);				
-	}
-	
-	/**
-	 * Downloads (uses cache to avoid downloading the same dependency many
-	 * times) a dependency which was put in the Artifactory or Nexus. <br>
-	 * In order to accomplish that, you need to configure the dependency in
-	 * build.gradle.
-	 * <p>
-	 * For example:
-	 * 
-	 * <pre>
-	 * 	dependencies {
-	 * 		scd4j 'org.wildfly:wildfly:8.1.0.Final@zip',
-	 * 			'com.xyz:foo:0.1@deb',
-	 * 			'com.xyz:oof:1.0@rpm'
-	 * 	}
+	 * 		'com.xyz:foo:0.1@deb',
+	 * 		'com.xyz:oof:1.0@rpm',
+	 * 		files('dependencies/my_dependency.zip'),
+	 * 		url('http://mysite.com/xxx/my_other_dependency.zip')
+	 * }
 	 * </pre>
 	 * 
 	 * Then, in you hook file, you will need to call
 	 * 
 	 * <pre>
-	 * 	def path = resolve "com.xyz:foo:0.1@deb"
-	 * 	OR
-	 * 	def path = resolve "com.xyz:oof:1.0@rpm"
-	 * 	OR
-	 * 	def path = resolve "org.wildfly:wildfly:8.1.0.Final@zip"
+	 * def path = resolve "org.wildfly:wildfly:8.1.0.Final@zip"
+	 * OR
+	 * def path = resolve "com.xyz:foo:0.1@deb"
+	 * OR
+	 * def path = resolve "com.xyz:oof:1.0@rpm"
+	 * OR
+	 * def path = resolve "my_dependency.zip" 
+	 * OR
+	 * def path = resolve "my_other_dependency.zip"
 	 * </pre>
 	 * <p>
 	 * 
-	 * If you do not provide the file extention (@deb, @rpm, @zip, @ear, @war or
-	 * @jar) this method tries to infer it according to the following rule:
-	 * <ol>
-	 * <li>Tries to resolve the provided dependency name
-	 * <li>If it does not work and you are running on linux, tries to resolve
-	 * the distribution dependency (i.e. @deb for ubuntu and @rpm for CentOs)
-	 * <li>If it does not work tries to resolve the dependency in the following order: @zip, 
+	 * For dependencies in your binary repository, if you do not provide the
+	 * file extension (@deb, @rpm, @zip, @ear, @war or
+	 * 
+	 * @jar) this method will try to infer it according to the following rule:
+	 *       <ol>
+	 *       <li>Tries to resolve the full provided dependency name <li>If it
+	 *       does not work and you are running on Linux, tries to resolve the
+	 *       distribution dependency (i.e. @deb for ubuntu and @rpm for CentOs)
+	 *       <li>If it does not work tries to resolve the dependency in the
+	 *       following order: @zip,
 	 * @ear, @war or @jar
-	 * </ol>
+	 *       </ol>
+	 * 
+	 *       Although this method is capable to resolve the file extension, we
+	 *       strongly recommend to always provide it.
+	 * <p>
 	 * 
 	 * @param depName
 	 *            the full dependency name
@@ -1272,46 +1294,52 @@ public abstract class Hook extends Script {
     // --- services ---
 
     /** 
-     * Starts an OS service
+     * Starts an Operational System service
 	 * <p>
 	 * Note: Currently Linux only
 	 *  
      * @param name the service name
+     * @throws RuntimeException if the service does not exists
      */
 	public void start(String name) {
     	command.serviceStart(name);
 	}
     
     /** 
-     * Stops an OS service
+     * Stops an Operational System service
 	 * <p>
 	 * Note: Currently Linux only
 	 *  
      * @param name the service name
+     * @throws RuntimeException if the service does not exists 
      */
 	public void stop(String name) {
 		command.serviceStop(name);
 	}
 
     /** 
-     * restart an OS service
+     * restart an Operational System service
 	 * <p>
 	 * Note: Currently Linux only
 	 *  
      * @param name the service name
+     * @throws RuntimeException if the service does not exists
      */
 	public void restart(String name) {
 		command.serviceRestart(name);
 	}
 	
-    /** 
-     * Checks the OS service status
+	/**
+	 * Checks the Operational System service status<br>
+	 * This method does not throw an exception if the service does not exists.
 	 * <p>
 	 * Note: Currently Linux only
-	 *  
-     * @param name the service name
-     * @return status information of the service, or the error message if it does not exists
-     */
+	 * 
+	 * @param name
+	 *            the service name
+	 * @return status information of the service, or the error message if it
+	 *         does not exists
+	 */
 	public String status(String name) {
 		try {
 			return command.serviceStatus(name);
@@ -1346,7 +1374,7 @@ public abstract class Hook extends Script {
 				return CONTINUE_INSTALLATION;
 			} 
 			
-			validateAction(action);
+			validateReturningAction(action);
 			return action;	
 		}
 		
@@ -1357,7 +1385,7 @@ public abstract class Hook extends Script {
 	/**
      * Not a public API.<br>   
 	 */
-	protected abstract void validateAction(Action action);
+	protected abstract void validateReturningAction(Action action);
 	
 	/**
      * Not a public API.<br> 
@@ -1389,7 +1417,7 @@ public abstract class Hook extends Script {
 	private String getIpFromDNS(String hostName) {
 		if (!HOSTS.containsKey(hostName)) {
 			System.out.println("\t\t\tFinding IP in DNS for host " + hostName);
-			final List<String> dnsRecs = getDNSRecs(hostName, "A");
+			final List<String> dnsRecs = getDnsRecords(hostName, "A");
 			final String ip = dnsRecs.size() > 0 ? dnsRecs.get(0) : "127.0.0.1";
 			HOSTS.put(hostName, ip);
 		}
@@ -1397,11 +1425,11 @@ public abstract class Hook extends Script {
 	}
 
 	/**
-	 * Returns all registries from DNS for a given domain
+	 * Returns all registers from DNS for a given domain
 	 *
 	 * @param domain
-	 *            domínio, e.g. xyz.datamaio.com, in which you want to know the
-	 *            registries in DNS.
+	 *            the domain, e.g. xyz.datamaio.com, in which you want to know the
+	 *            registers in DNS.
 	 * @param types
 	 *            e.g."MX","A" .
 	 *            <ul>
@@ -1409,10 +1437,8 @@ public abstract class Hook extends Script {
 	 *            followed by mailserver
 	 *            <li>A : the result contains the IP
 	 *            </ul>
-	 *
-	 * @return lista de resultados
 	 */
-	private List<String> getDNSRecs(String domain, String... types) {
+	private List<String> getDnsRecords(String domain, String... types) {
 
 		List<String> results = new ArrayList<String>(15);
 

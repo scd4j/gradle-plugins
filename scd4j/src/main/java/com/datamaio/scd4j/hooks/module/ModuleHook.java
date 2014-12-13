@@ -39,7 +39,7 @@ public abstract class ModuleHook extends Hook {
 	// ------ methods used by the framework only ----
 	
 	@Override
-	protected final void validateAction(Action action) {
+	protected final void validateReturningAction(Action action) {
 		if(!action.isValidForModuleHook()){
 			throw new RuntimeException("Module.hook has returned the invalid action '" + action 
 					+ "' at pre{...} script! Please, read Action javadoc for more information.");
