@@ -1,0 +1,33 @@
+This file is a template which will be resolved before be copied to the destination folder. We specify this behaviour providing '.tmpl' scd4j extension
+
+A template is very useful whenever you need to change a file during the installation process. For example, the gaps in the License below will be fulfilled after scd4j has run
+
+		/*
+		 * The {{scd4j_license}} License (MIT)
+		 *
+		 * Copyright (C) {{scd4j_year}} scd4j {{scd4j_email}}
+		 *
+		 * Permission is hereby granted, free of charge, to any person obtaining a copy
+		 * of this software and associated documentation files (the "Software"), to deal
+		 * in the Software without restriction, including without limitation the rights
+		 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		 * copies of the Software, and to permit persons to whom the Software is
+		 * furnished to do so, subject to the following conditions:
+		 *
+		 * The above copyright notice and this permission notice shall be included in all
+		 * copies or substantial portions of the Software.
+		 *
+		 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+		 * SOFTWARE.
+		 */
+
+Note that variables used in the above license are defined, in this example, in the config file: FirstSteps/config/example.conf
+Please, after you have run scd4j in this module, check the result file at: /opt/scd4j-examples/FirstSteps/file_2_resolve_template.txt
+
+The default template engine used by scd4j is Groovy Templates. However, in this example, we have changed to "mustache" 
+Take a look at https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Configurations to understand how you can use another engine.
