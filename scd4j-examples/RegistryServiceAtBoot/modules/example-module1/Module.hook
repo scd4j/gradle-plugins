@@ -1,0 +1,34 @@
+def dir = "/opt/scd4j-examples/RegistryServiceAtBoot"
+def service = "date-arq"
+def srcPath = "/etc/init.d/${service}"
+def targetPath = "${dir}/${service}"
+ 
+pre {
+	// checks if it is a linux box
+	if(!isLinux()) {
+		log("Not a Linux box. Installation Aborted!")
+		CANCEL_INSTALLATION
+	}
+
+	// checks if the service isn't already installed
+	if( ls("/etc/rc3.d")?.find({it.contains(service)}) != null ) {
+		log("Service already installed. Installation Aborted!")
+		CANCEL_INSTALLATION
+	}
+}
+
+post {		
+	// registry our dummy lib as a service
+	ln(srcPath, targetPath)
+	registryToBoot(service)
+	
+	// =============================================================
+	// ========== Just to show you if you need to do that ==========
+	// ====== And to allow you to reexecute this installation ======
+	// =============================================================
+	
+	// unregistry our dummy lib as a service
+	unregistryFromBoot(service)
+	rm(targetPath)
+	rm(dir)	
+}

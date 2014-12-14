@@ -1,0 +1,14 @@
+plugins {
+  id "com.datamaio.scd4j" version "0.4"
+}
+
+archivesBaseName='RegistryServiceAtBoot'
+version = 0.1
+
+scd4j {
+	install {
+		modules "example-module1"
+		config "example.conf"		
+	}
+}
+

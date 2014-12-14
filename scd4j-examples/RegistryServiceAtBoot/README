@@ -1,0 +1,8 @@
+To run
+
+First you must be logged with root user in a Linux machine
+Second, in the line command go to this directory and type
+
+	'./gradlew' on Linux
+	OR
+	'gradlew.bat' on Windows
