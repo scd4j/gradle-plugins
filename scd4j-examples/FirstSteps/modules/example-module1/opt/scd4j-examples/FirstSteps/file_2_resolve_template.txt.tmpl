@@ -29,36 +29,5 @@ A template is very useful whenever you need to change a file during the installa
 Note that variables used in the above license are defined, in this example, in the config file: FirstSteps/config/example.conf
 Please, after you have run scd4j in this module, check the result file at: /opt/scd4j-examples/FirstSteps/file_2_resolve_template.txt
 
-It is also important to say that we have many options for templating. They are:
-	- Groovy Templates (default)
-		* It is a very powerful JSP like template engine where in EL expressions you can use groovy code 
-		* see documentation at http://groovy.codehaus.org/Groovy+Templates		
-	- Apache Velocity
-		* It is a very well known (for Java developers) template engine which, unfortunately, is not being updated lately  
-		* see documentation at https://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html
-	- Mustache
-		* It is a very well known (for JavaScript developers) and powerful template engine 	
-		* see documentation at http://mustache.github.io/mustache.5.html OR https://github.com/spullara/mustache.java
-	- Handlebars
-		* It is a super set of Mustache template engine	
-		* see documentation at https://github.com/jknack/handlebars.java  
-
-The default template engine used by scd4j is Groovy Templates. However, you change this in settings of scd4j in build.gradle file. For example:
-
-	scd4j {
-		install {
-			modules .. 
-			config ..		
-		}	
-		settings {
-			template {
-				engine "mustache"
-			}
-		}
-	}
-
-The options you can provide in 'settings > template > engine' are:
-	- "groovy" 		for Groovy Templates (default)
-	- "velocity" 	for Apache Velocity
-	- "mustache" 	for Mustache
-	- "handlebars" 	for Handlebars	
+The default template engine used by scd4j is Groovy Templates. 
+Take a look at https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Configurations to understand how you can use another engine.
