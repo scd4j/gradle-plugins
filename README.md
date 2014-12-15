@@ -19,5 +19,5 @@ scd4j {
 }
 ```
 
-For more complex installation take a look at [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+For more details and complex installation take a look at [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
 
