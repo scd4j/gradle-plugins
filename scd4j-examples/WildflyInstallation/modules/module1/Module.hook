@@ -1,0 +1,27 @@
+def basedir = "/opt/scd4j-examples/WildflyInstallation"
+def wildflyhome = "$basedir/wildfly-8.2.0.Final" 
+ 
+pre {
+	if(!exists(wildflyhome)) {
+		unzip('wildfly-8.2.0.Final.zip', basedir)
+	} else {
+		log("Wildfly already installed at $wildflyhome")
+		if(isLinux()) {
+			def st = status("wildfly")
+			if(st.contains("running")) {
+				stop("wildfly")
+			}
+		} 
+	}
+}
+
+post {
+	if(isLinux()) {
+		if("Ubuntu".equals(distribution())) {
+			ln("/etc/init.d/wildfly", "$wildflyhome/bin/init.d/wildfly-init-debian.sh")
+		} else {
+			ln("/etc/init.d/wildfly", "$wildflyhome/bin/init.d/wildfly-init-redhat.sh")
+		}
+		start("wildfly")
+	}
+}

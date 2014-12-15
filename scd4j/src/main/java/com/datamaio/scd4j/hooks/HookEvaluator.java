@@ -23,7 +23,7 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
+import static com.datamaio.scd4j.hooks.HookPreResult.CONTINUE;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
@@ -75,7 +75,7 @@ public abstract class HookEvaluator {
 
 	public boolean pre(){
 		if(exists()) {
-			return CONTINUE_INSTALLATION.equals((Action) evaluate("_pre"));
+			return CONTINUE.equals((HookPreResult) evaluate("_pre"));
 		}
 		
 		return true;
@@ -99,9 +99,9 @@ public abstract class HookEvaluator {
 	}
 
 	private Object evaluate(String action) {
-		String fullScript = "import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;\n"
-						  + "import static com.datamaio.scd4j.hooks.Action.CANCEL_INSTALLATION;\n"
-						  + "import static com.datamaio.scd4j.hooks.Action.SKIP_FILE_INSTALLATION;\n"
+		String fullScript = "import static com.datamaio.scd4j.hooks.HookPreResult.CONTINUE;\n"
+						  + "import static com.datamaio.scd4j.hooks.HookPreResult.ABORT;\n"
+						  + "import static com.datamaio.scd4j.hooks.HookPreResult.SKIP_FILE;\n"
 						  + "import java.nio.file.*;\n"
 						  + "import java.io.*;\n"
 						  + script + "\n " 

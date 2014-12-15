@@ -1,0 +1,6 @@
+pre {
+	if("Ubuntu".equals(distribution()) || "Debian".equals(distribution())) {
+		return CONTINUE
+	}
+	return SKIP_FILE
+}

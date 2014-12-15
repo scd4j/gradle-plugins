@@ -1,5 +1,5 @@
 plugins {
-  id "com.datamaio.scd4j" version "0.4"
+  id "com.datamaio.scd4j" version "0.5.1"
 }
 
 scd4j {

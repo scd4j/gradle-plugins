@@ -1,0 +1,29 @@
+/*plugins {
+  id "com.datamaio.scd4j" version "0.5.1"
+}*/
+
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url 'file:///opt/gradle-repo/maven-repo/' }
+	}
+	dependencies {
+		classpath 'com.datamaio:scd4j:+'
+	}
+}
+apply plugin: 'com.datamaio.scd4j'
+
+archivesBaseName='WildflyInstallation'
+version = 0.1
+
+dependencies {
+	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
+}
+
+scd4j {
+	install {
+		modules "module1"
+		config "module1.conf"		
+	}
+}
+

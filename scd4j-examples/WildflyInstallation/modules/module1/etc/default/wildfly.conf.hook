@@ -1,0 +1,6 @@
+pre {
+	if("Centos".equals(distribution()) || "Redhat".equals(distribution())) {
+		return CONTINUE
+	}
+	return SKIP_FILE
+}

@@ -339,9 +339,9 @@ public class EnvConfiguratorTest {
 	private byte[] buildModuleHookPre() {
 		return ("pre {"
 				+ "\n	if (\"xyz\".equals(get(\"var\")))"
-				+ "\n		CONTINUE_INSTALLATION;"
+				+ "\n		CONTINUE;"
 				+ "\n	else"
-				+ "\n		CANCEL_INSTALLATION;"
+				+ "\n		ABORT;"
 				+ "\n}").getBytes();
 	}
 	

@@ -23,7 +23,7 @@
  */
 package com.datamaio.scd4j.hooks;
 
-import static com.datamaio.scd4j.hooks.Action.CONTINUE_INSTALLATION;
+import static com.datamaio.scd4j.hooks.HookPreResult.CONTINUE;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 
@@ -84,7 +84,7 @@ public abstract class Hook extends Script {
 	protected Map<String, String> props;	
 	protected Map<String, String> temporaryProps;
 	protected final Command command;	
-	protected Closure<Action> pre;
+	protected Closure<HookPreResult> pre;
 	protected Closure<Void> post;
 
 	/** Default constructor */
@@ -115,11 +115,11 @@ public abstract class Hook extends Script {
 	 * 
 	 * @param closure
 	 *            The closure containing the pre-condition logic. <br>
-	 *            Note that this closure must return an {@link Action}. If your
+	 *            Note that this closure must return an {@link HookPreResult}. If your
 	 *            implementation does not return anything we assume
-	 *            {@link Action#CONTINUE_INSTALLATION}
+	 *            {@link HookPreResult#CONTINUE}
 	 */
-	protected final void pre(Closure<Action> closure) {
+	protected final void pre(Closure<HookPreResult> closure) {
 		this.pre = closure;
 	}	
 
@@ -482,8 +482,8 @@ public abstract class Hook extends Script {
 	 * @param from
 	 *            Accepts a file or a directory
 	 * @param to
-	 *            The destination directory or file. If <code>from</code> is a
-	 *            file, <code>to</code> must exists. Otherwise, an exception is thrown.
+	 *            The destination directory or file. If it does not exists, it
+	 *            will be created
 	 */
 	public void mv(final String from, final String to) {
 		command.mv(from, to);
@@ -513,8 +513,8 @@ public abstract class Hook extends Script {
 	 * @param from
 	 *            Accepts a file, a directory or a dependency
 	 * @param to
-	 *            The destination directory or file. If <code>from</code> is a
-	 *            file, <code>to</code> must exists. Otherwise, an exception is thrown.
+	 *            The destination directory or file. If it does not exists, it
+	 *            will be created as an directory 
 	 */
 	public void cp(final String from, final String to) {
 		String newFrom = from;
@@ -524,6 +524,10 @@ public abstract class Hook extends Script {
 			} catch (DependencyNotFoundException e) {
 				throw new RuntimeException("It was not possible to find file/dir '" + from + "' to copy!");
 			}
+		}
+		
+		if(!exists(to)){
+			mkdir(to);
 		}
 		command.cp(newFrom, to);
 	}
@@ -1207,10 +1211,14 @@ public abstract class Hook extends Script {
 	 * @param depName
 	 *            the dependency name as shown in above examples
 	 * @param doDir
-	 * 				destination directory
+	 *            The destination directory. If it does not exists, it
+	 *            will be created
 	 */	 
 	public void unzip(String depName, String toDir) {
 		String from = resolve(depName);
+		if(!exists(toDir)){
+			mkdir(toDir);
+		}
 		command.unzip(from, toDir);				
 	}
 	
@@ -1366,26 +1374,26 @@ public abstract class Hook extends Script {
      * Not a public API.<br> 
 	 * Used only by {@link HookEvaluator} to call the pre condition closure 
 	 */
-	final Action _pre(){
+	final HookPreResult _pre(){
 		if (pre != null) {
-			Action action = pre.call();
-			if (action == null) { 
+			HookPreResult hookPreResult = pre.call();
+			if (hookPreResult == null) { 
 				// pre{} does not return anything				
-				return CONTINUE_INSTALLATION;
+				return CONTINUE;
 			} 
 			
-			validateReturningAction(action);
-			return action;	
+			validateReturningAction(hookPreResult);
+			return hookPreResult;	
 		}
 		
 		// pre{} was not defined
-		return CONTINUE_INSTALLATION;
+		return CONTINUE;
 	}
 
 	/**
      * Not a public API.<br>   
 	 */
-	protected abstract void validateReturningAction(Action action);
+	protected abstract void validateReturningAction(HookPreResult hookPreResult);
 	
 	/**
      * Not a public API.<br> 

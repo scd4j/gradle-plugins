@@ -21,42 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.hooks;
+package com.datamaio.scd4j.cmd;
 
-/**
- * Actions taken during pre Module and File installations.
- * 
- * @author Fernando Rubbo
- */
-public enum Action {
-	/**
-	 * Keep executing the installation.
-	 * <br>
-	 * Can be used in both Module and File Hooks.
-	 */
-	CONTINUE_INSTALLATION,
-	/**
-	 * Stop the installation where it is. 
-	 * <br>
-	 * Can be used in both Module and File Hooks. 
-	 * <br>
-	 * INPORTANT: although it can be used in File Hooks we strongly recommend
-	 * not to do it because this option abruptly stops the installation. Prefer
-	 * use this <code>CANCEL_INSTALLATION</code> in Module Hooks.
-	 */
-	CANCEL_INSTALLATION, 
-	/**
-	 * Skip current file, but keep executing the installation.
-	 * <br>
-	 * Can be used only in File Hooks.
-	 */
-	SKIP_FILE_INSTALLATION;
-	
-	public boolean isValidForModuleHook(){
-		return this.equals(CONTINUE_INSTALLATION) || this.equals(CANCEL_INSTALLATION);
-	}
-	
-	public boolean isValidForFileHook(){
-		return this.equals(CONTINUE_INSTALLATION) || this.equals(CANCEL_INSTALLATION) || this.equals(SKIP_FILE_INSTALLATION);
+
+public class DebianCommand extends UbuntuCommand {
+	public static final String DIST_NAME = "Debian";
+
+	@Override
+	public String distribution() {
+		return DIST_NAME;
 	}
 }

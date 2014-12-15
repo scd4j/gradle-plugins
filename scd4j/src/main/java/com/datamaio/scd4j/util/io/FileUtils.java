@@ -185,6 +185,19 @@ public final class FileUtils {
 	
 	public static void move(Path from, Path to) {
 		try {
+			if(Files.isDirectory(from)) {
+				createDirectories(to);
+				throw new RuntimeException("Moving directory is not implemented yet");
+			} else if (Files.isRegularFile(from)) {
+				if (Files.notExists(to)){
+					Path parent = to.getParent();
+					createDirectories(parent);					
+				} else if(Files.isDirectory(to)) {
+					to = to.resolve(from.getFileName());
+				} else if(Files.isRegularFile(to)){
+					// expected. do nothing
+				} 
+			}			
 			Files.move(from, to, ATOMIC_MOVE, REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

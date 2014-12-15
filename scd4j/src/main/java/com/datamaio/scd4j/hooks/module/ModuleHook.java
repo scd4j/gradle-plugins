@@ -23,7 +23,7 @@
  */
 package com.datamaio.scd4j.hooks.module;
 
-import com.datamaio.scd4j.hooks.Action;
+import com.datamaio.scd4j.hooks.HookPreResult;
 import com.datamaio.scd4j.hooks.Hook;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 
@@ -39,10 +39,10 @@ public abstract class ModuleHook extends Hook {
 	// ------ methods used by the framework only ----
 	
 	@Override
-	protected final void validateReturningAction(Action action) {
-		if(!action.isValidForModuleHook()){
-			throw new RuntimeException("Module.hook has returned the invalid action '" + action 
-					+ "' at pre{...} script! Please, read Action javadoc for more information.");
+	protected final void validateReturningAction(HookPreResult hookPreResult) {
+		if(!hookPreResult.isValidForModuleHook()){
+			throw new RuntimeException("Module.hook has returned the invalid action '" + hookPreResult 
+					+ "' at pre{...} script! Please, read HookPreResult javadoc for more information.");
 		}
 	}
 	
