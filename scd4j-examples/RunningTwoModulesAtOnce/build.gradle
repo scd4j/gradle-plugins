@@ -2,13 +2,12 @@ plugins {
   id "com.datamaio.scd4j" version "0.5.3"
 }
 
-archivesBaseName='FirstSteps'
+archivesBaseName='RunningTwoModulesAtOnce'
 version = 0.1
 
 scd4j {
 	install {
-		modules "example-module1"
+		modules "example-module1", "example-module2"
 		config "example.conf"		
 	}
 }
-

@@ -1,3 +1,5 @@
+import org.gradle.api.publish.maven.internal.publisher.AntTaskBackedMavenLocalPublisher.MavenLocalInstallTask;
+
 plugins {
 	id "com.jfrog.bintray" version "0.6"
 	id "nebula.os-package" version "2.0.3"
@@ -11,7 +13,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.5.1'
+version = '0.5.3'
 
 bintray {
 	user = bintray_user
@@ -22,7 +24,7 @@ bintray {
 		repo = 'maven'
 		name = 'SCD4J'
 		desc = 'Simple Continuous Delivery for Java and Groovy Developers'
-		websiteUrl = 'https://github.com/scd4j/gradle-plugins'
+		websiteUrl = 'https://github.com/scd4j/gradle-plugins/wiki'
 		issueTrackerUrl = 'https://github.com/scd4j/gradle-plugins/issues'
 		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
 		attributes= ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
@@ -54,13 +56,7 @@ project.artifacts {
 
 repositories {
     mavenCentral()
-    //mavenLocal()
-	maven {
-		url "file:///opt/gradle-repo/maven-repo/"
-	}
-    maven {
-		url "https://repository.sonatype.org/content/groups/forge/"
-	}
+    maven { url "https://repository.sonatype.org/content/groups/forge/"	}
 }
 
 dependencies {
@@ -80,8 +76,7 @@ dependencies {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			//repository(url : mavenLocal().url)
-			repository(url : "file:///opt/gradle-repo/maven-repo/")
+			repository(url : mavenLocal().url)
 		}
 	}
 }

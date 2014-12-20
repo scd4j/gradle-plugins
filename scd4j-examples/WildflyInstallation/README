@@ -1,8 +1,5 @@
-To run
+Follow the below steps to run this example:
 
-First you must be logged with root user in a Linux machine
-Second, in the line command go to this directory and type
+* First you must be logged in a Linux machine with the root user
 
-	'./gradlew' on Linux
-	OR
-	'gradlew.bat' on Windows
+* Second, in the command line go to the 'WildflyInstallation' directory and type './gradlew'

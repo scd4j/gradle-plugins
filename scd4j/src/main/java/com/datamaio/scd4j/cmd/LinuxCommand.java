@@ -169,7 +169,7 @@ public abstract class LinuxCommand extends Command {
 
 	@Override
 	public void groupadd(final String group, final String options) {
-		run("groupadd " + (options != null ? options : "-f") + " " + group);
+		run("groupadd " + (options != null ? options.trim() + " " : "-f ") + group);
 	}
 
 	@Override
@@ -183,7 +183,17 @@ public abstract class LinuxCommand extends Command {
 			run("id " + user, false);
 			LOGGER.info("\tUser already exists. It will not be created again.");
 		} catch (Exception e) {
-			run("useradd " + (options != null ? options : "") + " " + user);
+			run("useradd " + (options != null ? options.trim() + " " : "--create-home ") + user);
+		}
+	}
+
+	@Override
+	public void userdel(final String user, final String options) {
+		try {
+			run("id " + user, false);
+			LOGGER.info("\tUser already exists. It will not be created again.");
+		} catch (Exception e) {
+			run("userdel " + (options != null ? options.trim() + " " : "") + user);
 		}
 	}
 

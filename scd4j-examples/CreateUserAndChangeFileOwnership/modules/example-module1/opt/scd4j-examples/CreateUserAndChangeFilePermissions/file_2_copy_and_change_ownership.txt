@@ -1,0 +1,1 @@
+This file will be copied as is to the destination folder and then, the file_2_copy_and_change_permission.txt.hook file will change the owner
