@@ -1,17 +1,6 @@
-/*plugins {
-  id "com.datamaio.scd4j" version "0.5.1"
-}*/
-
-buildscript {
-	repositories {
-		mavenCentral()
-		maven { url 'file:///opt/gradle-repo/maven-repo/' }
-	}
-	dependencies {
-		classpath 'com.datamaio:scd4j:+'
-	}
+plugins {
+  id "com.datamaio.scd4j" version "0.5.3"
 }
-apply plugin: 'com.datamaio.scd4j'
 
 archivesBaseName='WildflyInstallation'
 version = 0.1

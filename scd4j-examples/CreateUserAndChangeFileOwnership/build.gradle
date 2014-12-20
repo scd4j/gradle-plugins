@@ -2,7 +2,7 @@ plugins {
   id "com.datamaio.scd4j" version "0.5.3"
 }
 
-archivesBaseName='FirstSteps'
+archivesBaseName='CreateUserAndChangeFileOwnership'
 version = 0.1
 
 scd4j {
@@ -11,4 +11,3 @@ scd4j {
 		config "example.conf"		
 	}
 }
-

@@ -1,0 +1,5 @@
+def user = get("user_name")
+
+post {
+	chown(user)
+}

@@ -111,6 +111,7 @@ public abstract class Command {
 	public abstract void groupadd(final String group, final String options);
 	public abstract void useradd(final String user);
 	public abstract void useradd(final String user, final String options);
+	public abstract void userdel(final String user, final String options);	
 	public abstract void passwd(final String user, final String passwd);
 	
 	public abstract void chmod(final String mode, final String file);

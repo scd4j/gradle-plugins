@@ -186,6 +186,11 @@ public class WindowsCommand extends Command {
 	public void useradd(String user, String options) {
 		// do nothing
 	}
+	
+	@Override
+	public void userdel(String user, String options) {
+		// do nothing
+	}
 
 	@Override
 	public void passwd(String user, String passwd) {
