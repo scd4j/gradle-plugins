@@ -5,7 +5,7 @@ In short, SCD4J is an automation platform for configuring and installing your We
 
 To know more about SCD4J and understand what are the advantages over competition, please take a look at [documentation](https://github.com/scd4j/gradle-plugins/wiki).
 
-Config Example:
+`build.gradle` example:
 ```
 plugins {
     id "com.datamaio.scd4j" version "0.5.3"
