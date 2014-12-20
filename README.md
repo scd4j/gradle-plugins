@@ -8,7 +8,7 @@ To know more about SCD4J and understand what are the advantages over competition
 Config Example:
 ```
 plugins {
-    id "com.datamaio.scd4j" version "0.5.1"
+    id "com.datamaio.scd4j" version "0.5.3"
 }
 
 scd4j {
