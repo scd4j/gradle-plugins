@@ -152,7 +152,6 @@ public class HookInstallUninstallTest {
 		}			
 		
 		try {
-			assertThat(exists(path), is(false));
 			hook.install(pack);
 			assertThat(exists(path), is(true));
 		} finally {
