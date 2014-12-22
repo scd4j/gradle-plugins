@@ -13,31 +13,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '0.5.4'
 
-bintray {
-	user = bintray_user
-	key = bintray_api_key
-	configurations = ['archives']
-	publish = true
-	pkg {
-		repo = 'maven'
-		name = 'SCD4J'
-		desc = 'Simple Continuous Delivery for Java and Groovy Developers'
-		websiteUrl = 'https://github.com/scd4j/gradle-plugins/wiki'
-		issueTrackerUrl = 'https://github.com/scd4j/gradle-plugins/issues'
-		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
-		attributes= ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
-		licenses = ['MIT']
-		labels = ['Continuous Delivery', 'Java', 'Groovy', 'Gradle', 'DevOps']
-		publicDownloadNumbers = true
-		
-		version {
-			desc = 'SCD4J'
-			released  = new java.util.Date()
-			attributes = ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
-		}
-	}
-}
-
 jar {
     manifest {
         attributes 'Implementation-Title': 'SCD4J', 'Implementation-Version': version
@@ -82,6 +57,33 @@ uploadArchives {
 task wrapper (type: Wrapper) {
 	description = "Generate gradle wrapper"
     gradleVersion = '2.2'
+}
+
+//--------- publish to bintray config -----------
+
+bintray {
+	user = hasProperty('bintray_user') ? bintray_user : ''
+	key = hasProperty('bintray_api_key') ? bintray_api_key : ''
+	configurations = ['archives']
+	publish = true
+	pkg {
+		repo = 'maven'
+		name = 'SCD4J'
+		desc = 'Simple Continuous Delivery for Java and Groovy Developers'
+		websiteUrl = 'https://github.com/scd4j/gradle-plugins/wiki'
+		issueTrackerUrl = 'https://github.com/scd4j/gradle-plugins/issues'
+		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
+		attributes= ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
+		licenses = ['MIT']
+		labels = ['Continuous Delivery', 'Java', 'Groovy', 'Gradle', 'DevOps']
+		publicDownloadNumbers = true
+		
+		version {
+			desc = 'SCD4J'
+			released  = new java.util.Date()
+			attributes = ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
+		}
+	}
 }
 
 //--------- Create DEB and RPM packages --------
