@@ -29,7 +29,7 @@ post {
 
 void installJava(){
 	if("CentOS".equals(distribution()) || "Red Hat".equals(distribution())) {
-		isntall('java')
+		install('java')
 	} else {
 		install('default-jdk')
 	}

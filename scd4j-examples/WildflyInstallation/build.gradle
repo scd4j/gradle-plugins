@@ -1,20 +1,6 @@
-
-buildscript {
-	repositories {
-		mavenCentral()
-		maven {url 'file:/home/fernando/.m2/repository/'}
-	}
-	dependencies {
-		classpath 'com.datamaio:scd4j:+'
-	}
-}
-apply plugin: 'com.datamaio.scd4j'
-
-/*
-
 plugins {
   id "com.datamaio.scd4j" version "0.5.4"
-}*/
+}
 
 archivesBaseName='WildflyInstallation'
 version = 0.1
