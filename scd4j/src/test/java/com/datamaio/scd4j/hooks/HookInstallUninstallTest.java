@@ -138,22 +138,25 @@ public class HookInstallUninstallTest {
 		checkRoot();
 		
 		String pack = null;
+		Path path = null;
+		
 		String dist = Command.get().distribution();
 		if(UbuntuCommand.DIST_NAME.equals(dist)) {
-			pack = "lxde=0.5.0-4ubuntu4";
+			pack = "dos2unix=6.0.4-1";
+			path = Paths.get("/usr/share/doc/dos2unix/dos2unix.htm");
 		} else if(CentosCommand.DIST_NAME.equals(dist)) {
-			pack = "lxde-?????????????";
+			pack = "dos2unix-6.0.3-4.el7.x86_64";
+			path = Paths.get("/usr/share/doc/dos2unix-6.0.3/dos2unix.htm");
 		} else {
 			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
 		}			
 		
-		Path path = Paths.get("/usr/share/doc/lxde/copyright");
 		try {
 			assertThat(exists(path), is(false));
 			hook.install(pack);
 			assertThat(exists(path), is(true));
 		} finally {
-			hook.uninstall("lxde");
+			hook.uninstall("dos2unix");
 			assertThat(exists(path), is(false));
 		}
 		
