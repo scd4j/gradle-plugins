@@ -8,7 +8,7 @@ To know more about SCD4J and understand what are the advantages over competition
 `build.gradle` example:
 ```
 plugins {
-    id "com.datamaio.scd4j" version "0.5.3"
+    id "com.datamaio.scd4j" version "0.5.4"
 }
 
 scd4j {
