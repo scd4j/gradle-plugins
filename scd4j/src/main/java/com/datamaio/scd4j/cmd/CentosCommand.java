@@ -74,7 +74,7 @@ public class CentosCommand extends LinuxCommand {
 	
 	@Override
 	public boolean isInstalled(String pack) {
-		throw new RuntimeException("Function 'isLocalPackInstalled' not implemented for CentOS");
+		return run("rpm -qa | grep " + pack).length() > 0;
 	}
 	
 	@Override
