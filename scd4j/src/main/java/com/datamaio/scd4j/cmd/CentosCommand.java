@@ -48,9 +48,9 @@ public class CentosCommand extends LinuxCommand {
 	
 	@Override
 	public void startServiceAtSystemBoot(String serviceName) {
-		run("chkconfig --add " + serviceName +
-				" && chkconfig " + serviceName + " on " + 
-				" && chkconfig --list " + serviceName);
+		run("chkconfig --add " + serviceName);
+		run("chkconfig " + serviceName + " on "); 
+		run("chkconfig --list " + serviceName);
 	}
 	
 	@Override

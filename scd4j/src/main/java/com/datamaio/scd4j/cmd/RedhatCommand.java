@@ -25,7 +25,7 @@ package com.datamaio.scd4j.cmd;
 
 
 public class RedhatCommand extends CentosCommand{
-	public static final String DIST_NAME = "RedHat";
+	public static final String DIST_NAME = "Red Hat";
 	
 	@Override
 	public String distribution() {

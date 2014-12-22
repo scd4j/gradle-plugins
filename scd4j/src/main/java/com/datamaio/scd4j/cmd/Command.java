@@ -63,15 +63,15 @@ public abstract class Command {
 		if(INSTANCE==null) {
 			String os = System.getProperty("os.name");
 			if(os.toUpperCase().contains("LINUX")) {
-				List<String> cmdList = Arrays.asList("uname -a".split(" "));			
+				List<String> cmdList = Arrays.asList("cat /proc/version".split(" "));			
 				String dist = _run(cmdList, NO_PRINTING);
-				if(dist.contains(UbuntuCommand.DIST_NAME)) {
+				if(dist.toUpperCase().contains(UbuntuCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new UbuntuCommand();
-				} else if (dist.contains(DebianCommand.DIST_NAME)) {
+				} else if (dist.toUpperCase().contains(DebianCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new DebianCommand();
-				} else if (dist.contains(CentosCommand.DIST_NAME)) {
+				} else if (dist.toUpperCase().contains(CentosCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new CentosCommand();					
-				} else if(dist.contains(RedhatCommand.DIST_NAME)) {
+				} else if(dist.toUpperCase().contains(RedhatCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new RedhatCommand();
 				} else {
 					throw new RuntimeException("Linux distribution not supported : " + dist);
@@ -111,6 +111,7 @@ public abstract class Command {
 	public abstract void groupadd(final String group, final String options);
 	public abstract void useradd(final String user);
 	public abstract void useradd(final String user, final String options);
+	public abstract void userdel(final String user);
 	public abstract void userdel(final String user, final String options);	
 	public abstract void passwd(final String user, final String passwd);
 	
@@ -227,37 +228,37 @@ public abstract class Command {
 
 	// ----------- Private methods -------------
 	
-	private static String _run(List<String> cmd, Interaction interact) {
+	private static String _run(List<String> cmd, Interaction interaction) {
 		ThreadedStreamHandler handler = null;
 		ThreadedStreamHandler errorHandler = null;
 		OutputStream out = null;
 		Path tempPath = null;
 		StringBuilder noInteractionHandler = new StringBuilder();
 		try {
-			if (interact == null) {
+			if (interaction == null) {
 				// se não tem iteração joga o conteúdo no arquivo para
 				// depois ler
 				tempPath = Files.createTempFile("cmd", ".out");
 			}
 
-			final Process process = run(cmd, tempPath, interact.shouldPrintCommand());
-			if (interact != null) {
+			final Process process = run(cmd, tempPath, interaction.shouldPrintCommand());
+			if (interaction != null) {
 				InputStream in = process.getInputStream();
 				InputStream ein = process.getErrorStream();
 				out = process.getOutputStream();
 
-				handler = new ThreadedStreamHandler(in, interact.shouldPrintOutput());
-				errorHandler = new ThreadedStreamHandler(ein, interact.shouldPrintOutput());
+				handler = new ThreadedStreamHandler(in, interaction.shouldPrintOutput());
+				errorHandler = new ThreadedStreamHandler(ein, interaction.shouldPrintOutput());
 				handler.start();
 				errorHandler.start();
 
 				// se o usuario definiu algum tipo de interacao
-				interact.interact(out);
+				interaction.interact(out);
 				out.flush();
 			}
 			int waitFor = process.waitFor();
 
-			if (interact != null) {
+			if (interaction != null) {
 				handler.interrupt();
 				errorHandler.interrupt();
 				handler.join();
@@ -271,14 +272,14 @@ public abstract class Command {
 				}
 			}
 
-			if (interact != null) {
-				if (!interact.isTheExecutionSuccessful(waitFor)) {
+			if (interaction != null) {
+				if (!interaction.isTheExecutionSuccessful(waitFor)) {
 					throwExecutionException(errorHandler, waitFor);
 				}
 			} else if (waitFor != 0) {
 				throwExecutionException(errorHandler, waitFor);
 			}
-			return (interact != null) ? handler.getOutput() : noInteractionHandler.toString();
+			return (interaction != null) ? handler.getOutput() : noInteractionHandler.toString();
 		} catch (Exception e) {
 			String msg = "Error executing command: " + cmd2String(cmd) + ".";
 			throw new RuntimeException(msg, e);

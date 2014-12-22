@@ -188,12 +188,17 @@ public abstract class LinuxCommand extends Command {
 	}
 
 	@Override
+	public void userdel(final String user){
+		userdel(user, null);
+	}
+	
+	@Override
 	public void userdel(final String user, final String options) {
 		try {
 			run("id " + user, false);
-			LOGGER.info("\tUser already exists. It will not be created again.");
-		} catch (Exception e) {
 			run("userdel " + (options != null ? options.trim() + " " : "") + user);
+		} catch (Exception e) {
+			// ignore the user does not exists
 		}
 	}
 

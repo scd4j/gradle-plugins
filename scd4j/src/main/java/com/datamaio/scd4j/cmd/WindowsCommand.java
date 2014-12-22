@@ -188,6 +188,11 @@ public class WindowsCommand extends Command {
 	}
 	
 	@Override
+	public void userdel(final String user){
+		// do nothing
+	}
+	
+	@Override
 	public void userdel(String user, String options) {
 		// do nothing
 	}

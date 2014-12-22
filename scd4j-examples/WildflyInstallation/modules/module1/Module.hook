@@ -3,7 +3,8 @@ def wildflyhome = "$basedir/wildfly-8.2.0.Final"
  
 pre {
 	if(!exists(wildflyhome)) {
-		unzip('wildfly-8.2.0.Final.zip', basedir)
+		installJava()
+		unzip('wildfly-8.2.0.Final.zip', basedir)		
 	} else {
 		log("Wildfly already installed at $wildflyhome")
 		if(isLinux()) {
@@ -23,5 +24,13 @@ post {
 			ln("/etc/init.d/wildfly", "$wildflyhome/bin/init.d/wildfly-init-redhat.sh")
 		}
 		start("wildfly")
+	}
+}
+
+void installJava(){
+	if("CentOS".equals(distribution()) || "Red Hat".equals(distribution())) {
+		isntall('java')
+	} else {
+		install('default-jdk')
 	}
 }

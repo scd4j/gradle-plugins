@@ -59,7 +59,7 @@ public class FileHookEvaluator extends HookEvaluator {
 		LOGGER.info(" :PRE");		
 		boolean pre = super.pre();
 		if(!pre) {
-			LOGGER.info(" :POST (Not Executed. Function 'pre' returned false)");
+			LOGGER.info(" :POST (Skipped)");
 		}
 		return pre;
 	}

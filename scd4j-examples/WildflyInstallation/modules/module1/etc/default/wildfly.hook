@@ -1,6 +1,9 @@
 pre {
 	if("Ubuntu".equals(distribution()) || "Debian".equals(distribution())) {
+		log("Installing Ubuntu/Debian support!")
 		return CONTINUE
 	}
+	
+	log("Skipping Ubuntu/Debian file. Distribution: " + distribution())
 	return SKIP_FILE
 }

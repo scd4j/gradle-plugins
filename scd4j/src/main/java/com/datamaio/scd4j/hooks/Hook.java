@@ -259,6 +259,30 @@ public abstract class Hook extends Script {
 	}
 
 	/**
+	 * Deletes an existing user. <br />
+	 * Note: Currently Linux only.
+	 * 
+	 * @param user
+	 *            The user name.
+	 */
+	public void userdel(final String user) {
+		command.userdel(user);
+	}
+
+	/**
+	 * Deletes an existing user with options. <br />
+	 * Note: Currently Linux only.
+	 * 
+	 * @param user
+	 *            The user name.
+	 * @param options
+	 *            The same options you would like to use in the command line.
+	 */
+	public void userdel(final String user, final String options) {
+		command.userdel(user, options);
+	}
+	
+	/**
 	 * Sets the user password. <br />
 	 * <br />
 	 * Important Notes:
