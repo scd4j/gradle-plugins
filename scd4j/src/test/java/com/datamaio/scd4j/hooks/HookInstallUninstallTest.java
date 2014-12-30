@@ -40,12 +40,16 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.datamaio.junit.IsLinux;
+import com.datamaio.junit.RunIfRule;
+import com.datamaio.junit.RunIfRule.RunIf;
 import com.datamaio.scd4j.cmd.CentosCommand;
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.UbuntuCommand;
@@ -61,6 +65,9 @@ import com.datamaio.scd4j.util.io.PathUtils;
 @RunWith(MockitoJUnitRunner.class)
 public class HookInstallUninstallTest {
 
+	@Rule
+	public RunIfRule rule = new RunIfRule();
+	
 	private static final Path FOO_PATH = Paths.get("/opt/foo/tst/foo.txt");
 	private static final String RPM_PACK = "foo-0.1-1.i386.rpm";
 	private static final String DEB_PACK = "foo_0.1-1_all.deb";
@@ -103,7 +110,7 @@ public class HookInstallUninstallTest {
 		reset(hook);
 	}
 		
-	@Test
+	@Test @RunIf(IsLinux.class)
 	public void testInstallAndUninstallLocalPack() throws Exception {
 		checkRoot();
 		
@@ -114,7 +121,7 @@ public class HookInstallUninstallTest {
 		} else if(CentosCommand.DIST_NAME.equals(dist)) {
 			pack = RPM_PACK;
 		} else {
-			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
+			throw new RuntimeException("Not Implemented for windows!");
 		}			
 		
 		try {
@@ -133,7 +140,7 @@ public class HookInstallUninstallTest {
 	    verify(hook, times(0)).uninstallRemotePack(anyString());
 	}
 	
-	@Test
+	@Test @RunIf(IsLinux.class)
 	public void testInstallAndUninstallRemotePack() throws Exception {
 		checkRoot();
 		
@@ -148,7 +155,7 @@ public class HookInstallUninstallTest {
 			pack = "dos2unix-6.0.3-4.el7.x86_64";
 			path = Paths.get("/usr/share/doc/dos2unix-6.0.3/dos2unix.htm");
 		} else {
-			throw new RuntimeException("Not Implemented for windows! Precisamos discutir");
+			throw new RuntimeException("Not Implemented for windows!");
 		}			
 		
 		try {

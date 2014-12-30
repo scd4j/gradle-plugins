@@ -1,5 +1,9 @@
 Follow the below steps to run this example:
 
-* First you must be logged in a Linux machine with the root user
+Linux
+	* First you must be logged in a Linux machine with the root user
+	* Second, in the command line go to the 'RegistryServiceAtBoot' directory and type './gradlew'
 
-* Second, in the command line go to the 'RegistryServiceAtBoot' directory and type './gradlew'
+Windows
+	* This example does not run on Windows because we are adding a Linux only service
+	* It was created to show you how you can conditionally use the Module.hook to not install the entire module in some environments

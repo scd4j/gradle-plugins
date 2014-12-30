@@ -42,12 +42,17 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.datamaio.scd4j.cmd.WindowsCommand;
+import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.util.BackupHelper;
 import com.datamaio.scd4j.util.LogHelper;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
@@ -80,7 +85,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(false));
 			
-			new EnvConfigurator(build(module)).deleteFiles();
+			new EnvConfiguratorMock(build(module)).deleteFiles();
 	
 			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
@@ -108,7 +113,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			new EnvConfigurator(build(module)).copyFiles();		
+			new EnvConfiguratorMock(build(module)).copyFiles();
 	
 			assertThat(exists(PathUtils.get(fs, "dir1/f1.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(true));
@@ -139,7 +144,7 @@ public class EnvConfiguratorTest {
 			Map<String, String> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
-			new EnvConfigurator(build(module, props)).copyFiles();		
+			new EnvConfiguratorMock(build(module, props)).copyFiles();		
 	
 			checkResult(fs, result, "dir1/f1.txt");
 			checkResult(fs, result, "dir2/dir21/f21.txt");
@@ -170,7 +175,7 @@ public class EnvConfiguratorTest {
 			Map<String, String> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
-			new EnvConfigurator(build(module, props)).execute();		
+			new EnvConfiguratorMock(build(module, props)).execute();		
 	
 			checkResult(fs, result, "dir1/f1.txt");
 			checkResult(fs, result, "dir2/dir21/f21.txt");
@@ -196,7 +201,7 @@ public class EnvConfiguratorTest {
 			
 			Map<String, String> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
-			new EnvConfigurator(build(module, props)).execute();		
+			new EnvConfiguratorMock(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "dir2/dir21/f21.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
@@ -228,7 +233,7 @@ public class EnvConfiguratorTest {
 			Map<String, String> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
-			new EnvConfigurator(build(module, props)).execute();		
+			new EnvConfiguratorMock(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			
@@ -255,7 +260,7 @@ public class EnvConfiguratorTest {
 		try {
 			Map<String, String> props = new HashMap<>();
 			props.put("var", "var errada");
-			new EnvConfigurator(build(module, props)).execute();		
+			new EnvConfiguratorMock(build(module, props)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
@@ -273,7 +278,7 @@ public class EnvConfiguratorTest {
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPost()); 
 
 		try {
-			new EnvConfigurator(build(module)).execute();		
+			new EnvConfiguratorMock(build(module)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(true));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
@@ -300,7 +305,7 @@ public class EnvConfiguratorTest {
 		try {
 			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(false));
 			
-			new EnvConfigurator(build(module)).execute();		
+			new EnvConfiguratorMock(build(module)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(true));
 			checkResult(fs, result, "f1.txt");
@@ -326,7 +331,7 @@ public class EnvConfiguratorTest {
 		try {
 			Map<String, String> props = new HashMap<>();
 			props.put("test", "TESTADO!");
-			new EnvConfigurator(build(module, props)).execute();
+			new EnvConfiguratorMock(build(module, props)).execute();
 			assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
 			checkResult(fs, result, "dir1/f10.txt");
 		} finally {
@@ -416,5 +421,42 @@ public class EnvConfiguratorTest {
 	private boolean isWindows() {
 		String os = System.getProperty("os.name");
 		return os.toUpperCase().contains("WINDOWS");
+	}
+	
+	public static class EnvConfiguratorMock extends EnvConfigurator{
+		public EnvConfiguratorMock(Configuration conf) {
+			super(conf);
+		}
+
+		@Override
+		BackupHelper buildBackupHelper(Configuration conf) {
+			return new BackupHelper(conf){
+				public void backupFile(Path file) {};
+				public void backupFileOrDir(Path fileOrDir) {};
+				public void init(Configuration conf) {};
+			};
+		}		
+		
+		@Override
+		LogHelper buildLogHelper(Configuration conf) {
+			return new LogHelper(conf){
+				private final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+				@Override
+				public void startup() {
+					System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %1$tb %1$td, %1$tY %1$tH:%1$tM:%1$tS %5$s%6$s%n");
+
+					// avoid tha the handler be registred more than once
+					closeAndRemoveFileHandler();
+
+			        // registry the handlers
+			        LOGGER.setLevel(Level.INFO);
+			        LOGGER.setUseParentHandlers(false);
+
+			        ConsoleHandler consoleHandler = new ConsoleHandler();
+			        consoleHandler.setFormatter(new SimpleFormatter());
+			        LOGGER.addHandler(consoleHandler);
+			    }				
+			};
+		}
 	}
 }

@@ -1,5 +1,19 @@
 Follow the below steps to run this example:
 
-* First you must be logged in a Linux machine with the root user
+Linux
+	* First you must be logged in a Linux machine with the root user
+	* Second, in the command line go to the 'RegistryServiceAtBoot' directory and type './gradlew'
 
-* Second, in the command line go to the 'CreateUserAndChangeFileOwnership' directory and type './gradlew'
+Windows
+	* This example will do nothing on Windows because, currently, we have some methods that only have effect on Linux
+	* Current methods that are ignored in Windows:		 
+		- groupadd(..) 
+		- useradd(..) 
+		- userdel(..)
+		- chmod(..)
+		- chown(..)
+		- ln(..)
+		- fixText(..)
+	* Current methods that throw exception when run on windows
+		- uninstall(..)		
+	* For more information, please, see Javadoc of Hook.java

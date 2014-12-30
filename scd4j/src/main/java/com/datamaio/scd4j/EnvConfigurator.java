@@ -73,9 +73,21 @@ public class EnvConfigurator {
 	public EnvConfigurator(Configuration conf) {
 		this.conf = conf;
 		this.engine = conf.getTemplateEngine();
-		this.pathHelper = new PathHelper(conf);
-		this.backupHelper = new BackupHelper(conf);
-		new LogHelper(conf).startup();
+		this.pathHelper = buildPathHelper(conf);
+		this.backupHelper = buildBackupHelper(conf);
+		buildLogHelper(conf).startup();
+	}
+	
+	PathHelper buildPathHelper(Configuration conf) {
+		return new PathHelper(conf);
+	}
+
+	BackupHelper buildBackupHelper(Configuration conf) {
+		return new BackupHelper(conf);
+	}
+
+	LogHelper buildLogHelper(Configuration conf) {
+		return new LogHelper(conf);
 	}
 
 	/**

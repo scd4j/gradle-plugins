@@ -31,7 +31,6 @@ import com.datamaio.scd4j.util.io.ZipUtils;
 /**
  * 
  * @author Fernando Rubbo
- * @author Mateus M. da Costa
  */
 public class WindowsCommand extends Command {
 	public static final String OS_NAME = "Windows";
@@ -54,32 +53,36 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void serviceStart(String name){
-		throw new RuntimeException("Function 'service start' not implemented for windows");
+		run("sc start " + name);
+		wait(()->{ return serviceStatus(name).contains("running");});
 	}
 	
 	@Override
 	public void serviceStop(String name){
-		throw new RuntimeException("Function 'service stop' not implemented for windows");
+		run("sc stop " + name);
+		wait(()->{ return serviceStatus(name).contains("stopped");});		
 	}
 	
 	@Override
 	public void serviceRestart(String name){
-		throw new RuntimeException("Function 'service restart' not implemented for windows");
+		serviceStop(name);
+		sleep(100);
+		serviceStart(name);
 	}
 	
 	@Override
 	public String serviceStatus(String name){
-		throw new RuntimeException("Function 'service status' not implemented for windows");
+		return run("sc query " + name).toLowerCase();
 	}
 	
 	@Override
 	public void startServiceAtSystemBoot(String serviceName) {
-		throw new RuntimeException("Function 'activeAtBoot' not implemented for windows");
+		run("sc config " + serviceName + " start= auto");	
 	}
 	
 	@Override
 	public void doNotStartServiceAtSystemBoot(String serviceName) {
-		throw new RuntimeException("Function 'deactiveAtBoot' not implemented for windows");
+		run("sc config " + serviceName + " start= disabled");
 	}
 	
 	@Override
@@ -94,29 +97,39 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void installRemotePack(String pack) {
-		run(pack);
+		throw new RuntimeException("Function 'installRemotePack' not supported on windows");
 	}
 
 	@Override
 	public void installRemotePack(String pack, String version) {
-		throw new RuntimeException("Function 'install' with version not implemented for windows");
+		throw new RuntimeException("Function 'installRemotePack' not supported on windows");
 	}
 	
 	@Override
 	public boolean isInstalled(String pack) {
-		throw new RuntimeException("Function 'isLocalPackInstalled' not implemented for windows");
+		throw new RuntimeException("Function 'isLocalPackInstalled' not supported on windows");
+	}
+	
+	@Override
+	public void uninstallLocalPack(String pack) {
+		throw new RuntimeException("Function 'uninstallLocalPack' not supported on windows");
 	}
 	
 	@Override
 	public void uninstallRemotePack(String pack) {
 		throw new RuntimeException("Function 'uninstall' not implemented for windows");
 	}
+
+	@Override
+	public void installLocalPack(String path) {
+		run(path);
+	}
 	
 	@Override
-	public void uninstallLocalPack(String pack) {
-		throw new RuntimeException("Function 'uninstallLocalPack' not implemented for CentOS");
+	public void addRepository(String repository) {
+		throw new RuntimeException("Function 'addRepository' not supported on windows");
 	}
-
+	
 	@Override
 	public void chmod(String mode, String file) {
 		// do nothing
@@ -131,38 +144,34 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void fixTextContent(String file) {
-		throw new RuntimeException("Function 'normalizeTextContent' not implemented for windows");
+		// do nothing.
+		// TODO: implement it
 	}
 
 	@Override
 	public void chown(final String user, final String file) {
 		// TODO - Look at: http://technet.microsoft.com/pt-br/library/cc753525%28v=ws.10%29.aspx
-		throw new RuntimeException("Function 'chown' is not implemented for windows yet!");
 	}
 
 	@Override
 	public void chown(final String user, final String file, final boolean recursive) {
 		// TODO - Look at: http://technet.microsoft.com/pt-br/library/cc753525%28v=ws.10%29.aspx
-		throw new RuntimeException("Function 'chown' is not implemented for windows yet!");
 	}
 
 	@Override
 	public void chown(final String user, final String group, final String file) {
 		// TODO - Look at: http://technet.microsoft.com/pt-br/library/cc753525%28v=ws.10%29.aspx
-		throw new RuntimeException("Function 'chown' is not implemented for windows yet!");
 	}
 
 	@Override
 	public void chown(final String user, final String group, final String file, final boolean recursive) {
 		// TODO - Look at: http://technet.microsoft.com/pt-br/library/cc753525%28v=ws.10%29.aspx
-		throw new RuntimeException("Function 'chown' is not implemented for windows yet!");
 	}
 	
 	@Override
 	public void ln(String file, String link) {
 		// TODO - Can use this: mklink. Look at: http://technet.microsoft.com/en-us/library/cc753194.aspx
 		// This was tested in Windows 7 and worked...
-		throw new RuntimeException("Function 'ln' is not implemented for windows yet!");
 	}
 
 	@Override
@@ -204,18 +213,7 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void unzip(String from, String toDir) {
-		LOGGER.info("Descompactando " + from + " para " + toDir + " ... ");
+		LOGGER.info("Unziping " + from + " to " + toDir + " ... ");
 		ZipUtils.unzip(Paths.get(from), Paths.get(toDir));
-		LOGGER.info("Descompatacao concluida!");
-	}
-
-	@Override
-	public void installLocalPack(String path) {
-		run(path);
-	}
-	
-	@Override
-	public void addRepository(String repository) {
-		throw new RuntimeException("Not Implemented!");
-	}
+	}		
 }

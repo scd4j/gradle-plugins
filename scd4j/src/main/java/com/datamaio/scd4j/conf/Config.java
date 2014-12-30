@@ -30,7 +30,10 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.InvalidPropertiesFormatException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -76,37 +79,64 @@ public class Config extends Properties {
     		} catch (IOException e) {
     			throw new RuntimeException(e);
     		}
+    		   		
     		merge();
         }
         return this;
 	}
 
+
 	private void merge() {
+		final Map<String,String> toBeAdded = new HashMap<>();
+		final Set<String> toBeRemoved = new HashSet<>();
+		
 		// faz este loop apenas para garantir que, se tiver alguma propriedade criptografada, ela sera descriptografada
 		// também resolve as variáveis
-		final Set<Object> propsKeySet = keySet();
-		for (final Object key : propsKeySet) {
+		for (final Object key : keySet()) {
 			final String value = (String) get(key);
-			putInProps(key, value);
+			final String newKey = replaceDotsWithUnderscore(toBeAdded, toBeRemoved, key.toString(), value);
+			resolveAndDecript(toBeAdded, newKey, value);
 		}
+		toBeRemoved.forEach(keyWithDot -> Config.this.remove(keyWithDot));
+		toBeAdded.forEach((newKey, value) -> Config.this.put(newKey, value));
 
 		// pega todas as propriedades do sistema e sobreescreve as configuradas no arquivo de propriedades
+		toBeAdded.clear();
 		final Properties sysProps = System.getProperties();
 		final Set<Object> sysPropsKeySet = sysProps.keySet();
 		for (final Object key : sysPropsKeySet) {
 			final String value = (String) sysProps.get(key);
-			putInProps(key, value);
-		}		
+			final String newKey = replaceDotsWithUnderscore(key.toString());
+			resolveAndDecript(toBeAdded, newKey, value);
+		}
+		toBeAdded.forEach((newKey, value) -> Config.this.put(newKey, value));
 	}
 	
-	private void putInProps(final Object key, final String value) {
+	String replaceDotsWithUnderscore(final Map<String,String> toBeAdded, final Set<String> toBeRemoved, final String key, final String value) {
+		if(key.contains(".")){
+			final String newKey = key.replaceAll("\\.", "_");
+			toBeRemoved.add(key);
+			toBeAdded.put(newKey, value);
+			return newKey;
+		}
+		return key;
+	}
+	
+	void resolveAndDecript(Map<String,String> toBeAdded, final String key, final String value) {
         // para as propriedades cryptografadas, decriptografa..
 		if(value!=null && value.startsWith(Encryptor.PREFIX)) {
 			final String decryptedValue = Encryptor.get().decrypt(value);
-			put(key, decryptedValue);
+			toBeAdded.put(key, decryptedValue);
 		} else {
-			put(key, resolve(value));
+			toBeAdded.put(key, resolve(value));
 		}
+	}
+	
+	String replaceDotsWithUnderscore(final String key) {
+		if(key.contains(".")){
+			return key.replaceAll("\\.", "_");
+		}
+		return key;
 	}
 	
 	String resolve(String value) {

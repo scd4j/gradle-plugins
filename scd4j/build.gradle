@@ -11,7 +11,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.5.4'
+version = '0.6.0'
 
 jar {
     manifest {
@@ -75,7 +75,7 @@ bintray {
 		vcsUrl = 'https://github.com/scd4j/gradle-plugins.git'
 		attributes= ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
 		licenses = ['MIT']
-		labels = ['Continuous Delivery', 'Java', 'Groovy', 'Gradle', 'DevOps']
+		labels = ['Continuous Delivery', 'Java', 'Groovy', 'Gradle', 'DevOps', 'Automation', 'Linux', 'Windows', 'Debian', 'Red Hat', 'Ubuntu', 'CentOs']
 		publicDownloadNumbers = true
 		
 		version {

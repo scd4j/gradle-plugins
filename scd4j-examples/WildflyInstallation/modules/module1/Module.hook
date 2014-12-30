@@ -3,16 +3,15 @@ def wildflyhome = "$basedir/wildfly-8.2.0.Final"
  
 pre {
 	if(!exists(wildflyhome)) {
-		installJava()
+		checkJava()
 		unzip('wildfly-8.2.0.Final.zip', basedir)		
 	} else {
 		log("Wildfly already installed at $wildflyhome")
-		if(isLinux()) {
-			def st = status("wildfly")
-			if(st.contains("running")) {
-				stop("wildfly")
-			}
-		} 
+		
+		def st = status("wildfly")
+		if(st.contains("running")) {
+			stop("wildfly")
+		}
 	}
 }
 
@@ -23,14 +22,16 @@ post {
 		} else {
 			ln("/etc/init.d/wildfly", "$wildflyhome/bin/init.d/wildfly-init-redhat.sh")
 		}
-		start("wildfly")
+	} else {
+		run("$wildflyhome/bin/service/service.bat install")
 	}
+	start("wildfly")
+	registryToBoot("wildfly")
 }
 
-void installJava(){
-	if("CentOS".equals(distribution()) || "Red Hat".equals(distribution())) {
-		install('java')
-	} else {
-		install('default-jdk')
+void checkJava(){
+    def java = get("java.home")
+	if(!java.contains("1.7") && !java.contains("1.8")) {
+		throw new RuntimeException("In this example, Java 1.7 OR Java 1.8 must be installed!");
 	}
 }

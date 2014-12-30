@@ -202,6 +202,8 @@ public abstract class Hook extends Script {
 	 * run it on Linux, or vice and versa. Note: Usually configuration files are
 	 * not an issue (because they are read by a program that already understand
 	 * those difference), but executable scripts on Linux are!
+	 * <p>
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param textFile
 	 *            The text file path
@@ -212,7 +214,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Creates a group of users. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param group
 	 *            The name of the group.
@@ -223,7 +225,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Creates a group of users with options. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param group
 	 *            The name of the group.
@@ -236,7 +238,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Creates an user. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The user name.
@@ -247,7 +249,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Creates an user with options. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The user name.
@@ -260,7 +262,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Deletes an existing user. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The user name.
@@ -271,7 +273,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Deletes an existing user with options. <br />
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The user name.
@@ -287,7 +289,7 @@ public abstract class Hook extends Script {
 	 * <br />
 	 * Important Notes:
 	 * <ol>
-	 * <li>Currently Linux only
+	 * <li>Currently Linux only. Do nothing on Windows
 	 * <li>if SELinux is turned on, this execution will fail
 	 * <li>For Production environments it is a good practice to encrypt
 	 * passwords in order to ensure that non authorized people could NOT read
@@ -310,7 +312,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Changes the POSIX file permissions. It is not recursive.<br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param mode
 	 *            The POSIX definition (for example: "777").
@@ -323,7 +325,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Changes the POSIX file Permissions<br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param mode
 	 *            The POSIX definition (for example: "777")
@@ -339,7 +341,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Changes ownership of a file or a directory. It is not recursive.<br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The new file's owner.
@@ -352,7 +354,7 @@ public abstract class Hook extends Script {
 	
 	/**
 	 * Changes ownership of a file, possibly recursively. <br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The new file's owner.
@@ -368,7 +370,7 @@ public abstract class Hook extends Script {
 	
 	/**
 	 * Changes ownership of a file. It is not recursive.<br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The new file's owner.
@@ -383,7 +385,7 @@ public abstract class Hook extends Script {
 
 	/**
 	 * Changes ownership of a file, possibly recursively<br>
-	 * Note: Currently Linux only.
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param user
 	 *            The new file's owner.
@@ -418,7 +420,7 @@ public abstract class Hook extends Script {
 	
 	/**
 	 * Create a symbolic link <br>
-	 * Note: Currently Linux only
+	 * Note: Currently Linux Only. Do nothing on Windows
 	 * 
 	 * @param link
 	 *            The link path.
@@ -1035,8 +1037,6 @@ public abstract class Hook extends Script {
 	/**
 	 * Configures a given service to start at system boot<br>
 	 * This method used default levels for each operational system
-	 * <p>
-	 * Note: Currently Linux only
 	 *   	
 	 * @param serviceName the name of the service
 	 */
@@ -1047,8 +1047,6 @@ public abstract class Hook extends Script {
 	/**
 	 * Configures a given service to not start at system boot<br>
 	 * This method used default levels for each operational system
-	 * <p>
-	 * Note: Currently Linux only
 	 *   	
 	 * @param serviceName the name of the service
 	 */
@@ -1169,13 +1167,13 @@ public abstract class Hook extends Script {
 			}
 		}
 	}
+	
+	void uninstallLocalPack(String pack) {
+		command.uninstallLocalPack(pack);
+	}
 
 	void uninstallRemotePack(String pack) {
 		command.uninstallRemotePack(pack);
-	}
-
-	void uninstallLocalPack(String pack) {
-		command.uninstallLocalPack(pack);
 	}
 		
 	/**
@@ -1327,8 +1325,6 @@ public abstract class Hook extends Script {
 
     /** 
      * Starts an Operational System service
-	 * <p>
-	 * Note: Currently Linux only
 	 *  
      * @param name the service name
      * @throws RuntimeException if the service does not exists
@@ -1339,8 +1335,6 @@ public abstract class Hook extends Script {
     
     /** 
      * Stops an Operational System service
-	 * <p>
-	 * Note: Currently Linux only
 	 *  
      * @param name the service name
      * @throws RuntimeException if the service does not exists 
@@ -1351,8 +1345,6 @@ public abstract class Hook extends Script {
 
     /** 
      * restart an Operational System service
-	 * <p>
-	 * Note: Currently Linux only
 	 *  
      * @param name the service name
      * @throws RuntimeException if the service does not exists
@@ -1364,12 +1356,10 @@ public abstract class Hook extends Script {
 	/**
 	 * Checks the Operational System service status<br>
 	 * This method does not throw an exception if the service does not exists.
-	 * <p>
-	 * Note: Currently Linux only
 	 * 
 	 * @param name
 	 *            the service name
-	 * @return status information of the service, or the error message if it
+	 * @return status information of the service (in lowercase), or the error message if it
 	 *         does not exists
 	 */
 	public String status(String name) {

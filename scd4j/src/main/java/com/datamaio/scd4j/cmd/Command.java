@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 
 import com.datamaio.scd4j.util.io.FileUtils;
@@ -223,6 +224,30 @@ public abstract class Command {
 		
 	public String runWithNoInteraction(List<String> cmdList) {
 		return run(cmdList, (Interaction) null);
+	}
+
+	// ----------- Protected methods -------------
+	
+	protected void wait(BooleanSupplier supplier) {
+		wait(supplier, 45);
+	}
+	
+	protected void wait(BooleanSupplier supplier, int maxRetries) {
+		int count = 0;
+		while(count < maxRetries) {
+			if( supplier.getAsBoolean() ){
+				break;
+			} 
+			count++;
+			sleep(1000);
+		}
+	}
+	
+	protected void sleep(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+		}
 	}
 
 

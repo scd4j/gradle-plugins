@@ -7,13 +7,13 @@ pre {
 	// checks if it is a linux box
 	if(!isLinux()) {
 		log("Not a Linux box. Installation Aborted!")
-		ABORT
+		return ABORT
 	}
 
 	// checks if the service isn't already installed
 	if( ls("/etc/rc3.d")?.find({it.contains(service)}) != null ) {
 		log("Service already installed. Installation Aborted!")
-		ABORT
+		return ABORT
 	}
 }
 

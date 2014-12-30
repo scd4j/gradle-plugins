@@ -1,5 +1,5 @@
-def user = get("user_name")
-def pass = get("user_password")
+def user = get("wildfly_user")
+def pass = get("wildfly_password")
 
 pre {
 	// for now, in windows we are doing nothing

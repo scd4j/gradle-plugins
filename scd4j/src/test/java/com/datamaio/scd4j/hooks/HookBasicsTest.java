@@ -26,12 +26,10 @@ package com.datamaio.scd4j.hooks;
 import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.exists;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -123,6 +121,9 @@ public class HookBasicsTest {
 		assertThat(hook.distribution(), is(System.getProperty("os.name")));
 	}
 	
+	/**
+	 * If you do not have dos2unix installed, this method will try to install, so.. you need to run with root
+	 */
 	@Test @RunIf(IsLinux.class)
 	public void fixTextOnLinux() throws Exception {
 		Path tmp = Files.createDirectory(Paths.get("tmp"));

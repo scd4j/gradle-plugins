@@ -36,9 +36,13 @@ import com.datamaio.scd4j.util.io.PathUtils;
  * @author Mateus M. da Costa
  */
 public class BackupHelper {
-	private final Path dir;
+	private Path dir;
 
 	public BackupHelper(Configuration conf) {
+		init(conf);
+	}
+
+	public void init(Configuration conf) {
 		this.dir = conf.getBackupDir();
 	}
 

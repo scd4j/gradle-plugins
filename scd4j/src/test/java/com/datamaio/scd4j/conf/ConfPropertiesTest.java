@@ -26,13 +26,12 @@ package com.datamaio.scd4j.conf;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.io.StringReader;
 
 import org.junit.Test;
-
-import com.datamaio.scd4j.conf.Config;
 
 /**
  * 
@@ -43,7 +42,8 @@ public class ConfPropertiesTest {
 			+ "key2=value2\n" 
 			+ "key3=value3\n" 
 			+ "key4=value4/${key3}\n"
-			+ "key5=value5/${key4}");
+			+ "key5=value5/${key4}\n"
+			+ "key6.prop=value6/${key5}");
 
 	@Test
 	public void testSipleProp() throws Exception {
@@ -51,6 +51,15 @@ public class ConfPropertiesTest {
 		props.load(reader);
 
 		assertThat(props.resolve("${key1}"), is(equalTo("value1")));
+	}
+	
+	@Test
+	public void testSiplePropWithDot() throws Exception {
+		Config props = new Config();
+		props.load(reader);
+
+		assertThat(props.resolve("${key6.prop}"), is("${key6.prop}"));
+		assertThat(props.resolve("${key6_prop}"), is("value6/value5/value4/value3"));
 	}
 
 	@Test
@@ -88,6 +97,16 @@ public class ConfPropertiesTest {
 		}
 	}
 
+	@Test
+	public void testSystemPropWithDot() throws Exception {
+		Config props = new Config();
+		props.load(reader);
+
+		assertThat(props.resolve("${java.home}"), is(not(equalTo("${java.home}"))));
+		assertThat(props.resolve("${java_home}"), is(not(equalTo("${java_home}"))));
+		assertThat(props.resolve("${java.home}"), is(equalTo(props.resolve("${java_home}"))));
+	}
+	
 	@Test
 	public void testSystemGetsPrefferenceProps() throws Exception {
 

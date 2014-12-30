@@ -1,5 +1,9 @@
 Follow the below steps to run this example:
 
-* First you must be logged in a Linux machine with the root user
+Linux
+	* First you must be logged in a Linux machine with the root user
+	* Second, in the command line go to the 'FirstSteps' directory and type './gradlew'
 
-* Second, in the command line go to the 'FirstSteps' directory and type './gradlew'
+Windows
+	* First you must be logged in a Windows machine
+	* Then, in the command line, go to the 'FirstSteps' directory and type 'gradlew'

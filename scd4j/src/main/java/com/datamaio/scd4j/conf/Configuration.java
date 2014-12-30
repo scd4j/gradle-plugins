@@ -148,17 +148,7 @@ public class Configuration {
 	}
 
 	private Path workspace() {
-		Path currentExecPath = Paths.get(".").toAbsolutePath();
-		Path portableCurrentExecPath = null;
-		for (Path rootPath : currentExecPath.getFileSystem().getRootDirectories()) {
-			if (currentExecPath.startsWith(rootPath)) {
-				portableCurrentExecPath = Paths.get("/" + rootPath.relativize(currentExecPath).toString());
-			}
-		}
-		if (portableCurrentExecPath == null) {
-			throw new IllegalStateException();
-		}
-		return portableCurrentExecPath;
+		return Paths.get(".").toAbsolutePath();
 	}
 	
 	private String currentExecutionPath;

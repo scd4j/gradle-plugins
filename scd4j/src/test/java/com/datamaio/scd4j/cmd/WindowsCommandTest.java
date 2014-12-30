@@ -2,17 +2,14 @@ package com.datamaio.scd4j.cmd;
 
 import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.exists;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,20 +88,20 @@ public class WindowsCommandTest {
 		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
 	}
 	
-	@Test
-	@RunIf(IsWindows.class)
-	public void runPrint() throws Exception {
-		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/copy.bat");
-		Path run = Paths.get(urlRun.toURI());
-		Path fromDir = Files.createTempDirectory(root, "fromDir");
-		Path cpfile = createTempFile(fromDir, "FILE_1", ".tmp");
-		Path toDir = Files.createTempDirectory(root, "toDir");
-		String print = Command.get().run(run.toString() +" "+cpfile.toString() + " "+toDir.toString(), true);
-		
-		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
-		assertThat(print.contains("1 arquivo(s) copiado(s)."), is(true));
-		assertThat(print.contains(toDir.toString()), is(true));
-	}
+//	@Test
+//	@RunIf(IsWindows.class)
+//	public void runPrint() throws Exception {
+//		URL urlRun = ZipUtilsTest.class.getResource("/com/datamaio/command/windows/copy.bat");
+//		Path run = Paths.get(urlRun.toURI());
+//		Path fromDir = Files.createTempDirectory(root, "fromDir");
+//		Path cpfile = createTempFile(fromDir, "FILE_1", ".tmp");
+//		Path toDir = Files.createTempDirectory(root, "toDir");
+//		String print = Command.get().run(run.toString() +" "+cpfile.toString() + " "+toDir.toString(), true);
+//		
+//		assertThat(exists(PathUtils.get(toDir, cpfile.getFileName())), is(true));
+//		assertThat(print.contains("1 arquivo(s) copiado(s)."), is(true));
+//		assertThat(print.contains(toDir.toString()), is(true));
+//	}
 	
 	@Test
 	@RunIf(IsWindows.class)

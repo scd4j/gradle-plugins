@@ -1,9 +1,9 @@
 plugins {
-  id "com.datamaio.scd4j" version "0.5.4"
+  id "com.datamaio.scd4j" version "0.6.0"
 }
 
 archivesBaseName='WildflyInstallation'
-version = 0.1
+version = 0.2
 
 dependencies {
 	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')

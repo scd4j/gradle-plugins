@@ -74,7 +74,7 @@ class Scd4jTask extends DefaultTask {
 			if (assumeYes(project)) {
 				run(settings, env, modules, config)
 			} else if(console) {
-				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed and "no/n" to abort: ')
+				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
 				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
 					run(settings, env, modules, config)
 				} else {
