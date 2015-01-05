@@ -3,7 +3,7 @@ SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer.
 
 In short, SCD4J is an automation platform for configuring and installing your Web IT infrastructure. With just one command you can install clusters and deploy applications. Note that SCD4J is not another option for Puppet or Chef. It is, actually, a SIMPLER option than those tools.
 
-To understand more about SCD4J or get more details about how to create a new project, take a look at:
+To understand more about SCD4J or get more details about how to create a new project, take a look at documentation:
 
 * [Home](https://github.com/scd4j/gradle-plugins/wiki)
     * Gives you the introduction and advantages of using this tool over the existing ones 
@@ -12,26 +12,26 @@ To understand more about SCD4J or get more details about how to create a new pro
 * [Basics](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
     * Explains, in a high level, how to create a new SCD4J project 
 * [Managing dependencies](https://github.com/scd4j/gradle-plugins/wiki/03.-Managing-dependencies)
-    * Shows the options to manage your dependencies packages 
+    * Shows the options to manage your dependencies 
 * [How to run my project](https://github.com/scd4j/gradle-plugins/wiki/04.-How-to-run-my-project)
     * Demostrate how you should run your SCD4J project
 * [Encryption Tools](https://github.com/scd4j/gradle-plugins/wiki/05.-Encryption-Tools)
-    * Shows the tools SCD4J provides to encrypt your information to avoid not allowed people to read it 
+    * Shows the tools SCD4J provides to encrypt your information
 * [Packaging and Distribution](https://github.com/scd4j/gradle-plugins/wiki/06.-Packaging-and-Distribution)
-    * Explains how you should pack and distribute your SCD4J project 
+    * Explains how you should pack and distribute your project 
 * [Logging and Backup](https://github.com/scd4j/gradle-plugins/wiki/07.-Logging-and-Backup)
-    * Talks about logs, backups and suggested clean up policy
+    * Talks about logs, backups and a suggested clean up policy
 * [Advanced Configurations](https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Configurations)
     * Shows some advanced configuration
 * [Best Practices](https://github.com/scd4j/gradle-plugins/wiki/09.-Best-Practices)
-    * Gives you some tips how you should develop your SCD4J project 
+    * Gives you some tips of how you should code your project 
 * [FAQ](https://github.com/scd4j/gradle-plugins/wiki/10.-FAQ)
     * Frequent questions and answers
 * [SCD4J Examples](https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples)
     * Describes, in a high level, each example in [scd4j-examples](https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples)
 
 
-In short, first you must create a file `build.gradle` like the below example:
+In short, to create a SCD4J project, first you must create a file `build.gradle` like the below example:
 
 ```
 plugins {
@@ -54,7 +54,7 @@ config/
 modules/
 ```
 
-Then, inside of modules dir, you can create as much directories as many different modules you would like to, in our  example we have defined a module called `my_module_dir`, so you must create a directory `modules/my_module_dir`.
+Then, inside of modules dir, you can create as many directories you would like to. Each one, will become a module. In our `build.gradle` example we have defined a module called `my_module_dir`, so you must create a directory `modules/my_module_dir`.
 
 ```
 build.gradle
@@ -64,7 +64,7 @@ modules/
                  ...
 ```
 
-Finally, in `config` dir, you must create a file (i.e. Java properties) and put into it the variables that will be used by your modules. In our example, we have defined an file with name `my_config_file.conf`. So, we need to have this file inside of `config` dir:
+In the `config` dir, you must create a file (i.e. a Java properties file) and put into it the variables that will be used by your modules. In our example, we have defined a file called `my_config_file.conf`. So, we need to have this file inside of `config` dir in order to run our project.
 
 ```
 build.gradle
@@ -75,4 +75,14 @@ modules/
                  ...
 ```
 
-For more details of how to implement an module, take a look at  [documentation](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+Finally, we can run our project typing the bellow command in the command line.
+
+```
+In Linux
+    ./gradlew
+    
+In Windows
+    gradlew
+```    
+
+For more details of how to implement an module, take a look at the  [documentation](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
