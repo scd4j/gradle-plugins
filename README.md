@@ -32,7 +32,7 @@ To understand more about SCD4J or get more details about how to create and imple
 
 
 SCD4J project
-=============
+-------------
 
 In short, you first must create a file `build.gradle`, like the below example:
 
@@ -90,6 +90,7 @@ On Windows
 
 For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
 
-Thanks for the interest of making the softare delivery somewhat more professional.
+Thanks for the interest of making the softare delivery somewhat more professional. Hope you enjoy our tool
 
-SCD4J Team
+Sincerely, SCD4J Team
+
