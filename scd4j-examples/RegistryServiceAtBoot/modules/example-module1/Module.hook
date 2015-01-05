@@ -20,7 +20,7 @@ pre {
 post {		
 	// registry our dummy lib as a service
 	ln(srcPath, targetPath)
-	registryToBoot(service)
+	registryOnBoot(service)
 	
 	// =============================================================
 	// ========== Just to show you if you need to do that ==========

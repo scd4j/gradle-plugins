@@ -1040,7 +1040,7 @@ public abstract class Hook extends Script {
 	 *   	
 	 * @param serviceName the name of the service
 	 */
-	public void registryToBoot(String serviceName) {
+	public void registryOnBoot(String serviceName) {
 		command.startServiceAtSystemBoot(serviceName);
 	}
 

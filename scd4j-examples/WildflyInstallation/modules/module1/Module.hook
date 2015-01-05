@@ -26,11 +26,11 @@ post {
 		run("$wildflyhome/bin/service/service.bat install")
 	}
 	start("wildfly")
-	registryToBoot("wildfly")
+	registryOnBoot("wildfly")
 }
 
 void checkJava(){
-    def java = get("java.home")
+    def java = get("java_home")
 	if(!java.contains("1.7") && !java.contains("1.8")) {
 		throw new RuntimeException("In this example, Java 1.7 OR Java 1.8 must be installed!");
 	}
