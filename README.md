@@ -95,7 +95,7 @@ For more details of take a look at the [wiki](https://github.com/scd4j/gradle-pl
 
 -----------
 
-Thanks for the interest of making the softare delivery somewhat more professional. Hope you enjoy our tool
+Thanks for the interest of making the softare delivery somewhat more professional. Hope you enjoy our tool.
 
 Sincerely, SCD4J Team
 
