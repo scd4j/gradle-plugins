@@ -1,7 +1,10 @@
 SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer. 
-=============
+-----------
 
 In short, SCD4J is an automation platform for configuring and installing your Web IT infrastructure. With just one command you can install clusters and deploy applications. Note that SCD4J is not another option for Puppet or Chef. It is, actually, a SIMPLER option than those tools.
+
+Documentation
+-----------
 
 To understand more about SCD4J or get more details about how to create and implement a new project, take a look at documentation:
 
@@ -31,7 +34,7 @@ To understand more about SCD4J or get more details about how to create and imple
     * Describes, in a high level, each example in [scd4j-examples](https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples)
 
 
-SCD4J project
+Project Structure
 -------------
 
 In short, you first must create a file `build.gradle`, like the below example:
@@ -89,6 +92,8 @@ On Windows
 ```    
 
 For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+
+-----------
 
 Thanks for the interest of making the softare delivery somewhat more professional. Hope you enjoy our tool
 
