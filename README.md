@@ -3,7 +3,7 @@ SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer.
 
 In short, SCD4J is an automation platform for configuring and installing your Web IT infrastructure. With just one command you can install clusters and deploy applications. Note that SCD4J is not another option for Puppet or Chef. It is, actually, a SIMPLER option than those tools.
 
-To understand more about SCD4J or get more details about how to create a new project, take a look at documentation:
+To understand more about SCD4J or get more details about how to create and implement a new project, take a look at documentation:
 
 * [Home](https://github.com/scd4j/gradle-plugins/wiki)
     * Gives you the introduction and advantages of using this tool over the existing ones 
@@ -34,7 +34,7 @@ To understand more about SCD4J or get more details about how to create a new pro
 SCD4J project
 =============
 
-In short, first you must create a file `build.gradle` like the below example:
+In short, you first must create a file `build.gradle`, like the below example:
 
 ```
 plugins {
@@ -57,7 +57,7 @@ config/
 modules/
 ```
 
-Then, inside of modules dir, you can create as many directories you would like to. Each one, will become a module. In our `build.gradle` example we have defined a module called `my_module_dir`, so you must create a directory `modules/my_module_dir`.
+Then, inside of `modules` dir, you can create as many directories you would like to. Each one, will become a module. In our `build.gradle` example we have defined a module called `my_module_dir`, so you must create a directory `modules/my_module_dir`.
 
 ```
 build.gradle
@@ -88,4 +88,4 @@ In Windows
     gradlew
 ```    
 
-For more details of how to create and implement a module, take a look at the  [documentation](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
