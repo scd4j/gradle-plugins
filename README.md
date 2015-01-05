@@ -41,7 +41,7 @@ In short, you first must create a file `build.gradle`, like the below example:
 
 ```
 plugins {
-    id "com.datamaio.scd4j" version "0.6.0"
+    id "com.datamaio.scd4j" version "0.6.1"
 }
 
 scd4j {
