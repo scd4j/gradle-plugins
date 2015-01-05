@@ -31,10 +31,10 @@ To understand more about SCD4J or get more details about how to create a new pro
     * Describes, in a high level, each example in [scd4j-examples](https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples)
 
 
-To create a SCD4J project
+SCD4J project
 =============
 
-First you must create a file `build.gradle` like the below example:
+In short, first you must create a file `build.gradle` like the below example:
 
 ```
 plugins {
