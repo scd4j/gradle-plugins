@@ -81,11 +81,15 @@ modules/
 Finally, we can run our project typing the bellow command in the command line.
 
 ```
-In Linux
+On Linux
     ./gradlew
     
-In Windows
+On Windows
     gradlew
 ```    
 
 For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+
+Thanks for the interest of making the softare delivery somewhat more professional.
+
+SCD4J Team
