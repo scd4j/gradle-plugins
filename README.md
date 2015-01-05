@@ -10,7 +10,7 @@ To understand more about SCD4J or get more details about how to create a new pro
 * [Requirements](https://github.com/scd4j/gradle-plugins/wiki/01.-Requirements)
     * Minimum requirements to run this tool 
 * [Basics](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
-    * Explains, in a high level, how to create a new SCD4J project 
+    * Explains how to create a new SCD4J project 
 * [Managing dependencies](https://github.com/scd4j/gradle-plugins/wiki/03.-Managing-dependencies)
     * Shows the options to manage your dependencies 
 * [How to run my project](https://github.com/scd4j/gradle-plugins/wiki/04.-How-to-run-my-project)
@@ -31,7 +31,10 @@ To understand more about SCD4J or get more details about how to create a new pro
     * Describes, in a high level, each example in [scd4j-examples](https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples)
 
 
-In short, to create a SCD4J project, first you must create a file `build.gradle` like the below example:
+To create a SCD4J project
+=============
+
+First you must create a file `build.gradle` like the below example:
 
 ```
 plugins {
@@ -85,4 +88,4 @@ In Windows
     gradlew
 ```    
 
-For more details of how to implement an module, take a look at the  [documentation](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+For more details of how to create and implement a module, take a look at the  [documentation](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
