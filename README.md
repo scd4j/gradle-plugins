@@ -3,22 +3,6 @@ SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer.
 
 In short, SCD4J is an automation platform for configuring and installing your Web IT infrastructure. With just one command you can install clusters and deploy applications. Note that SCD4J is not another option for Puppet or Chef. It is, actually, a SIMPLER option than those tools.
 
-To know more about SCD4J and understand what are the advantages over competition, please take a look at [documentation](https://github.com/scd4j/gradle-plugins/wiki).
-
-`build.gradle` example:
-```
-plugins {
-    id "com.datamaio.scd4j" version "0.6.0"
-}
-
-scd4j {
-    install {
-        modules "my_module_dir"         // should be any dir into modules dir
-        config  "my_config_file.conf"	// should be any properties file into config dir.
-    }
-}
-```
-
 To know more about SCD4J or get more details about how to create a new project take a look at:
 
 * [Home](https://github.com/scd4j/gradle-plugins/wiki)
@@ -46,4 +30,30 @@ To know more about SCD4J or get more details about how to create a new project t
 * [SCD4J Examples](https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples)
     * Describes, in a high level, each example in [scd4j-examples](https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples)
 
+In short you must create a file `build.gradle` like the below example:
 
+```
+plugins {
+    id "com.datamaio.scd4j" version "0.6.0"
+}
+
+scd4j {
+    install {
+        modules "my_module_dir"         // should be any dir into modules dir
+        config  "my_config_file.conf"	// should be any properties file into config dir.
+    }
+}
+```
+
+Then you must create a directory `config` and another `modules`. Inside modules, you can create as much directories as many different modules you would like, in the above example we have defined a module `my_module_dir`, so you must have an dir `modules/my_module_dir`. In `config` dir you will put variables (in a properties like) that will be used in your modules. In our example, we have created an file with name `my_config_file.conf`. Then the directory structure of our SCD4J project we have:
+
+```
+build.gradle
+config/
+      my_config_file.conf
+modules/
+      my_module_dir/
+                 ...
+```
+
+For more details of how to create an module, take a look at [Basics](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
