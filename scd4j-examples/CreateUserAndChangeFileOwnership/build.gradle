@@ -1,5 +1,5 @@
 plugins {
-  id "com.datamaio.scd4j" version "0.6.0"
+  id "com.datamaio.scd4j" version "0.6.1"
 }
 
 archivesBaseName='CreateUserAndChangeFileOwnership'
