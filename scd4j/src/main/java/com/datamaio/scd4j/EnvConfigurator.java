@@ -241,7 +241,7 @@ public class EnvConfigurator {
 	 */
 	protected void copyFiles() {
 		final Path module = conf.getModule();
-		final Map<String, String> properties = conf.getProps();
+		final Map<String, Object> properties = conf.getProps();
 		
 		final Path target = pathHelper.getTarget(module);
 		
@@ -296,6 +296,11 @@ public class EnvConfigurator {
 				} finally {
 					hook.finish();
 				}
+			}
+			
+			@Override
+			protected Path resolveVars(Path path) {			
+				return pathHelper.replaceVars(path);
 			}
 		});
 	}

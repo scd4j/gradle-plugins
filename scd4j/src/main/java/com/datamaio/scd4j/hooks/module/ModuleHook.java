@@ -36,6 +36,15 @@ import com.datamaio.scd4j.hooks.HookEvaluator;
 public abstract class ModuleHook extends Hook {
 	protected String moduleDir;
 	
+	/**
+	 * Sets a permanent/persistent property.<br>
+	 * 
+	 * @see #setPermanentProperty(String, Object)
+	 */
+    public void set(final String key, final Object value){
+    	setPermanentProperty(key, value);
+	}
+	
 	// ------ methods used by the framework only ----
 	
 	@Override

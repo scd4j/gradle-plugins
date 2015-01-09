@@ -44,7 +44,7 @@ import com.datamaio.scd4j.util.io.PathUtils;
  * @author Fernando Rubbo
  */
 public class PathHelperTest {
-	Map<String, String> conf;
+	Map<String, Object> conf;
 	
 	@Before
 	public void before() {
@@ -58,17 +58,17 @@ public class PathHelperTest {
 	@Test
 	public void replacePathVars() throws IOException{		
 		PathHelper vpu = new PathHelper(conf, null);
-		assertThat(vpu.replacePathVars("/opt/jboss/@all@"), is("/opt/jboss/VAL_all"));
-		assertThat(vpu.replacePathVars("/opt/jboss/@all@/test"), is("/opt/jboss/VAL_all/test"));
-		assertThat(vpu.replacePathVars("/opt/jboss/@begin@test"), is("/opt/jboss/VAL_begintest"));
-		assertThat(vpu.replacePathVars("/opt/jboss/test@end@"), is("/opt/jboss/testVAL_end"));
-		assertThat(vpu.replacePathVars("/opt/@manydirs@/test"), is("/opt/a/b/c/test"));
+		assertThat(vpu.replaceVars("/opt/jboss/@all@"), is("/opt/jboss/VAL_all"));
+		assertThat(vpu.replaceVars("/opt/jboss/@all@/test"), is("/opt/jboss/VAL_all/test"));
+		assertThat(vpu.replaceVars("/opt/jboss/@begin@test"), is("/opt/jboss/VAL_begintest"));
+		assertThat(vpu.replaceVars("/opt/jboss/test@end@"), is("/opt/jboss/testVAL_end"));
+		assertThat(vpu.replaceVars("/opt/@manydirs@/test"), is("/opt/a/b/c/test"));
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void variableDoNotExists() throws IOException{		
 		PathHelper vpu = new PathHelper(conf, null);
-		assertThat(vpu.replacePathVars("/opt/jboss/@NOTREPLACED@/test"), is("/opt/jboss/@NOTREPLACED@/test"));
+		assertThat(vpu.replaceVars("/opt/jboss/@NOTREPLACED@/test"), is("/opt/jboss/@NOTREPLACED@/test"));
 	}
 
 	

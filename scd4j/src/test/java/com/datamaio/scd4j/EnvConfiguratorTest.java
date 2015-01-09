@@ -141,7 +141,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
 			new EnvConfiguratorMock(build(module, props)).copyFiles();		
@@ -172,7 +172,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "ff.txt")), is(true));
 			
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
 			new EnvConfiguratorMock(build(module, props)).execute();		
@@ -199,7 +199,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "f.txt")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
 			
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			new EnvConfiguratorMock(build(module, props)).execute();		
 	
@@ -230,7 +230,7 @@ public class EnvConfiguratorTest {
 			assertThat(exists(PathUtils.get(fs, "ff.txt.postexecuted")), is(false));
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(true));
 			
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("favlang", "aaaaaa");
 			props.put("favlang2", "bbbbbb");
 			new EnvConfiguratorMock(build(module, props)).execute();		
@@ -258,7 +258,7 @@ public class EnvConfiguratorTest {
 		Files.write(PathUtils.get(module, "Module.hook"), buildModuleHookPre()); 
 
 		try {
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("var", "var errada");
 			new EnvConfiguratorMock(build(module, props)).execute();		
 	
@@ -329,7 +329,7 @@ public class EnvConfiguratorTest {
 		Path result = paths[3];
 		
 		try {
-			Map<String, String> props = new HashMap<>();
+			Map<String, Object> props = new HashMap<>();
 			props.put("test", "TESTADO!");
 			new EnvConfiguratorMock(build(module, props)).execute();
 			assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));

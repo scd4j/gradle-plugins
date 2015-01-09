@@ -36,14 +36,14 @@ import com.datamaio.scd4j.conf.Configuration;
  * @author Fernando Rubbo
  */
 public final class PathHelper {
-	private Map<String, String> properties;
+	private Map<String, Object> properties;
 	private Path module;
 
 	public PathHelper(Configuration conf){
 		this(conf.getProps(), conf.getModule());
 	}
 	
-	PathHelper(Map<String, String> properties, Path module){
+	PathHelper(Map<String, Object> properties, Path module){
 		this.properties = properties;
 		this.module = module;
 	}
@@ -57,23 +57,27 @@ public final class PathHelper {
 	}
 	
 	public final Path getTarget(Path path) {
-		// pega o arquivo destino
+		// gets the destination path, based on module
 		final Path relativized = this.module.relativize(path);
 		final Path resolved = Paths.get("/").resolve(relativized);
 
-		// resolve as variaveis de diretório
-    	String str = replacePathVars(resolved.toString());
-    	return Paths.get(str);
+		// resolve the variables in the directories
+		return replaceVars(resolved);
     }
 
-	protected String replacePathVars(String srcPath) {
+	public final Path replaceVars(Path path) {
+    	String resolvedPath = replaceVars(path.toString());
+    	return Paths.get(resolvedPath);		
+	}
+	
+	public String replaceVars(String srcPath) {
 		final Pattern p = Pattern.compile("@([^@])*@");
     	final Matcher m = p.matcher(srcPath);
     	while(m.find()) {
     		final String key = m.group();
-			final String value = (String) properties.get(key.replaceAll("@", ""));
+			final Object value = properties.get(key.replaceAll("@", ""));
 			if(value!=null)
-				srcPath = srcPath.replace(key, value);
+				srcPath = srcPath.replace(key, value.toString());
 			else 
 				throw new IllegalStateException("Variavel " + key + " não foi declarada nas configuracoes. " +
 						"Utilize ExternalConf ou System.properties");

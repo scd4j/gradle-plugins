@@ -82,6 +82,7 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
 			final Path relativize = fromPath.relativize(dir);
 			resolvedTargetDir = toPath.resolve(relativize);			
 		}
+		resolvedTargetDir = resolveVars(resolvedTargetDir);
 		
 		boolean goingToCreate = Files.notExists(resolvedTargetDir) && mustCopy(dir);
 		if(LOGGER.isTraceEnabled()) {
@@ -99,7 +100,8 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 		final Path relativize = fromPath.relativize(file);
-		final Path resolvedTargetFile = toPath.resolve(relativize);
+		Path resolvedTargetFile = toPath.resolve(relativize);
+		resolvedTargetFile = resolveVars(resolvedTargetFile);
 		
 		if(mustCopy(file)) {
 			LOGGER.trace(tabs() + "Coping FILE "+ file + " to " + resolvedTargetFile);
@@ -135,6 +137,10 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
 		for(int i=0; i<level; i++)
 			builder.append("\t");
 		return builder.toString();
+	}
+	
+	protected Path resolveVars(Path path) {
+		return path;
 	}
 	
 }

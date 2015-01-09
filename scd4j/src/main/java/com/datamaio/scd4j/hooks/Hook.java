@@ -81,8 +81,8 @@ public abstract class Hook extends Script {
 	
 	protected Configuration conf;
 	protected Env envs;
-	protected Map<String, String> props;	
-	protected Map<String, String> temporaryProps;
+	protected Map<String, Object> props;	
+	protected Map<String, Object> temporaryProps;
 	protected final Command command;	
 	protected Closure<HookPreResult> pre;
 	protected Closure<Void> post;
@@ -1006,7 +1006,7 @@ public abstract class Hook extends Script {
 	 * }
 	 * </pre>
      */
-    public String get(final String key){
+    public Object get(final String key){
 		if(props==null)
 			return null;
 	    return props.get(key);
