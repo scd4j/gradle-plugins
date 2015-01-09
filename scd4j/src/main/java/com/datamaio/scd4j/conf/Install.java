@@ -39,15 +39,15 @@ public class Install {
 	private final Env env;
 	
 	/** All the properties allowed to be used during installaiton. Includes, config file and system properties */
-	private Map<String, String> props;
+	private Map<String, Object> props;
 	/** Temporary properties set in the hook.pre */
-	private Map<String, String> tempProps;
+	private Map<String, Object> tempProps;
 
 	public Install(Path module) {
 		this(module, (Path)null);
 	}
 	
-	public Install(Path module, Map<String, String> props) {
+	public Install(Path module, Map<String, Object> props) {
 		this(module, (Path)null);
 		this.props = props;
 	}
@@ -56,7 +56,7 @@ public class Install {
 		this(modules, (Path)null);
 	}
 	
-	public Install(Path[] modules, Map<String, String> props) {
+	public Install(Path[] modules, Map<String, Object> props) {
 		this(modules, (Path)null);
 		this.props = props;
 	}
@@ -82,12 +82,12 @@ public class Install {
 		this.tempProps = new HashMap<>();
 	}
 	
-	private Map<String, String> loadProps() {
+	private Map<String, Object> loadProps() {
 		if(this.config!=null) {
 			Config props = new Config().load(this.config);
 			return props.entrySet().stream()
-					.collect(toMap(e -> e.getKey().toString()
-								  ,e -> e.getValue().toString()));
+					.collect(toMap(e -> e.getKey().toString(), 
+								   e -> e.getValue()));
 		} else {
 			return new HashMap<>();
 		}
@@ -105,11 +105,11 @@ public class Install {
 		return env;
 	}
 
-	protected Map<String, String> getProps() {
+	protected Map<String, Object> getProps() {
 		return props;
 	}
 
-	protected Map<String, String> getTempProps() {
+	protected Map<String, Object> getTempProps() {
 		return tempProps;
 	}
 

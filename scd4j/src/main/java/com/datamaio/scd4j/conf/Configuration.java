@@ -23,9 +23,6 @@
  */
 package com.datamaio.scd4j.conf;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -65,7 +62,7 @@ public class Configuration {
 		return new Configuration(install);
 	}
 	
-	public static final Configuration build(Path module, Map<String, String> props){
+	public static final Configuration build(Path module, Map<String, Object> props){
 		Install install = new Install(module, props);
 		return new Configuration(install);
 	}
@@ -89,11 +86,11 @@ public class Configuration {
 		return install.getConfig();
 	}
 
-	public Map<String, String> getProps() {
+	public Map<String, Object> getProps() {
 		return install.getProps();
 	}
 	
-	public Map<String, String> getTempProps() {
+	public Map<String, Object> getTempProps() {
 		return install.getTempProps();
 	}
 
@@ -122,7 +119,7 @@ public class Configuration {
 		LOGGER.info("========================================================================================================");
 		LOGGER.info("============ Properties allowed to be used during installation (i.e *.hook and *.tmpl) =================");
 		LOGGER.info("========================================================================================================");
-		Map<String, String> props = getProps();
+		Map<String, Object> props = getProps();
 		Set<String> keys = props.keySet();
 		for (String key : keys) {
 			LOGGER.info(String.format("%s = %s", key, props.get(key)));

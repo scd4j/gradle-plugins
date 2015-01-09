@@ -1,0 +1,34 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		mavenLocal()
+	}
+	dependencies {
+		classpath 'com.datamaio:scd4j:+'
+	}
+}
+apply plugin: 'com.datamaio.scd4j'
+
+/*plugins {
+  id "com.datamaio.scd4j" version "0.6.1"
+}*/
+
+archivesBaseName='WildflyInstallation'
+version = 0.2
+
+dependencies {
+	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
+}
+
+scd4j {
+	install {
+		modules "wildfly"
+		config  "wildfly/desenv.conf"		
+	}
+	settings {
+		template {
+			engine "mustashe"
+		}
+	}
+}
+

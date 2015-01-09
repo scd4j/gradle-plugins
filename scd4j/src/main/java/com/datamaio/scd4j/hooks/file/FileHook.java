@@ -44,6 +44,15 @@ public abstract class FileHook extends Hook {
 	protected String target;
 	
 	/**
+	 * Sets a temporary/transient property.<br>
+	 * 
+	 * @see #setTempProperty(String, Object)
+	 */
+    public void set(final String key, final Object value){
+    	setTempProperty(key, value);
+	}
+	
+	/**
 	 * Changes the Posix File Permissions for the target file/directory. Very useful in
 	 * the post{..} hook<br>
 	 * Note: Currently Linux only

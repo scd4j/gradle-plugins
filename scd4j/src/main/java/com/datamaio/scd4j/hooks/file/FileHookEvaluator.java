@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.HookEvaluator;
+import com.datamaio.scd4j.util.PathHelper;
 
 /**
  * 
@@ -43,10 +44,12 @@ import com.datamaio.scd4j.hooks.HookEvaluator;
 public class FileHookEvaluator extends HookEvaluator {
     private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private Path src;
+    private PathHelper pathHelper;
     
 	public FileHookEvaluator(final Path src, final Path target, final Configuration conf) {
 		super(Paths.get(src + HOOK_SUFFIX), buildBinding(src, target), conf);
 		this.src = src;
+		this.pathHelper = new PathHelper(conf);
 	}
 
 	@Override
@@ -79,6 +82,7 @@ public class FileHookEvaluator extends HookEvaluator {
 	private String relativize() {
 		String relative = src.toString();
 		Path p = Paths.get(relative.substring(relative.indexOf(MODULES_FOLDER + File.separator)));
-		return p.subpath(2, p.getNameCount()).toString();
+		String path = p.subpath(2, p.getNameCount()).toString();
+		return pathHelper.replaceVars(path);
 	}
 }
