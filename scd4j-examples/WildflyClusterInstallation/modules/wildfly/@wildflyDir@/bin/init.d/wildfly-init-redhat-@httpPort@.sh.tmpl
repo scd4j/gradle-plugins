@@ -4,9 +4,9 @@
 #
 # chkconfig: - 80 20
 # description: WildFly startup script
-# processname: wildfly
-# pidfile: /var/run/wildfly/wildfly.pid
-# config: /etc/default/wildfly.conf
+# processname: wildfly-{{httpPort}}
+# pidfile: /var/run/wildfly/wildfly-{{httpPort}}.pid
+# config: /etc/default/wildfly
 #
 
 # Source function library.
@@ -18,7 +18,7 @@ export JAVA_HOME
 
 # Load JBoss AS init.d configuration.
 if [ -z "$JBOSS_CONF" ]; then
-	JBOSS_CONF="/etc/default/wildfly.conf"
+	JBOSS_CONF="/etc/default/wildfly"
 fi
 
 [ -r "$JBOSS_CONF" ] && . "${JBOSS_CONF}"
@@ -31,7 +31,7 @@ fi
 export JBOSS_HOME
 
 if [ -z "$JBOSS_PIDFILE" ]; then
-	JBOSS_PIDFILE=/var/run/wildfly/wildfly.pid
+	JBOSS_PIDFILE=/var/run/wildfly-{{httpPort}}/wildfly-{{httpPort}}.pid
 fi
 export JBOSS_PIDFILE
 
@@ -68,7 +68,7 @@ else
 	fi
 fi
 
-prog='wildfly'
+prog='wildfly-{{httpPort}}'
 
 CMD_PREFIX=''
 

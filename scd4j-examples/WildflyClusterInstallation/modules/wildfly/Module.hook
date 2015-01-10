@@ -1,48 +1,44 @@
-def exampleDir = "/opt/scd4j-examples/WildflyCusterInstallation"
-def wildflyHome = "$basedir/wildfly-8.2.0.Final"
-set("wildflyHome", wildflyHome)
+def baseDir = "/opt/scd4j-examples/WildflyClusterInstallation"
+def wildflyDir = "$baseDir/wildfly-8.2.0.Final"
+set("wildflyDir", wildflyDir)
 
 def offset = get("portOffset") as int
 def httpPort = 8080 + offset
 set("httpPort", httpPort)
 
-def standaloneDir = "$wildflyHome/standalone"
-def node = "standalone-$httpPort"
-set("nodeName", node)
+def nodeName = "standalone-$httpPort"
+set("nodeName", nodeName)
 
-def nodeDir = "$wildflyHome/$node" 
+def nodeDir = "$wildflyDir/$nodeName"
+set("nodeDir", nodeDir)
 
 pre {
-	if(!exists(wildflyHome)) {
+	if(!exists(wildflyDir)) {
 		checkJava()
-		unzip('wildfly-8.2.0.Final.zip', exampleDir)
+		unzip('wildfly-8.2.0.Final.zip', baseDir)
 	} else {
-		log("Wildfly is already installed at $wildflyHome")
-
-		def st = status("wildfly")
-		if(st.contains("running")) {
-			stop("wildfly")
-		}
+		log("Wildfly is already installed at $wildflyDir")
+		stop("wildfly-${httpPort}")
 	}
 	
 	if(!exists(nodeDir)) {
-		cp(standaloneDir, nodeDir)
+		cp("$wildflyDir/standalone", nodeDir)
 	}
 }
 
 
 post {
 	if(isLinux()) {
-		if("Ubuntu".equals(distribution())) {
-			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyHome/bin/init.d/wildfly-init-debian-${httpPort}.sh")
+		if("Debian".equals(distribution()) || "Ubuntu".equals(distribution())) {
+			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-debian-${httpPort}.sh")
 		} else {
-			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyHome/bin/init.d/wildfly-init-redhat-${httpPort}.sh")
+			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-redhat-${httpPort}.sh")
 		}
 	} else {
-		run("$wildflyHome/bin/service/service.bat install")
+		run("$wildflyDir/bin/service/service-${httpPort}.bat install")
 	}
-	start("wildfly")
-	registryOnBoot("wildfly")
+	start("wildfly-${httpPort}")
+	registryOnBoot("wildfly-${httpPort}")
 }
 
 void checkJava(){

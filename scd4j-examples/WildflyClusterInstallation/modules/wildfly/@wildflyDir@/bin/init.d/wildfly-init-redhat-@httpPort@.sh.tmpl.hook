@@ -7,3 +7,7 @@ pre {
 	log("Skipping Centos/Red Hat file. Distribution: " + distribution())
 	return SKIP_FILE
 }
+
+post {
+	chmod("777")
+}
