@@ -1324,17 +1324,17 @@ public abstract class Hook extends Script {
     // --- services ---
 
     /** 
-     * Starts an Operational System service
+     * Starts an Operational System service if it is not running yet
 	 *  
      * @param name the service name
      * @throws RuntimeException if the service does not exists
      */
-	public void start(String name) {
+	public void start(String name) {		
     	command.serviceStart(name);
 	}
     
     /** 
-     * Stops an Operational System service
+     * Stops an Operational System service if it is running.
 	 *  
      * @param name the service name
      * @throws RuntimeException if the service does not exists 
@@ -1363,11 +1363,7 @@ public abstract class Hook extends Script {
 	 *         does not exists
 	 */
 	public String status(String name) {
-		try {
-			return command.serviceStatus(name);
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+		return command.serviceStatus(name);
 	}
 
 	// ------ methods used by the framework only ----

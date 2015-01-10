@@ -7,11 +7,7 @@ pre {
 		unzip('wildfly-8.2.0.Final.zip', basedir)		
 	} else {
 		log("Wildfly already installed at $wildflyhome")
-		
-		def st = status("wildfly")
-		if(st.contains("running")) {
-			stop("wildfly")
-		}
+		stop("wildfly")
 	}
 }
 

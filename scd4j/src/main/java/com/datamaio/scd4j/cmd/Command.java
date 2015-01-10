@@ -253,81 +253,136 @@ public abstract class Command {
 
 	// ----------- Private methods -------------
 	
-	private static String _run(List<String> cmd, Interaction interaction) {
-		ThreadedStreamHandler handler = null;
-		ThreadedStreamHandler errorHandler = null;
-		OutputStream out = null;
-		Path tempPath = null;
-		StringBuilder noInteractionHandler = new StringBuilder();
-		try {
-			if (interaction == null) {
-				// se não tem iteração joga o conteúdo no arquivo para
-				// depois ler
-				tempPath = Files.createTempFile("cmd", ".out");
+	private static final class ProcessInteraction extends Interaction {
+		private final Interaction interaction;
+		private final Path noIteractionTempFile;
+		
+		ProcessInteraction(Interaction interaction){
+			this.interaction = interaction;
+			this.noIteractionTempFile = buildTemp();
+		}
+		
+		boolean hasInteraction(){
+			return interaction != null;
+		}
+		Path getNoIteractionTempFile(){
+			return noIteractionTempFile;
+		}
+		void cleanup() {
+			if (!hasInteraction()) {
+				try {
+					Files.delete(noIteractionTempFile);
+				} catch (IOException e) {
+					// ignore
+				}
 			}
+		}
+		
+		@Override
+		boolean shouldPrintCommand() {
+			return interaction.shouldPrintCommand();
+		}
+		@Override
+		boolean shouldPrintOutput() {
+			return interaction.shouldPrintOutput();
+		}
+		@Override
+		void interact(OutputStream out) throws Exception {
+			interaction.interact(out);
+		}
+		@Override
+		boolean isTheExecutionSuccessful(int processReturn) {
+			if(hasInteraction()) {
+				return interaction.isTheExecutionSuccessful(processReturn);
+			} 
+			return processReturn == 0;
+		}
+		
+		private Path buildTemp() {
+			try {
+				Path tempPath = null;
+				if (!hasInteraction()) {
+					// if do not have interaction, put the output in a temp file
+					tempPath = Files.createTempFile("cmd", ".out");
+				}
+				return tempPath;
+			} catch (IOException e) {
+				throw new RuntimeException("Error creating output commant temp file", e);
+			}
+		}
+	}
+	
+	private static String _run(List<String> cmd, Interaction inter) {
+		ProcessInteraction pInter = new ProcessInteraction(inter);
+		
+		OutputStream out = null;
+		ThreadedStreamHandler cmdStdHandler = null;
+		ThreadedStreamHandler cmdErrorHandler = null;
+		String cmdOutput = "";
+		
+		try {
+			final Process process = startProcess(cmd, pInter);
+			if (pInter.hasInteraction()) {
+				cmdStdHandler = new ThreadedStreamHandler(process.getInputStream(), pInter.shouldPrintOutput());
+				cmdErrorHandler = new ThreadedStreamHandler(process.getErrorStream(), pInter.shouldPrintOutput());
+				cmdStdHandler.start();
+				cmdErrorHandler.start();
 
-			final Process process = run(cmd, tempPath, interaction.shouldPrintCommand());
-			if (interaction != null) {
-				InputStream in = process.getInputStream();
-				InputStream ein = process.getErrorStream();
 				out = process.getOutputStream();
-
-				handler = new ThreadedStreamHandler(in, interaction.shouldPrintOutput());
-				errorHandler = new ThreadedStreamHandler(ein, interaction.shouldPrintOutput());
-				handler.start();
-				errorHandler.start();
-
-				// se o usuario definiu algum tipo de interacao
-				interaction.interact(out);
+				pInter.interact(out);				
 				out.flush();
 			}
+			
 			int waitFor = process.waitFor();
 
-			if (interaction != null) {
-				handler.interrupt();
-				errorHandler.interrupt();
-				handler.join();
-				errorHandler.join();
+			if (pInter.hasInteraction()) {
+				cmdOutput = readInteractionCmdOutput(cmdStdHandler, cmdErrorHandler);
 			} else {
-				// se não teve interação, imprime todo o stdout aqui após finalizar o processo
-				// isto é necessário para o usuário saber o que está acontecendo
-				for (String line : Files.readAllLines(tempPath, Charset.defaultCharset())) {
-					LOGGER.info("\t\t" + line);
-					noInteractionHandler.append(line).append("\n");
-				}
+				cmdOutput = readNoInteractionCmdOutput(pInter.getNoIteractionTempFile());
 			}
 
-			if (interaction != null) {
-				if (!interaction.isTheExecutionSuccessful(waitFor)) {
-					throwExecutionException(errorHandler, waitFor);
-				}
-			} else if (waitFor != 0) {
-				throwExecutionException(errorHandler, waitFor);
+			if(!pInter.isTheExecutionSuccessful(waitFor)){
+				String error = pInter.hasInteraction() ? cmdErrorHandler.getOutput() : cmdOutput;
+				throwExecutionException(waitFor, error);	
 			}
-			return (interaction != null) ? handler.getOutput() : noInteractionHandler.toString();
+			
+			return cmdOutput;
 		} catch (Exception e) {
 			String msg = "Error executing command: " + cmd2String(cmd) + ".";
 			throw new RuntimeException(msg, e);
 		} finally {
 			quitellyClose(out);
-			deleteTempFile(tempPath);
-		}
-		
+			pInter.cleanup();
+		}		
+	}
+	
+	static String readInteractionCmdOutput(ThreadedStreamHandler cmdStdHandler, ThreadedStreamHandler cmdErrorHandler) 
+			throws InterruptedException {
+		stopInteractionThreads(cmdStdHandler, cmdErrorHandler);
+		return cmdStdHandler.getOutput();
 	}
 
-	private static void deleteTempFile(Path tempPath) {
-		if (tempPath != null) {
-			// se não teve interação, apaga o arquivo temporário
-			try {
-				Files.delete(tempPath);
-			} catch (IOException e) {
-				// ignore
-			}
-		}
+	static void stopInteractionThreads(ThreadedStreamHandler cmdStdHandler, ThreadedStreamHandler cmdErrorHandler)
+			throws InterruptedException {
+		cmdStdHandler.interrupt();
+		cmdErrorHandler.interrupt();
+		cmdStdHandler.join();
+		cmdErrorHandler.join();
 	}
 
-	private static void throwExecutionException(ThreadedStreamHandler errorHandler, int waitFor) {
-		String output = "The process has ended with status: " + waitFor + " | Output: " + errorHandler.getOutput();
+	static String readNoInteractionCmdOutput(Path tempPath) throws IOException {
+		// If did not have interaction, prints the standard output only at the end of the process 
+		// execution. This is important because the user must know what was executed
+		StringBuilder buff = new StringBuilder();
+		for (String line : Files.readAllLines(tempPath, Charset.defaultCharset())) {
+			LOGGER.info("\t\t" + line);
+			buff.append(line).append("\n");
+		}
+		return buff.toString();
+	}
+
+	private static void throwExecutionException(int waitFor, String error) {
+		String output = "The process has ended with status: " + waitFor + " | Output: " + error;
 		throw new RuntimeException(output);
 	}
 
@@ -340,22 +395,20 @@ public abstract class Command {
 		}
 	}
 
-	private static Process run(List<String> cmd, Path tempPath, boolean shouldPrint) throws IOException {
-		if(shouldPrint) {
+	private static Process startProcess(List<String> cmd, ProcessInteraction pInter) throws IOException {
+		if(pInter.shouldPrintCommand()) {
 			LOGGER.info("\tExecuting cmd: " + cmd2String(cmd));
 		}
 
-		final ProcessBuilder pb = new ProcessBuilder(cmd);
-		if (tempPath != null) {
-			// entra aqui quando não tem interação..
-			// motivo: salva em um arquivo o stdout para imprimir tudo no final
-			// isto foi necessário pois alguns casos o programa travava com interação
+		final ProcessBuilder pb = new ProcessBuilder(cmd);				
+		if (!pInter.hasInteraction()) {
+			Path temp = pInter.getNoIteractionTempFile();			
+			pb.redirectOutput(temp.toFile());
 			pb.redirectErrorStream(true);
-			pb.redirectOutput(tempPath.toFile());
-			if(shouldPrint) {
+			if(pInter.shouldPrintCommand()) {
 				LOGGER.info("\t\t!!! WHAIT !!! "
 					+ "This command will print the result only at the end of its execution!"
-					+ "Temp file output: " + tempPath);
+					+ "Temp file output: " + temp);
 			}
 		}
 

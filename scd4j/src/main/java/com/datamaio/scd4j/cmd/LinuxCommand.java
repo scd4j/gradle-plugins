@@ -61,12 +61,18 @@ public abstract class LinuxCommand extends Command {
 	
 	@Override
 	public void serviceStart(String name){
-		run("service " + name + " start");
+		String st = serviceStatus(name);
+		if(!st.contains("running")) {			
+			run("service " + name + " start");
+		}
 	}
 	
 	@Override
 	public void serviceStop(String name){
-		run("service " + name + " stop");
+		String st = serviceStatus(name);
+		if(st.contains("running")) {			
+			run("service " + name + " stop");
+		}		
 	}
 	
 	@Override
@@ -76,7 +82,11 @@ public abstract class LinuxCommand extends Command {
 	
 	@Override
 	public String serviceStatus(String name){
-		return run("service " + name + " status");
+		try {
+			return run("service " + name + " status");
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 		
 	@Override

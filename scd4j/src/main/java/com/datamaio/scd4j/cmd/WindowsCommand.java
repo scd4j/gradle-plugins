@@ -53,14 +53,20 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void serviceStart(String name){
-		run("sc start " + name);
-		wait(()->{ return serviceStatus(name).contains("running");});
+		String st = serviceStatus(name);
+		if(!st.contains("running")) {			
+			run("sc start " + name);
+			wait(()->{ return serviceStatus(name).contains("running");});
+		}
 	}
 	
 	@Override
 	public void serviceStop(String name){
-		run("sc stop " + name);
-		wait(()->{ return serviceStatus(name).contains("stopped");});		
+		String st = serviceStatus(name);
+		if(st.contains("running")) {			
+			run("sc stop " + name);
+			wait(()->{ return serviceStatus(name).contains("stopped");});
+		}
 	}
 	
 	@Override
@@ -72,7 +78,11 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public String serviceStatus(String name){
-		return run("sc query " + name).toLowerCase();
+		try {
+			return run("sc query " + name).toLowerCase();
+		} catch (Exception e){
+			return e.getMessage();
+		}
 	}
 	
 	@Override
