@@ -10,9 +10,12 @@ JBOSS_USER=root
 ## The mode WildFly should start, standalone or domain
 JBOSS_MODE=standalone
 
-## Server Node dir
-JBOSS_BASE_DIR={{nodeDir}}
-export JBOSS_BASE_DIR 
+## Server start config
+JBOSS_CONFIG="standalone.xml -Djboss.socket.binding.port-offset={{port_offset}} -Djboss.default.multicast.address={{multicast_address}} -Djboss.node.name={{nodeName}}"
 
 ## console log
 JBOSS_CONSOLE_LOG={{nodeDir}}/log/console.log
+
+## Server Node dir
+JBOSS_BASE_DIR={{nodeDir}}
+export JBOSS_BASE_DIR

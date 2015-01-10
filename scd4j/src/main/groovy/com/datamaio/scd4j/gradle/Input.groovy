@@ -37,7 +37,11 @@ import com.datamaio.scd4j.util.Encryptor
 class Input {
 	static File config(project){
 		def install = project.scd4j.install
-		return project.file(CONFIG_FOLDER + "/" + install.config)
+		def config = install.config;
+		if(config.startsWith("config" + File.separator)){
+			config = config.replaceFirst("config" + File.separator, "")
+		}
+		return project.file(CONFIG_FOLDER + "/" + config)
 	}
 	
 	static File[] modules(project){

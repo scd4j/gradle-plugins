@@ -23,13 +23,19 @@ archivesBaseName='WildflyClusterInstallation'
 version = 0.1
 
 dependencies {
-	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
+	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip'),
+			files("dependencies/cluster-checker.war")
 }
 
 scd4j {
 	install {
 		modules "wildfly"
-		config  project.hasProperty("envconfig") ? envconfig : ""		
+		config  project.hasProperty("envconfig") ? envconfig : ""
+		env {
+			production 	"10.200.60.101", "10.200.60.101"
+			staging    	"10.210.60.101", "10.210.60.102"
+			testing 	"10.220.60.101", "10.220.60.102"
+		}
 	}
 	settings {
 		template {

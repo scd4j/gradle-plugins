@@ -5,7 +5,7 @@
 # chkconfig: - 80 20
 # description: WildFly startup script
 # processname: wildfly-{{httpPort}}
-# pidfile: /var/run/wildfly/wildfly-{{httpPort}}.pid
+# pidfile: /var/run/wildfly-{{httpPort}}/wildfly-{{httpPort}}.pid
 # config: /etc/default/wildfly
 #
 
@@ -106,7 +106,7 @@ start() {
 			if [ -r /etc/rc.d/init.d/functions ]; then
 				daemon --user $JBOSS_USER LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG >> $JBOSS_CONSOLE_LOG 2>&1 &
 			else
-				su - $JBOSS_USER -c "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG" >> $JBOSS_CONSOLE_LOG 2>&1 &
+				su - $JBOSS_USER -c "LAUNCH_JBOSS_IN_BACKGROUND=1 JBOSS_PIDFILE=$JBOSS_PIDFILE $JBOSS_SCRIPT -c $JBOSS_CONFIG " >> $JBOSS_CONSOLE_LOG 2>&1 &
 			fi
 		else
 			if [ -r /etc/rc.d/init.d/functions ]; then
