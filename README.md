@@ -24,7 +24,7 @@ To understand more about SCD4J or get more details about how to create and imple
     * Explains how you should pack and distribute your project 
 * [Logging and Backup](https://github.com/scd4j/gradle-plugins/wiki/07.-Logging-and-Backup)
     * Talks about logs, backups and a suggested clean up policy
-* [Advanced Configurations](https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Configurations)
+* [Advanced Features](https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Features)
     * Shows some advanced configuration
 * [Best Practices](https://github.com/scd4j/gradle-plugins/wiki/09.-Best-Practices)
     * Gives you some tips of how you should code your project 
