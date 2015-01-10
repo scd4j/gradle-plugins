@@ -81,17 +81,11 @@ modules/
                  ...
 ```
 
-Finally, we can run our project typing the bellow command in the command line.
+Finally, we can run our project typing `gradlew` at the command line in the project directory.
 
-```
-On Linux
-    ./gradlew
-    
-On Windows
-    gradlew
-```    
+**Important note:** You need to have Java 8 and Gradle 2.1 or higher installed to be able to run SCD4J projects. Please, see [Requirements](https://github.com/scd4j/gradle-plugins/wiki/01.-Requirements) for more details.
 
-For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+To understand more about how to implement a module take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
 
 -----------
 
