@@ -24,12 +24,13 @@ version = 0.1
 
 dependencies {
 	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip'),
-			files("dependencies/cluster-checker.war")
+			files("dependencies/cluster-checker.war"),
+			files("dependencies/jboss-ews-httpd-2.1.0-RHEL7-x86_64.zip")			
 }
 
 scd4j {
 	install {
-		modules "wildfly"
+		modules project.hasProperty("module") ? module : ""
 		config  project.hasProperty("envconfig") ? envconfig : ""
 		env {
 			production 	"10.200.60.101", "10.200.60.101"

@@ -1,0 +1,26 @@
+LoadModule proxy_cluster_module {{httpdDir}}/httpd/modules/mod_proxy_cluster.so
+LoadModule slotmem_module {{httpdDir}}/httpd/modules/mod_slotmem.so
+LoadModule manager_module {{httpdDir}}/httpd/modules/mod_manager.so
+LoadModule advertise_module {{httpdDir}}/httpd/modules/mod_advertise.so
+LoadModule proxy_ajp_module {{httpdDir}}/httpd/modules/mod_proxy_ajp.so  
+
+MemManagerFile {{httpdDir}}/httpd/cache/mod_cluster
+
+<IfModule manager_module>
+  Listen 6666
+  <VirtualHost *:6666>
+    <Directory />
+      Order deny,allow
+      Deny from all
+      Allow from 127.0.0.1
+    </Directory>
+    ServerAdvertise on
+    EnableMCPMReceive
+    <Location /mod_cluster_manager>
+      SetHandler mod_cluster-manager
+      Order deny,allow
+      Deny from all
+      Allow from 127.0.0.1
+   </Location>
+  </VirtualHost>
+</IfModule> 

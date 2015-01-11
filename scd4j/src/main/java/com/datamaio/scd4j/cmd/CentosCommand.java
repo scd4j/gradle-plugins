@@ -58,6 +58,11 @@ public class CentosCommand extends LinuxCommand {
 		run("chkconfig --del " + serviceName );
 	}
 	
+	/**
+	 * Use "-" to separate the package and the version in Ubuntu: "lxde-0.5.0"
+	 * 
+	 * USe yum list <pachagename> to show the options
+	 */
 	@Override
 	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));

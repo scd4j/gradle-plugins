@@ -9,5 +9,5 @@ pre {
 }
 
 post {
-	chmod("777")
+	chmod("755")
 }

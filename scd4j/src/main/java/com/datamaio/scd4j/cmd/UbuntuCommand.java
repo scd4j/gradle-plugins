@@ -56,6 +56,11 @@ public class UbuntuCommand extends LinuxCommand {
 		run("update-rc.d -f " + serviceName + " remove");
 	}
 	
+	/**
+	 * Use "=" to separate the package and the version in Ubuntu: "lxde=0.5.0-4ubuntu4"
+	 * 
+	 * USe apt-cache showpkg <pachagename> to show the options
+	 */	
 	@Override
 	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
