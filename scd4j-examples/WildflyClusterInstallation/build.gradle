@@ -30,7 +30,7 @@ dependencies {
 
 scd4j {
 	install {
-		modules project.hasProperty("module") ? module : ""
+		modules project.hasProperty("envmodule") ? envmodule : ""
 		config  project.hasProperty("envconfig") ? envconfig : ""
 		env {
 			production 	"10.200.60.101", "10.200.60.101"

@@ -6,21 +6,93 @@ LoadModule proxy_ajp_module {{httpdDir}}/httpd/modules/mod_proxy_ajp.so
 
 MemManagerFile {{httpdDir}}/httpd/cache/mod_cluster
 
-<IfModule manager_module>
-  Listen 6666
-  <VirtualHost *:6666>
-    <Directory />
-      Order deny,allow
-      Deny from all
-      Allow from 127.0.0.1
-    </Directory>
+######################################################################################################
+######################################### MOD_CLUSTER CONFIG #########################################
+######################################################################################################
+
+# Desabilita a criacao/relacao automatica dos nodos com os balanceadores. Precisa usar o ProxyPass no vhost 
+#CreateBalancers 1
+# Com esta configuracao nao existe a auto descoberta dos nodos. Eh necessario informar no jboss as configuracoes 
+#ServerAdvertise Off
+
+Listen 6666
+NameVirtualHost *:80
+
+# PersistSlots - When set to on, nodes, aliases and contexts are persisted in files. The default value is off.
+# This configuraion was added in order to allow "service httpd graceful" to rotate logs and, after get back, keep 
+# enable all previous enabled contexts  
+PersistSlots on
+
+# CheckNonce - Switch check of nonce when using mod_cluster-manager handler. The default value is on - Nonce checked.
+# This configuration was added to be possible to do remote calls to mod_cluster_manager. With this we can enable all contexts 
+# whenever the server be restarted. Setting this to off make the url simpler 
+#      - CheckNonce on  -> curl "http://10.XXX.XXX.XXX/mod_cluster_manager?nonce=fe1da7ae-6459-4dbc-9399-ad479fc5fdba&Cmd=ENABLE-APP&Range=NODE&JVMRoute=NODE_XXX"
+#      - CheckNonce off -> curl "http://10.XXX.XXX.XXX/mod_cluster_manager?Cmd=ENABLE-APP&Range=NODE&JVMRoute=NODE_XXX"
+# Implement the script at: /etc/rc.local 
+CheckNonce off
+
+<VirtualHost *:80>
+    # shows information about the server
+    <Location /server-status>
+        SetHandler server-status
+        Order Deny,Allow
+        Deny from all
+        Allow from all
+    </Location>
+	
+	# shows information about mod_cluster    
+    <Location /mod-cluster>
+        SetHandler mod_cluster-manager
+        Order deny,allow
+        Deny from all
+        Allow from all
+    </Location>
+</VirtualHost>
+
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %{COOKIE}i %{SET-COOKIE}o" combinedWithCookie
+
+# =================================== virtual hosts for user access =========================================
+
+##foreach($vhost in $conf.get('list.vip.names').split(","))
+#
+## ------- $vhost --------   
+#
+## Entrada do usuario
+#<VirtualHost *:80>  
+#    # virtual ip Host Name 
+#    ServerName ${vhost}
+#    
+#    #set( $balancer = $vhost.replace(".xyz.com.br", "").replace("-", "") )
+#    # Forward to the balancer defined by wildfly/jboss in mod_cluster subsystem
+#    ProxyPass / balancer://${balancer}/ stickysession=JSESSIONID|jsessionid nofailover=On
+#    ProxyPassReverse / balancer://${balancer}/
+#    ProxyPreserveHost On
+#        
+#    LogLevel debug
+#    ErrorLog {{httpdDir}}/httpd/logs/error-${balancer}.log
+#    CustomLog {{httpdDir}}/httpd//logs/access-${balancer}.log combinedWithCookie 
+#</VirtualHost>
+#
+##end
+
+
+# ================================ virtual host for wildfly/jboss access ====================================
+
+# Accessed by wildfly/jboss so that they can regitsty the nodes
+<VirtualHost *:6666>
+
+    LogLevel debug
+    ErrorLog {{httpdDir}}/httpd/logs/error-balancers.log
+    CustomLog {{httpdDir}}/httpd/logs/access-balancers.log combined
+
     ServerAdvertise on
+    
+    # allow MCPM (Mod Cluster Protocol Message) comunication
     EnableMCPMReceive
-    <Location /mod_cluster_manager>
-      SetHandler mod_cluster-manager
-      Order deny,allow
-      Deny from all
-      Allow from 127.0.0.1
-   </Location>
-  </VirtualHost>
-</IfModule> 
+    
+	<Directory />
+      	Order deny,allow
+      	Deny from all
+      	Allow from 127.0.0.1
+    </Directory>
+</VirtualHost>

@@ -1,15 +1,14 @@
-def baseDir = "/opt/scd4j-examples/WildflyClusterInstallation"
-def wildflyDir = "$baseDir/wildfly-8.2.0.Final"
+wildflyDir = "$baseDir/wildfly-8.2.0.Final"
 set("wildflyDir", wildflyDir)
 
-def offset = get("port_offset") as int
-def httpPort = 8080 + offset
+offset = portOffset as int
+httpPort = 8080 + offset
 set("httpPort", httpPort)
 
-def nodeName = "standalone-$httpPort"
+nodeName = "standalone-$httpPort"
 set("nodeName", nodeName)
 
-def nodeDir = "$wildflyDir/$nodeName"
+nodeDir = "$wildflyDir/$nodeName"
 set("nodeDir", nodeDir)
 
 pre {
@@ -30,7 +29,10 @@ void installOrStopWildfly(){
 		unzip('wildfly-8.2.0.Final.zip', baseDir)
 	} else {
 		log("Wildfly is already installed at $wildflyDir")
-		stop("wildfly-${httpPort}")
+		def st = status("wildfly-${httpPort}");
+		if(st.contains("running")) {
+			stop("wildfly-${httpPort}")
+		}
 	}
 }
 
@@ -59,8 +61,7 @@ void startWildfly(){
 }
 
 void checkJava(){
-    def java = get("java_home")
-	if(!java.contains("1.7") && !java.contains("1.8")) {
+	if(!java_home.contains("1.7") && !java_home.contains("1.8")) {
 		throw new RuntimeException("In this example, Java 1.7 OR Java 1.8 must be installed!");
 	}
 }
@@ -78,7 +79,7 @@ void checkJava(){
  *      Functions
  * 		    OPERATIONAL SYSTEM => linux:0, windows:last IP's part
  *          ENVIRONMENT        => dev:1, test:2, staging:3, production:4
- *          PORT OFFSET        => port_offset.substring(0,2)
+ *          PORT OFFSET        => portOffset.substring(0,2)
  *      IP
  * 	        230.<OPERATIONAL SYSTEM>.<ENVIRONMENT>.<PORT OFFSET>
  *
@@ -164,13 +165,12 @@ void setDifferentMulticastAddressForEachEnvironmentToAvoidClusterClash() {
 		env = 4
 	}
 	
-	// PORT OFFSET        => port_offset.substring(0,2)
+	// PORT OFFSET        => portOffset.substring(0,2)
 	// Gets the two first chars of port offset = 8180 (offset:100) and 8181 (offset:101) are in the same cluster
-	def portOffset = get("port_offset");
-	portOffset = portOffset.length()<=2 ? portOffset : portOffset.substring(0, 2)
+	def offset = portOffset.length()<=2 ? portOffset : portOffset.substring(0, 2)
 	// Manage when offset has only 1 char. Example: 8080, 8081, .., 8089 are all in the same cluster
-	portOffset = portOffset.length()==1 ? "0" : portOffset
+	offset = offset.length()==1 ? "0" : offset
 
 	// build and set multicast
-	set("multicast_address", "230.$os.$env.$portOffset")
+	set("multicast_address", "230.$os.$env.$offset")
 }

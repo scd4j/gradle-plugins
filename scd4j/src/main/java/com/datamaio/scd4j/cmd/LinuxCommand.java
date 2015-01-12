@@ -61,18 +61,12 @@ public abstract class LinuxCommand extends Command {
 	
 	@Override
 	public void serviceStart(String name){
-		String st = serviceStatus(name);
-		if(!st.contains("running")) {			
-			run("service " + name + " start");
-		}
+		run("service " + name + " start");
 	}
 	
 	@Override
 	public void serviceStop(String name){
-		String st = serviceStatus(name);
-		if(st.contains("running")) {			
-			run("service " + name + " stop");
-		}		
+		run("service " + name + " stop");
 	}
 	
 	@Override

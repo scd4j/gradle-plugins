@@ -1,5 +1,3 @@
-def user = get("wildfly_user")
-
 post {
-	chown(user)
+	chown(wildflyUser)
 }

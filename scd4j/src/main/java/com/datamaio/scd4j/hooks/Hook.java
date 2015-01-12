@@ -1434,7 +1434,7 @@ public abstract class Hook extends Script {
 
 	private String getIpFromDNS(String hostName) {
 		if (!HOSTS.containsKey(hostName)) {
-			System.out.println("\t\t\tFinding IP in DNS for host " + hostName);
+			log("\t\t\tFinding IP in DNS for host " + hostName);
 			final List<String> dnsRecs = getDnsRecords(hostName, "A");
 			final String ip = dnsRecs.size() > 0 ? dnsRecs.get(0) : "127.0.0.1";
 			HOSTS.put(hostName, ip);

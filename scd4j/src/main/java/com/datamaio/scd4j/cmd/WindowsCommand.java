@@ -53,20 +53,14 @@ public class WindowsCommand extends Command {
 	
 	@Override
 	public void serviceStart(String name){
-		String st = serviceStatus(name);
-		if(!st.contains("running")) {			
-			run("sc start " + name);
-			wait(()->{ return serviceStatus(name).contains("running");});
-		}
+		run("sc start " + name);
+		wait(()->{ return serviceStatus(name).contains("running");});
 	}
 	
 	@Override
 	public void serviceStop(String name){
-		String st = serviceStatus(name);
-		if(st.contains("running")) {			
-			run("sc stop " + name);
-			wait(()->{ return serviceStatus(name).contains("stopped");});
-		}
+		run("sc stop " + name);
+		wait(()->{ return serviceStatus(name).contains("stopped");});
 	}
 	
 	@Override
