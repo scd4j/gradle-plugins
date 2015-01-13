@@ -55,6 +55,7 @@ void startWildfly(){
 			// stop the firewall just to allow you to run the example. 
 			// Configure the firewall would be a better solution 
 			run("systemctl stop firewalld")
+			run("systemctl disable firewalld")
 		}
 	} else {
 		run("$wildflyDir/bin/service/service-${httpPort}.bat install")
