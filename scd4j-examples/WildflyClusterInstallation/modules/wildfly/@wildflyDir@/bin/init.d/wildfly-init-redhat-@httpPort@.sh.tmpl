@@ -6,7 +6,7 @@
 # description: WildFly startup script
 # processname: wildfly-{{httpPort}}
 # pidfile: /var/run/wildfly-{{httpPort}}/wildfly-{{httpPort}}.pid
-# config: /etc/default/wildfly
+# config: /etc/default/wildfly-{{httpPort}}
 #
 
 # Source function library.
@@ -18,7 +18,7 @@ export JAVA_HOME
 
 # Load JBoss AS init.d configuration.
 if [ -z "$JBOSS_CONF" ]; then
-	JBOSS_CONF="/etc/default/wildfly"
+	JBOSS_CONF="/etc/default/wildfly-{{httpPort}}"
 fi
 
 [ -r "$JBOSS_CONF" ] && . "${JBOSS_CONF}"

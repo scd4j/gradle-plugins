@@ -11,7 +11,7 @@ JBOSS_USER=root
 JBOSS_MODE=standalone
 
 ## Server start config
-JBOSS_CONFIG="standalone.xml -Djboss.socket.binding.port-offset={{portOffset}} -Djboss.default.multicast.address={{multicast_address}} -Djboss.node.name={{nodeName}}"
+JBOSS_CONFIG="standalone.xml -b 0.0.0.0 -Djboss.socket.binding.port-offset={{portOffset}} -Djboss.default.multicast.address={{multicastAddress}} -Djboss.node.name={{nodeName}}"
 
 ## console log
 JBOSS_CONSOLE_LOG={{nodeDir}}/log/console.log

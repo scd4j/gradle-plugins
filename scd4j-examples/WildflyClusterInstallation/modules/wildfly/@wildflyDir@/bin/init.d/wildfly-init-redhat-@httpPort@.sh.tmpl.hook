@@ -10,4 +10,5 @@ pre {
 
 post {
 	chmod("755")
+	run("systemctl daemon-reload")
 }
