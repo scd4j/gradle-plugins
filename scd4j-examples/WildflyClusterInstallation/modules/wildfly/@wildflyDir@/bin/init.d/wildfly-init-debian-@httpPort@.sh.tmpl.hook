@@ -4,7 +4,7 @@ pre {
 		return CONTINUE
 	}
 	
-	log("Skipping Ubuntu/Debian file. Distribution: " + distribution())
+	log("Skipping Ubuntu/Debian file. Running on " + distribution())
 	return SKIP_FILE
 }
 

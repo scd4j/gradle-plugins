@@ -4,11 +4,10 @@ pre {
 		return CONTINUE
 	}
 	
-	log("Skipping Centos/Red Hat file. Distribution: " + distribution())
+	log("Skipping Centos/Red Hat file. Running on " + distribution())
 	return SKIP_FILE
 }
 
 post {
 	chmod("755")
-	run("systemctl daemon-reload")
 }

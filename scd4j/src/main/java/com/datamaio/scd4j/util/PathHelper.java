@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration;
 
 /**
@@ -59,7 +60,7 @@ public final class PathHelper {
 	public final Path getTarget(Path path) {
 		// gets the destination path, based on module
 		final Path relativized = this.module.relativize(path);
-		final Path resolved = Paths.get("/").resolve(relativized);
+		final Path resolved = Command.get().isLinux()? Paths.get("/").resolve(relativized) : relativized;
 
 		// resolve the variables in the directories
 		return replaceVars(resolved);

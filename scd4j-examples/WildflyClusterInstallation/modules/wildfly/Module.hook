@@ -52,16 +52,16 @@ void startWildfly(){
 			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-debian-${httpPort}.sh")
 		} else {
 			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-redhat-${httpPort}.sh")
+			run("systemctl daemon-reload")
+			
 			// stop the firewall just to allow you to run the example. 
 			// Configure the firewall would be a better solution 
 			run("systemctl stop firewalld")
 			run("systemctl disable firewalld")
 		}
-	} else {
-		run("$wildflyDir/bin/service/service-${httpPort}.bat install")
-	}
-	start("wildfly-${httpPort}")
-	registryOnBoot("wildfly-${httpPort}")
+		start("wildfly-${httpPort}")
+		registryOnBoot("wildfly-${httpPort}")
+	} 
 }
 
 void checkJava(){
