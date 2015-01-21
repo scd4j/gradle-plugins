@@ -323,6 +323,7 @@
                 <smtp-server outbound-socket-binding-ref="mail-smtp"/>
             </mail-session>
         </subsystem>
+        {{^isDevelopment}}
         <subsystem xmlns="urn:jboss:domain:modcluster:1.2">
              <mod-cluster-config advertise-socket="modcluster" connector="ajp">
                  <dynamic-load-provider>
@@ -331,7 +332,8 @@
                     <load-metric type="cpu" />
                  </dynamic-load-provider>
              </mod-cluster-config>
-         </subsystem>        
+        </subsystem>
+        {{/isDevelopment}}
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <remote-naming/>
         </subsystem>

@@ -80,8 +80,7 @@ public final class PathHelper {
 			if(value!=null)
 				srcPath = srcPath.replace(key, value.toString());
 			else 
-				throw new IllegalStateException("Variavel " + key + " não foi declarada nas configuracoes. " +
-						"Utilize ExternalConf ou System.properties");
+				throw new IllegalStateException("Variable " + key.replaceAll("@", "") + " was not declared.");
     	}
 		return srcPath;
 	}

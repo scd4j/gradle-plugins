@@ -28,30 +28,22 @@ import groovy.lang.Closure;
 import groovy.lang.Script;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Interaction;
 import com.datamaio.scd4j.cmd.LinuxCommand;
-import com.datamaio.scd4j.conf.Env;
 import com.datamaio.scd4j.conf.Configuration;
+import com.datamaio.scd4j.conf.Env;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
 import com.datamaio.scd4j.hooks.file.FileHook;
 import com.datamaio.scd4j.hooks.module.ModuleHook;
@@ -77,7 +69,6 @@ import com.datamaio.scd4j.hooks.module.ModuleHook;
  */
 public abstract class Hook extends Script {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private static final Map<String, String> HOSTS = new HashMap<String, String>();
 	
 	protected Configuration conf;
 	protected Env envs;
@@ -767,34 +758,28 @@ public abstract class Hook extends Script {
 	/**
 	 * Try to discover what is the machine IP.
 	 * <p>
-	 * Note: In order to make this method work as expected the name of the
-	 * machine must be in the DNS and you must have an entry in the /etc/hosts
-	 * with ip 127.0.0.1 using the same name you have used in DNS
+	 * Note that this method has unexpected behavior if you have more than one network card/ip 
 	 * 
 	 * @return the ip address
 	 */
+	private String ip = null;
     public String whatIsMyIp()
     {
-        try {
-			final InetAddress addr = InetAddress.getLocalHost();
-	        String ip = addr.getHostAddress();
-	        if("127.0.0.1".equals(ip)){ 
-	        	// this code will execute whenever we have in /etc/hosts a name linked to 127.0.0.1
-	        	ip = getIpFromDNS(addr.getHostName());
-	        }
-			return ip;
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		}
+    	if(ip==null) {
+	        try {
+	        	ip = getLocalHostLANAddress().getHostAddress().trim();
+			} catch (UnknownHostException e) {
+				throw new RuntimeException(e);
+			}
+    	}
+    	return ip;
     }
-    
+        
 	/**
 	 * Try to discover what is the machine host name.
 	 * <p>
-	 * Note: In order to make this method work as expected the name of the
-	 * machine must be in the DNS and you must have an entry in the /etc/hosts
-	 * with ip 127.0.0.1 using the same name you have used in DNS
-	 * 
+	 * Note that this method has unexpected behavior if you have more than one network card/ip
+	 *  
 	 * @return the ip address
 	 */
     public String whatIsMyHostName()
@@ -964,14 +949,7 @@ public abstract class Hook extends Script {
 		SetDuration with(Integer value);
 		SetDuration with(Double value);
 	}  
-    
-    /**
-     * Delegates to {@link #setTempProperty(String, Object)} 
-     */
-    public void set(String key, Object value) {
-    	setTempProperty(key, value);
-    }
-    
+       
 	/**
 	 * Sets a temporary/transient property.<br>
 	 * A temporary/transient property remains set only for a short period of time. In
@@ -979,8 +957,8 @@ public abstract class Hook extends Script {
 	 * end of Hook#post() method execution.
 	 */
     public void setTempProperty(String key, Object value) {
-		props.put(key, value.toString());
-		temporaryProps.put(key, value.toString());
+		props.put(key, value);
+		temporaryProps.put(key, value);
     }
 
 	/**
@@ -988,7 +966,7 @@ public abstract class Hook extends Script {
 	 * A permanent/persistent property remains up until the end of the program execution<br>
 	 */
     public void setPermanentProperty(String key, Object value) {
-		props.put(key, value.toString());
+		props.put(key, value);
     }
     
     /** 
@@ -1432,53 +1410,74 @@ public abstract class Hook extends Script {
 	
 	// ------ private methods ------
 
-	private String getIpFromDNS(String hostName) {
-		if (!HOSTS.containsKey(hostName)) {
-			log("\t\t\tFinding IP in DNS for host " + hostName);
-			final List<String> dnsRecs = getDnsRecords(hostName, "A");
-			final String ip = dnsRecs.size() > 0 ? dnsRecs.get(0) : "127.0.0.1";
-			HOSTS.put(hostName, ip);
-		}
-		return HOSTS.get(hostName);
-	}
-
 	/**
-	 * Returns all registers from DNS for a given domain
-	 *
-	 * @param domain
-	 *            the domain, e.g. xyz.datamaio.com, in which you want to know the
-	 *            registers in DNS.
-	 * @param types
-	 *            e.g."MX","A" .
-	 *            <ul>
-	 *            <li>MX: the result contains the priority (lower better)
-	 *            followed by mailserver
-	 *            <li>A : the result contains the IP
-	 *            </ul>
-	 */
-	private List<String> getDnsRecords(String domain, String... types) {
+	 * FROM: discussion https://issues.apache.org/jira/browse/JCS-40
+	 * 
+     * Returns an <code>InetAddress</code> object encapsulating what is most likely the machine's LAN IP address.
+     * <p/>
+     * This method is intended for use as a replacement of JDK method <code>InetAddress.getLocalHost</code>, because
+     * that method is ambiguous on Linux systems. Linux systems enumerate the loopback network interface the same
+     * way as regular LAN network interfaces, but the JDK <code>InetAddress.getLocalHost</code> method does not
+     * specify the algorithm used to select the address returned under such circumstances, and will often return the
+     * loopback address, which is not valid for network communication. Details
+     * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4665037">here</a>.
+     * <p/>
+     * This method will scan all IP addresses on all network interfaces on the host machine to determine the IP address
+     * most likely to be the machine's LAN address. If the machine has multiple IP addresses, this method will prefer
+     * a site-local IP address (e.g. 192.168.x.x or 10.10.x.x, usually IPv4) if the machine has one (and will return the
+     * first site-local address if the machine has more than one), but if the machine does not hold a site-local
+     * address, this method will return simply the first non-loopback address found (IPv4 or IPv6).
+     * <p/>
+     * If this method cannot find a non-loopback address using this selection algorithm, it will fall back to
+     * calling and returning the result of JDK method <code>InetAddress.getLocalHost</code>.
+     * <p/>
+     *
+     * @throws UnknownHostException If the LAN address of the machine cannot be found.
+     */
+    private static InetAddress getLocalHostLANAddress() throws UnknownHostException {
+        try {
+            InetAddress candidateAddress = null;
+            // Iterate all NICs (network interface cards)...
+            for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
+                NetworkInterface iface = ifaces.nextElement();
+                // Iterate all IP addresses assigned to each card...
+                for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+                    InetAddress inetAddr = inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {
 
-		List<String> results = new ArrayList<String>(15);
-
-		try {
-			final Hashtable<String, String> env = new Hashtable<String, String>();
-			env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
-
-			final DirContext ictx = new InitialDirContext(env);
-			final Attributes attrs = ictx.getAttributes(domain, types);
-			for (NamingEnumeration<? extends Attribute> e = attrs.getAll(); e.hasMoreElements();) {
-				final Attribute a = (Attribute) e.nextElement();
-				for (int i = 0; i < a.size(); i++) {
-					results.add((String) a.get(i));
-				}
-			}
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-
-		if (results.size() == 0) {
-			LOGGER.severe("It was not possible to find a registry in DNS for domain " + domain);
-		}
-		return results;
-	}
+                        if (inetAddr.isSiteLocalAddress()) {
+                            // Found non-loopback site-local address. Return it immediately...
+                            return inetAddr;
+                        }
+                        else if (candidateAddress == null) {
+                            // Found non-loopback address, but not necessarily site-local.
+                            // Store it as a candidate to be returned if site-local address is not subsequently found...
+                            candidateAddress = inetAddr;
+                            // Note that we don't repeatedly assign non-loopback non-site-local addresses as candidates,
+                            // only the first. For subsequent iterations, candidate will be non-null.
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                // We did not find a site-local address, but we found some other non-loopback address.
+                // Server might have a non-site-local address assigned to its NIC (or it might be running
+                // IPv6 which deprecates the "site-local" concept).
+                // Return this non-loopback candidate address...
+                return candidateAddress;
+            }
+            // At this point, we did not find a non-loopback address.
+            // Fall back to returning whatever InetAddress.getLocalHost() returns...
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return jdkSuppliedAddress;
+        }
+        catch (Exception e) {
+            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
+        }
+    }
 }
