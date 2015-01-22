@@ -1,0 +1,10 @@
+Follow the below steps to run this example:
+
+Linux
+	* First you must be logged in a Linux machine with the root user
+	* Second, in the command line go to the 'WildflyInstallation' directory and type './gradlew'
+
+Windows
+	* First you must be logged in a Windows machine
+	* Second, you must open a new "Command Prompt" right clicking in the icon and choosing "Run as administrator"
+	* Then, in the command line, go to the 'WildflyInstallation' directory and type 'gradlew'

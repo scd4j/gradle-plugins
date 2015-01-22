@@ -1,0 +1,9 @@
+pre {
+	if(isWindows()) {
+		log("Installing Windows service support!")
+		return CONTINUE
+	}
+	
+	log("Skipping Windows file. Distribution: " + distribution())
+	return SKIP_FILE
+}
