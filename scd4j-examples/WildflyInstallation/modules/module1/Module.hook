@@ -1,5 +1,4 @@
-def basedir = "/opt/scd4j-examples/WildflyInstallation"
-def wildflyhome = "$basedir/wildfly-8.2.0.Final" 
+wildflyhome = "$basedir/wildfly-8.2.0.Final" 
  
 pre {
 	if(!exists(wildflyhome)) {
@@ -7,8 +6,7 @@ pre {
 		unzip('wildfly-8.2.0.Final.zip', basedir)		
 	} else {
 		log("Wildfly already installed at $wildflyhome")
-		
-		def st = status("wildfly")
+		def st = status("wildfly");
 		if(st.contains("running")) {
 			stop("wildfly")
 		}
@@ -30,8 +28,7 @@ post {
 }
 
 void checkJava(){
-    def java = get("java_home")
-	if(!java.contains("1.7") && !java.contains("1.8")) {
+	if(!java_home.contains("1.7") && !java_home.contains("1.8")) {
 		throw new RuntimeException("In this example, Java 1.7 OR Java 1.8 must be installed!");
 	}
 }

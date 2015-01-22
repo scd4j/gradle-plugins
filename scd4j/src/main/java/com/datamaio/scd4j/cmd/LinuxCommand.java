@@ -76,7 +76,11 @@ public abstract class LinuxCommand extends Command {
 	
 	@Override
 	public String serviceStatus(String name){
-		return run("service " + name + " status");
+		try {
+			return run("service " + name + " status");
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 		
 	@Override

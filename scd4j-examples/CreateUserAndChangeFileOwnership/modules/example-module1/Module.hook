@@ -1,13 +1,10 @@
-def user = get("wildfly_user")
-def pass = get("wildfly_password")
-
-pre {
+pre {	
 	// for now, in windows we are doing nothing
-	useradd(user)
-	passwd(user, pass)
+	useradd(wildflyUser)
+	passwd(wildflyUser, wildflyPassword)
 }
 
 post {
 	// for now, in windows we are doing nothing
-	userdel(user)
+	userdel(wildflyUser)
 }

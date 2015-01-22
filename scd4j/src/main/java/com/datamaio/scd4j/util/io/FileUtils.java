@@ -60,7 +60,7 @@ public final class FileUtils {
 	 */
 	public static void delete(Path path, String glob) {
 		try{ 
-			if(Files.exists(path)) {
+			if(Files.exists(path) || Files.isSymbolicLink(path)) {
 				if(Files.isDirectory(path)) {
 					Files.walkFileTree(path, new DeleteVisitor(glob));
 				} else {

@@ -1,53 +1,180 @@
-def exampleDir = "/opt/scd4j-examples/WildflyCusterInstallation"
-def wildflyHome = "$basedir/wildfly-8.2.0.Final"
-set("wildflyHome", wildflyHome)
+wildflyDir = "$baseDir/wildfly-8.2.0.Final"
+set("wildflyDir", wildflyDir)
 
-def offset = get("portOffset") as int
-def httpPort = 8080 + offset
+offset = portOffset as int
+httpPort = 8080 + offset
 set("httpPort", httpPort)
 
-def standaloneDir = "$wildflyHome/standalone"
-def node = "standalone-$httpPort"
-set("nodeName", node)
+nodeName = "standalone-$httpPort"
+set("nodeName", nodeName)
 
-def nodeDir = "$wildflyHome/$node" 
+nodeDir = "$wildflyDir/$nodeName"
+set("nodeDir", nodeDir)
 
 pre {
-	if(!exists(wildflyHome)) {
-		checkJava()
-		unzip('wildfly-8.2.0.Final.zip', exampleDir)
-	} else {
-		log("Wildfly is already installed at $wildflyHome")
+	installOrStopWildfly()
+	installServerNode()
+	setDifferentMulticastAddressForEachEnvironmentToAvoidClusterClash()
+}
 
-		def st = status("wildfly")
-		if(st.contains("running")) {
-			stop("wildfly")
-		}
-	}
-	
-	if(!exists(nodeDir)) {
-		cp(standaloneDir, nodeDir)
-	}
+post {
+	deployApp()
+	startWildfly()	
 }
 
 
-post {
-	if(isLinux()) {
-		if("Ubuntu".equals(distribution())) {
-			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyHome/bin/init.d/wildfly-init-debian-${httpPort}.sh")
-		} else {
-			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyHome/bin/init.d/wildfly-init-redhat-${httpPort}.sh")
-		}
+void installOrStopWildfly(){
+	if(!exists(wildflyDir)) {
+		checkJava()
+		unzip('wildfly-8.2.0.Final.zip', baseDir)
 	} else {
-		run("$wildflyHome/bin/service/service.bat install")
+		log("Wildfly is already installed at $wildflyDir")
+		def st = status("wildfly-${httpPort}");
+		if(st.contains("running")) {
+			stop("wildfly-${httpPort}")
+		}
 	}
-	start("wildfly")
-	registryOnBoot("wildfly")
+}
+
+void installServerNode() {
+	if(!exists(nodeDir)) {
+		cp("$wildflyDir/standalone", nodeDir)
+	}
+}
+
+void deployApp(){
+	cp("cluster-checker.war", "$nodeDir/deployments")
+}
+
+void startWildfly(){
+	if(isLinux()) {
+		if("Debian".equals(distribution()) || "Ubuntu".equals(distribution())) {
+			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-debian-${httpPort}.sh")
+		} else {
+			ln("/etc/init.d/wildfly-${httpPort}", "$wildflyDir/bin/init.d/wildfly-init-redhat-${httpPort}.sh")
+			run("systemctl daemon-reload")
+			
+			// stop the firewall just to allow you to run the example. 
+			// Configure the firewall would be a better solution 
+			run("systemctl stop firewalld")
+			run("systemctl disable firewalld")
+		}
+		start("wildfly-${httpPort}")
+		registryOnBoot("wildfly-${httpPort}")
+	} 
 }
 
 void checkJava(){
-    def java = get("java_home")
-	if(!java.contains("1.7") && !java.contains("1.8")) {
+	if(!java_home.contains("1.7") && !java_home.contains("1.8")) {
 		throw new RuntimeException("In this example, Java 1.7 OR Java 1.8 must be installed!");
 	}
+}
+
+/**
+ * Build a multcast address to separate differente clusters
+ *
+ * Cluster Structure:
+ *        _ Defines the cluster. For example: 8180 is in different cluster than 8280
+ *		 /
+ * 		8180
+ * 		    \_ Defines the cluster's node. Up until 10 nodes per machine.
+ *
+ * Corresponding IP Structure
+ *      Functions
+ * 		    OPERATIONAL SYSTEM => linux:0, windows:last IP's part
+ *          ENVIRONMENT        => dev:1, test:2, staging:3, production:4
+ *          PORT OFFSET        => portOffset.substring(0,2)
+ *      IP
+ * 	        230.<OPERATIONAL SYSTEM>.<ENVIRONMENT>.<PORT OFFSET>
+ *
+ * ------------------
+ *
+ * Example 1: Development Environment (windows)
+ *
+ *      Development machine (192.168.0.197) installing standalone-8080
+ *          OPERATIONAL SYSTEM  =   last IP's part	= 197   - this avoids that two developers join in the same cluster
+ *          ENVIRONMENT         =   developmetn		= 1
+ *          PORT OFFSET			=   offset is 0   	= 0
+ *          ** RESULT: 230.197.1.0 **
+ *
+ * -----------------
+ *
+ * Exemple 2: Test Environment
+ *
+ *      Machine 1 (10.220.60.101) isntalling standalone-8180
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   test            = 2
+ *          PORT OFFSET			=   offset is 100   = 10
+ *          ** RESULT: 230.0.2.10 **
+ *
+ *      Machine 1 (10.220.60.101) isntalling standalone-8181
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   test            = 2
+ *          PORT OFFSET			=   offset is 101   = 10
+ *          ** RESULT: 230.0.2.10 **
+ *
+ * -----------------
+ *
+ * Exemple 3: Staging Environment
+ *
+ *      Machine 1 (10.210.60.101) isntalling standalone-8280
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   staging         = 3
+ *          PORT OFFSET			=   offset is 200   = 20
+ *          ** RESULT: 230.0.2.10 **
+ *
+ *      Machine 1 (10.210.60.101) isntalling standalone-8281
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   staging         = 3
+ *          PORT OFFSET			=   offset is 201   = 20
+ *          ** RESULT: 230.0.3.20 **
+ *
+ * ------------------
+ *
+ * Exemple 4: Production Environment
+ *
+ *      Machine 1 (10.200.60.101) isntalling standalone-8380
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   production      = 4
+ *          PORT OFFSET			=   offset is 300   = 30
+ *          ** RESULT: 230.0.4.30 **
+ *
+ *      Machine 1 (10.200.60.101) isntalling standalone-8381
+ *          OPERATIONAL SYSTEM  =   is linux  		= 0
+ *          ENVIRONMENT         =   production      = 4
+ *          PORT OFFSET			=   offset is 301   = 30
+ *          ** RESULT: 230.0.4.30 **
+ *
+ * ------------------
+ *
+ * NOTE: Using this model we will be able to completly separete clusters. We just need to
+ * follow the <code>Cluster Structure</code> defined at the begining of this javadoc
+ */
+void setDifferentMulticastAddressForEachEnvironmentToAvoidClusterClash() {
+	
+	// OPERATIONAL SYSTEM => linux:0, windows:last IP's part
+	def os = "0";
+	if(isWindows()) {
+		def myip = whatIsMyIp()
+		os = myip.substring(myip.lastIndexOf(".")+1)
+	}
+	
+	// ENVIRONMENT        => dev:1, test:2, staging:3, production:4
+	def env = 1;
+	if( isTesting() ) {
+		env = 2
+	} else if( isStaging() ) {
+		env = 3
+	} else if( isProduction() ) {
+		env = 4
+	}
+	
+	// PORT OFFSET        => portOffset.substring(0,2)
+	// Gets the two first chars of port offset = 8180 (offset:100) and 8181 (offset:101) are in the same cluster
+	def offset = portOffset.length()<=2 ? portOffset : portOffset.substring(0, 2)
+	// Manage when offset has only 1 char. Example: 8080, 8081, .., 8089 are all in the same cluster
+	offset = offset.length()==1 ? "0" : offset
+
+	// build and set multicast
+	set("multicastAddress", "230.$os.$env.$offset")
 }

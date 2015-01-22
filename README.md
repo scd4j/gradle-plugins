@@ -24,8 +24,8 @@ To understand more about SCD4J or get more details about how to create and imple
     * Explains how you should pack and distribute your project 
 * [Logging and Backup](https://github.com/scd4j/gradle-plugins/wiki/07.-Logging-and-Backup)
     * Talks about logs, backups and a suggested clean up policy
-* [Advanced Configurations](https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Configurations)
-    * Shows some advanced configuration
+* [Advanced Features](https://github.com/scd4j/gradle-plugins/wiki/08.-Advanced-Features)
+    * Shows some advanced features and configurations
 * [Best Practices](https://github.com/scd4j/gradle-plugins/wiki/09.-Best-Practices)
     * Gives you some tips of how you should code your project 
 * [FAQ](https://github.com/scd4j/gradle-plugins/wiki/10.-FAQ)
@@ -81,17 +81,11 @@ modules/
                  ...
 ```
 
-Finally, we can run our project typing the bellow command in the command line.
+Finally, we can run our project typing `gradlew` at the command line in the project directory.
 
-```
-On Linux
-    ./gradlew
-    
-On Windows
-    gradlew
-```    
+**Important note:** You need to have Java 8 and Gradle 2.1 or higher installed to be able to run SCD4J projects. Please, see [Requirements](https://github.com/scd4j/gradle-plugins/wiki/01.-Requirements) for more details.
 
-For more details of take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
+To understand more about how to implement a module take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
 
 -----------
 

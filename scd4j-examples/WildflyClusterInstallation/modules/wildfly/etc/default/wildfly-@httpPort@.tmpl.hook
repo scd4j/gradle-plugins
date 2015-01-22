@@ -1,9 +1,9 @@
 pre {
-	if("Ubuntu".equals(distribution()) || "Debian".equals(distribution())) {
-		log("Installing Ubuntu/Debian support!")
+	if(isLinux()) {
+		log("Installing init.d Linux config!")
 		return CONTINUE
 	}
 	
-	log("Skipping Ubuntu/Debian file. Distribution: " + distribution())
+	log("Skipping Linux config. Running on " + distribution())
 	return SKIP_FILE
 }

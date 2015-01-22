@@ -1,0 +1,13 @@
+pre {
+	if("CentOS".equals(distribution()) || "Red Hat".equals(distribution())) {
+		log("Installing Centos/Red Hat support!")
+		return CONTINUE
+	}
+	
+	log("Skipping Centos/Red Hat file. Running on " + distribution())
+	return SKIP_FILE
+}
+
+post {
+	chmod("755")
+}

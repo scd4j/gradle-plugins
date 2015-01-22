@@ -1,3 +1,8 @@
+/* 
+ * -- To run against your scd4j local dirctory --
+ * -- You must first run scd4j uploadArchives to use this code --
+ * -- You must comment plugins {..} structure to use this code --
+ */
 buildscript {
 	repositories {
 		mavenCentral()
@@ -9,25 +14,33 @@ buildscript {
 }
 apply plugin: 'com.datamaio.scd4j'
 
-/*plugins {
+/*
+plugins {
   id "com.datamaio.scd4j" version "0.6.1"
 }*/
 
-archivesBaseName='WildflyInstallation'
-version = 0.2
+archivesBaseName='WildflyClusterInstallation'
+version = 0.1
 
 dependencies {
-	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip')
+	scd4j 	url('http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip'),
+			files("dependencies/cluster-checker.war"),
+			files("dependencies/jboss-ews-httpd-2.1.0-RHEL7-x86_64.zip")			
 }
 
 scd4j {
 	install {
-		modules "wildfly"
-		config  "wildfly/desenv.conf"		
+		modules project.hasProperty("envmodule") ? envmodule : ""
+		config  project.hasProperty("envconfig") ? envconfig : ""
+		env {
+			production 	"10.200.60.101", "10.200.60.101"
+			staging    	"10.210.60.101", "10.210.60.102"
+			testing 	"10.220.60.101", "10.220.60.102"
+		}
 	}
 	settings {
 		template {
-			engine "mustashe"
+			engine "mustache"
 		}
 	}
 }

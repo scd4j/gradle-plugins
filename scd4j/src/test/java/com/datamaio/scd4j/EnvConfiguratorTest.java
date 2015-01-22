@@ -146,11 +146,11 @@ public class EnvConfiguratorTest {
 			props.put("favlang2", "bbbbbb");
 			new EnvConfiguratorMock(build(module, props)).copyFiles();		
 	
-			checkResult(fs, result, "dir1/f1.txt");
-			checkResult(fs, result, "dir2/dir21/f21.txt");
-			checkResult(fs, result, "f.txt");
-			checkResult(fs, result, "ff.txt");
-			checkResult(fs, result, "dir3/f3.txt");
+			checkFileContent(fs, result, "dir1/f1.txt");
+			checkFileContent(fs, result, "dir2/dir21/f21.txt");
+			checkFileContent(fs, result, "f.txt");
+			checkFileContent(fs, result, "ff.txt");
+			checkFileContent(fs, result, "dir3/f3.txt");
 		} finally {
 			FileUtils.delete(root);
 		}
@@ -177,11 +177,11 @@ public class EnvConfiguratorTest {
 			props.put("favlang2", "bbbbbb");
 			new EnvConfiguratorMock(build(module, props)).execute();		
 	
-			checkResult(fs, result, "dir1/f1.txt");
-			checkResult(fs, result, "dir2/dir21/f21.txt");
+			checkFileContent(fs, result, "dir1/f1.txt");
+			checkFileContent(fs, result, "dir2/dir21/f21.txt");
 			assertThat(exists(PathUtils.get(fs, "dir3/f3.txt")), is(false));
-			checkResult(fs, result, "f.txt");
-			checkResult(fs, result, "ff.txt");
+			checkFileContent(fs, result, "f.txt");
+			checkFileContent(fs, result, "ff.txt");
 		} finally {
 			FileUtils.delete(root);
 		}
@@ -308,7 +308,7 @@ public class EnvConfiguratorTest {
 			new EnvConfiguratorMock(build(module)).execute();		
 	
 			assertThat(exists(PathUtils.get(fs, "f1.txt")), is(true));
-			checkResult(fs, result, "f1.txt");
+			checkFileContent(fs, result, "f1.txt");
 		} finally {
 			FileUtils.delete(root);
 		}
@@ -333,7 +333,25 @@ public class EnvConfiguratorTest {
 			props.put("test", "TESTADO!");
 			new EnvConfiguratorMock(build(module, props)).execute();
 			assertThat(exists(PathUtils.get(fs, "dir1/f10.txt")), is(true));
-			checkResult(fs, result, "dir1/f10.txt");
+			checkFileContent(fs, result, "dir1/f10.txt");
+		} finally {
+			FileUtils.delete(root);
+		}
+	}
+	
+	@Test
+	public void tesPathVariable() throws Exception{
+		Path[] paths = createEnv(11);
+		Path root = paths[0];
+		Path fs = paths[1];
+		Path module = paths[2];
+		
+		try {
+			Map<String, Object> props = new HashMap<>();
+			props.put("var", "test");
+			assertThat(exists(PathUtils.get(fs, "dirtest/filetest.txt")), is(false));
+			new EnvConfiguratorMock(build(module, props)).execute();			
+			assertThat(exists(PathUtils.get(fs, "dirtest/filetest.txt")), is(true));
 		} finally {
 			FileUtils.delete(root);
 		}
@@ -406,7 +424,7 @@ public class EnvConfiguratorTest {
 		return Paths.get(getClass().getResource(resource).toURI());
 	}
 	
-	private void checkResult(Path fs, Path result, String file) {
+	private void checkFileContent(Path fs, Path result, String file) {
 		assertThat(exists(PathUtils.get(fs, file)), is(true));
 		try {
 			byte[] actual = Files.readAllBytes(PathUtils.get(fs, file));

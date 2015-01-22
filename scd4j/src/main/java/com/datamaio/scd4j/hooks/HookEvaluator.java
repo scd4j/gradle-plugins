@@ -38,6 +38,8 @@ import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.util.io.FileUtils;
 
 /**
+ * In order to understand better hot to write hooks, take a look at Semantics of *def*
+ * http://groovy.codehaus.org/Scoping+and+the+Semantics+of+%22def%22
  * 
  * @author Fernando Rubbo
  */
@@ -62,12 +64,18 @@ public abstract class HookEvaluator {
 	}
 
 	private String readScript(Map<String, Object> binds) {
-		if( Files.exists(groovyPath) ) {
-			String script = "";
+		if( Files.exists(groovyPath) ) {	
+			StringBuilder buff = new StringBuilder(400);
+			buff.append("import static com.datamaio.scd4j.hooks.HookPreResult.CONTINUE;")
+				.append("import static com.datamaio.scd4j.hooks.HookPreResult.ABORT;")
+				.append("import static com.datamaio.scd4j.hooks.HookPreResult.SKIP_FILE;")
+				.append("import java.nio.file.*;")
+				.append("import java.io.*;");
 			for (String b : binds.keySet()) {
-				script += "set" + b.substring(0,1).toUpperCase() + b.substring(1) + "(" + b + ");\n";
+				buff.append("set" + b.substring(0,1).toUpperCase() + b.substring(1) + "(" + b + ");");
 			}
-			return script + FileUtils.read(groovyPath);
+			buff.append(FileUtils.read(groovyPath));
+			return buff.toString();
 		}
 		
 		return null;
@@ -99,14 +107,10 @@ public abstract class HookEvaluator {
 	}
 
 	private Object evaluate(String action) {
-		String fullScript = "import static com.datamaio.scd4j.hooks.HookPreResult.CONTINUE;\n"
-						  + "import static com.datamaio.scd4j.hooks.HookPreResult.ABORT;\n"
-						  + "import static com.datamaio.scd4j.hooks.HookPreResult.SKIP_FILE;\n"
-						  + "import java.nio.file.*;\n"
-						  + "import java.io.*;\n"
-						  + script + "\n " 
+		String fullScript = script + "\n " 
 						  + action + "();";
-		return shell.evaluate(fullScript);
+		String fileName = groovyPath.getFileName().toString();
+		return shell.evaluate(fullScript, fileName);
 	}
 	
 	private GroovyShell createShell(Map<String, Object> binds, Configuration conf) {

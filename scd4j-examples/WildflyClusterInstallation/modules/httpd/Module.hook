@@ -1,0 +1,41 @@
+def baseDir=get("baseDir")
+def httpdDir="$baseDir/jboss-ews-2.1"
+set("httpdDir", httpdDir)
+
+pre {
+	if("CentOS".equals(distribution())) {		
+		if(!exists(httpdDir)) {
+			// install httpd dependencies
+			install("krb5-workstation-1.11.3-49.el7")
+			install("elinks-0.12-0.36.pre6.el7")
+			install("apr-util-ldap-1.5.2-6.el7")
+			install("apr-util-devel-1.5.2-6.el7")
+			// install httpd
+			unzip("jboss-ews-httpd-2.1.0-RHEL7-x86_64.zip", baseDir)
+			// create apache user to manage httpd
+			groupadd("apache", "-g 91 -r -f");
+			useradd("apache", "-c \"Apache\" -u 48 -s /sbin/nologin -g apache -r");
+		} else {
+			def st = status("httpd");
+			if(st.contains("server uptime:")) {
+				stop("httpd")
+			}
+		}
+		
+		return CONTINUE
+	}
+	
+	return ABORT
+}
+
+post {
+	// not using this and the link is broken
+	rm("$httpdDir/httpd/conf.d/auth_kerb.conf")
+	rm("$httpdDir/httpd/modules/mod_auth_kerb.so")
+	
+	chown("apache", "apache", "$httpdDir", true)
+
+	ln("/etc/init.d/httpd", "$httpdDir/httpd/sbin/apachectl");
+	start("httpd")
+	//registryOnBoot("httpd")
+}
