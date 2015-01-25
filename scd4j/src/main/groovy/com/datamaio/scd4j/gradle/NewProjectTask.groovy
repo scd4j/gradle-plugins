@@ -49,7 +49,17 @@ class NewProjectTask extends DefaultTask {
 			if(!Input.validateModule(module)) {
 				println "Creating Module $module"
 				module.mkdirs();
-				new File(module, "Module.hook").text = "pre{\n\n}\n\npost{\n\n}"
+				new File(module, "Module.hook").text = """pre{
+	// put here your pre module installation logic
+	if( isLinux() ) {
+		return CONTINUE
+	}
+	return ABORT
+}
+
+post{
+	// put here your post module installation logic
+}"""
 			}
 		}
 	}
