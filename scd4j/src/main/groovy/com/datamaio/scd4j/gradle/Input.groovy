@@ -60,17 +60,21 @@ class Input {
 	}
 	
 	static boolean validateModules(modules) {
-		def ok = true;
-		
+		def ok = true;		
 		for( module in modules ){
-			if(!module.exists() || !module.isDirectory()) {
-				println "***************************************************************************************"
-				println "*** Module '$module' does not exists or it is not a directory ***"
-				println "***************************************************************************************"
-				ok = false
-			}
+			ok &= validateModule(module);
 		}
 		return ok;
+	}
+	
+	static boolean validateModule(module) {
+		if(!module.exists() || !module.isDirectory()) {
+			println "***************************************************************************************"
+			println "*** Module '$module' does not exists or it is not a directory ***"
+			println "***************************************************************************************"
+			return false
+		}
+		return true
 	}
 	
 	static boolean validateConfig(config) {

@@ -57,7 +57,11 @@ class Scd4jPlugin implements Plugin<Project> {
 			return project.files(file)
 		});
 
-		// -- configure tools tasks
+		// -- configure tools tasks	
+		project.task('newproject', type:NewProjectTask){
+			group = "scd4j Tools"
+			description = "Helper tool to create an empty project"
+		}
 		project.task('encrypt', type:EncryptPropertyTask){
 			group = "scd4j Tools"
 			description = "Helper to encrypt a property"
