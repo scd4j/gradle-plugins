@@ -37,59 +37,50 @@ To understand more about SCD4J or get more details about how to create and imple
 Project Structure
 -------------
 
-In short, you first must create a file `build.gradle`, like the below example:
+To start a new project, first we must create a file called `build.gradle`, as show in the below example:
 
 ```
 plugins {
-    id "com.datamaio.scd4j" version "0.6.1"
+    id "com.datamaio.scd4j" version "0.7.0"
 }
 
 scd4j {
     install {
         modules "my_module_dir"         // should be any dir into modules dir
-        config  "my_config_file.conf"	// should be any properties file into config dir.
+        config  "my_config_file.conf"	 // should be any properties file into config dir.
     }
 }
 ```
 
-Second, you must create a directory `config` and another `modules`. 
+Then, we may run the task `newproject` of our `build.gradle` using the installed gradle build tool. 
+
+Note: We need to have [Gradle 2.1 (or higher)](https://services.gradle.org/distributions/gradle-2.2.1-all.zip) installed just for the first run. After that, SCD4J will automatically install a Gradle wrapper. Please, see [Requirements](https://github.com/scd4j/gradle-plugins/wiki/01.-Requirements) for more details.
+
+Once the execution has finished we will have the following directory structure created:
 
 ```
 build.gradle
 config/
+      my_first_config.conf
 modules/
+      my_first_module/
+            Module.hook
+gradlew
+gradlew.bat
+gradle/...
 ```
 
-Then, inside of `modules` dir, you can create as many directories you would like to. Each one, will become a module. In our `build.gradle` example we have defined a module called `my_module_dir`, so you must create a directory `modules/my_module_dir`.
+The `config` dir contains the configuration files. In our case the `my_first_config.conf` file (i.e. a Java properties file) in which we must put all the variables that will be used by our modules.
 
-```
-build.gradle
-config/
-modules/
-      my_module_dir/
-                 ...
-```
+The `modules` dir contains a new module called `my_first_module`. This is the place where we will implement our automation. Note that the `newproject` task also created a file called `Module.hook`, take a look at [basics](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics) to undertand how to implement this hook.
 
-In the `config` dir, you must create a file (i.e. a Java properties file) and put into it the variables that will be used by your modules. In our example, we have defined a file called `my_config_file.conf`. So, we need to have this file inside of `config` dir in order to run our project.
-
-```
-build.gradle
-config/
-      my_config_file.conf
-modules/
-      my_module_dir/
-                 ...
-```
-
-Finally, we can run our project typing `gradlew` at the command line in the project directory.
-
-**Important note:** You need to have Java 8 and Gradle 2.1 or higher installed to be able to run SCD4J projects. Please, see [Requirements](https://github.com/scd4j/gradle-plugins/wiki/01.-Requirements) for more details.
+Finally, we can see a `gradle` directory and `gradlew` and `gradlew.bat` files. Those are the gradle wrapper and, from now one, you can pack this project and run it in any machine without needing to install gradle.
 
 To understand more about how to implement a module take a look at the [wiki](https://github.com/scd4j/gradle-plugins/wiki/02.-Basics)
 
 -----------
 
-Thanks for the interest of making the softare delivery somewhat more professional. Hope you enjoy our tool.
+Thanks for the interest of making the software delivery somewhat more professional. Hope you enjoy our tool.
 
 Sincerely, SCD4J Team
 
