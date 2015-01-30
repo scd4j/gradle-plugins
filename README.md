@@ -46,8 +46,8 @@ plugins {
 
 scd4j {
     install {
-        modules "my_module_dir"         // should be any dir into modules dir
-        config  "my_config_file.conf"	 // should be any properties file into config dir.
+        modules "my_first_module"         // should be any dir into modules dir
+        config  "my_first_config.conf"	 // should be any properties file into config dir.
     }
 }
 ```
