@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.cmd;
+package com.datamaio.scd4j.cmd.linux;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import com.datamaio.scd4j.cmd.Command;
+import com.datamaio.scd4j.cmd.Interaction;
 
 /**
  * 
@@ -214,7 +217,7 @@ public abstract class LinuxCommand extends Command {
 		List<String> cmd = Arrays.asList("passwd", user);
 		run(cmd, new Interaction() {
 			@Override
-			void interact(OutputStream out) throws Exception {
+			public void interact(OutputStream out) throws Exception {
 				byte[] bytes = (passwd + "\n").getBytes();
 				out.write(bytes); // write password
 				out.write(bytes); // confirm password

@@ -21,14 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.cmd;
+package com.datamaio.scd4j.cmd.linux.redhat;
 
 
-public class DebianCommand extends UbuntuCommand {
-	public static final String DIST_NAME = "Debian";
-
+/**
+ * 
+ * @author Fernando Rubbo
+ */
+public class CentosCommand extends RHBaseCommand {
+	public static final String DIST_NAME = "CentOS";
+	
 	@Override
 	public String distribution() {
 		return DIST_NAME;
-	}
+	}	
 }

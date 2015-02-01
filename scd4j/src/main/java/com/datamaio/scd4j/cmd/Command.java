@@ -40,6 +40,12 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.logging.Logger;
 
+import com.datamaio.scd4j.cmd.linux.debian.DebianCommand;
+import com.datamaio.scd4j.cmd.linux.debian.UbuntuCommand;
+import com.datamaio.scd4j.cmd.linux.redhat.CentosCommand;
+import com.datamaio.scd4j.cmd.linux.redhat.FedoraCommand;
+import com.datamaio.scd4j.cmd.linux.redhat.RedhatCommand;
+import com.datamaio.scd4j.cmd.windows.WindowsCommand;
 import com.datamaio.scd4j.util.io.FileUtils;
 
 /**
@@ -50,11 +56,11 @@ public abstract class Command {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);	
 	private static final Interaction NO_PRINTING = new Interaction() {
 		@Override
-		boolean shouldPrintCommand() {
+		public boolean shouldPrintCommand() {
 			return false;
 		}
 		@Override
-		boolean shouldPrintOutput() {
+		public boolean shouldPrintOutput() {
 			return false;
 		}		
 	};
@@ -70,6 +76,8 @@ public abstract class Command {
 					INSTANCE = new UbuntuCommand();
 				} else if (dist.toUpperCase().contains(DebianCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new DebianCommand();
+				} else if (dist.toUpperCase().contains(FedoraCommand.DIST_NAME.toUpperCase())) {
+					INSTANCE = new FedoraCommand();										
 				} else if (dist.toUpperCase().contains(CentosCommand.DIST_NAME.toUpperCase())) {
 					INSTANCE = new CentosCommand();					
 				} else if(dist.toUpperCase().contains(RedhatCommand.DIST_NAME.toUpperCase())) {
@@ -178,7 +186,7 @@ public abstract class Command {
 	public String run(List<String> cmdList, final boolean shouldPrintOutput) {
 		return run(cmdList, new Interaction() {
 			@Override
-			boolean shouldPrintOutput() {
+			public boolean shouldPrintOutput() {
 				return shouldPrintOutput;
 			}
 		});
@@ -192,7 +200,7 @@ public abstract class Command {
 	public String run(List<String> cmdList, final int... successfulExec) {
 		return run(cmdList, new Interaction() {
 			@Override
-			boolean isTheExecutionSuccessful(int waitfor) {
+			public boolean isTheExecutionSuccessful(int waitfor) {
 				return Arrays.binarySearch(successfulExec, waitfor) != -1;
 			}
 		});
@@ -279,19 +287,19 @@ public abstract class Command {
 		}
 		
 		@Override
-		boolean shouldPrintCommand() {
+		public boolean shouldPrintCommand() {
 			return interaction.shouldPrintCommand();
 		}
 		@Override
-		boolean shouldPrintOutput() {
+		public boolean shouldPrintOutput() {
 			return interaction.shouldPrintOutput();
 		}
 		@Override
-		void interact(OutputStream out) throws Exception {
+		public void interact(OutputStream out) throws Exception {
 			interaction.interact(out);
 		}
 		@Override
-		boolean isTheExecutionSuccessful(int processReturn) {
+		public boolean isTheExecutionSuccessful(int processReturn) {
 			if(hasInteraction()) {
 				return interaction.isTheExecutionSuccessful(processReturn);
 			} 

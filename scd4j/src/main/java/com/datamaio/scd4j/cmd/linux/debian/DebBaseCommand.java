@@ -21,81 +21,82 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.cmd;
+package com.datamaio.scd4j.cmd.linux.debian;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.datamaio.scd4j.cmd.linux.LinuxCommand;
+
 /**
  * 
  * @author Fernando Rubbo
  */
-public class CentosCommand extends LinuxCommand {
+public abstract class DebBaseCommand  extends LinuxCommand {
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	public static final String DIST_NAME = "CentOS";
-	public static final String INST_EXTENSION = "rpm";
-
+	public static final String INST_EXTENSION = "deb";
+	
 	@Override
 	public String getPackExtension(){
 		return INST_EXTENSION;
 	}
 	
 	@Override
-	public String distribution() {
-		return DIST_NAME;
-	}
-	
-	@Override
 	public void startServiceAtSystemBoot(String serviceName) {
-		run("chkconfig --add " + serviceName);
-		run("chkconfig " + serviceName + " on "); 
-		run("chkconfig --list " + serviceName);
+		run("update-rc.d " + serviceName + " defaults");
 	}
 	
 	@Override
 	public void doNotStartServiceAtSystemBoot(String serviceName) {
-		run("chkconfig --del " + serviceName );
+		run("update-rc.d -f " + serviceName + " remove");
 	}
 	
 	/**
-	 * Use "-" to separate the package and the version in Ubuntu: "lxde-0.5.0"
+	 * Use "=" to separate the package and the version in Ubuntu: "lxde=0.5.0-4ubuntu4"
 	 * 
-	 * USe yum list <pachagename> to show the options
-	 */
+	 * USe apt-cache showpkg <pachagename> to show the options
+	 */	
 	@Override
 	public void installRemotePack(String pack, String version) {
 		LOGGER.info("\tInstalling package " + pack + (version!=null? " ("+version+")" : ""));
-		String fullpack = pack + (version!=null? "-" + version : "");
-		List<String> cmd = Arrays.asList(new String[] { "yum", "-y", "install", fullpack });
+		String fullpack = pack + (version!=null? "=" + version : "");
+		List<String> cmd = Arrays.asList(new String[] { "apt-get", "-y", "install", fullpack });
 		run(cmd);
 	}	
 	
-	@Override
+	@Override	
 	public void installLocalPack(String path) {
-		LOGGER.info("\tInstalling RPM from " + path + " ... ");
-		run("rpm -i " + path);
+		LOGGER.info("\tInstalling DEB File from " + path + " ... ");
+		run("dpkg -i " + path);
 	}
 	
 	@Override
 	public boolean isInstalled(String pack) {
-		return run("rpm -qa | grep " + pack).length() > 0;
+		try {
+			run("dpkg-query -l " + pack, false);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	@Override
 	public void uninstallRemotePack(String pack) {
-		LOGGER.info("\tRemoving package " + pack);
-		run("yum -y erase " +pack );
+		LOGGER.info("\tRemoving package " + pack + " and dependencies");
+		run("apt-get -y --auto-remove purge " + pack);
 	}
 	
 	@Override
 	public void uninstallLocalPack(String pack) {
-		LOGGER.info("\tUninstalling RPM pack " + pack + " ... ");
-		run("rpm -e " + pack);
+		LOGGER.info("\tUninstalling DEB File from " + pack + " ... ");
+		run("dpkg --purge " + pack);
+		run("apt-get -y autoremove");
 	}
 	
 	@Override
 	public void addRepository(String repository) {
-		throw new RuntimeException("Not Implemented!");
+		run("add-apt-repository -y " + repository);
+		run("apt-get update", false);
 	}
 }

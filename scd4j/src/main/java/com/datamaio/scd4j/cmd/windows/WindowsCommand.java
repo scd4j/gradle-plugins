@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.cmd;
+package com.datamaio.scd4j.cmd.windows;
 
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.util.io.ZipUtils;
 
 /**

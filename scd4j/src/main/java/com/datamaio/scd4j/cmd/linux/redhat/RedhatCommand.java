@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.datamaio.scd4j.cmd;
+package com.datamaio.scd4j.cmd.linux.redhat;
 
-
-public class RedhatCommand extends CentosCommand{
+/**
+ * 
+ * @author Fernando Rubbo
+ */
+public class RedhatCommand extends RHBaseCommand {
 	public static final String DIST_NAME = "Red Hat";
 	
 	@Override
