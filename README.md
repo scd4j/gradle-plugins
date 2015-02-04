@@ -83,3 +83,4 @@ To understand more about how to implement a module take a look at the [wiki](htt
 Thanks for the interest of making the software delivery somewhat more professional. Hope you enjoy our tool.
 
 Sincerely, SCD4J Team
+-
