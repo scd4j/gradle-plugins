@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 /**
  * 
  * @author Fernando Rubbo
+ * @author Mateus M. da Costa
  */
 public final class FileUtils {
 	
@@ -185,9 +186,9 @@ public final class FileUtils {
 	
 	public static void move(Path from, Path to) {
 		try {
+			
 			if(Files.isDirectory(from)) {
-				createDirectories(to);
-				throw new RuntimeException("Moving directory is not implemented yet");
+				Files.walkFileTree(from, new MoveVistor(from, to));
 			} else if (Files.isRegularFile(from)) {
 				if (Files.notExists(to)){
 					Path parent = to.getParent();
@@ -197,8 +198,9 @@ public final class FileUtils {
 				} else if(Files.isRegularFile(to)){
 					// expected. do nothing
 				} 
+				
+				Files.move(from, to, ATOMIC_MOVE, REPLACE_EXISTING);
 			}			
-			Files.move(from, to, ATOMIC_MOVE, REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

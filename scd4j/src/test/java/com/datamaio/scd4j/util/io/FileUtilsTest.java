@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Test;
@@ -374,5 +375,169 @@ public class FileUtilsTest {
 		assertThat(exists(parentdirfile1), is(true));
 		assertThat(fileOne.endsWith(fileTwo), is(true));
 	}
+	
+	@Test
+	public void moveSimpleFile() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, parentdirfile1.getFileName().toFile().getName()));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "FILE_1.tmp")), is(true));	
+	}
+	
+	@Test
+	public void moveToNewFile() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		String file2Name = "fileTwo.tmp";
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, file2Name));
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, file2Name));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, file2Name)), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFileToNewFolderWithName() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		String file2Name = "FILE_1.tmp";
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, "/newDir/"+file2Name));
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "/newDir/"+file2Name));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "/newDir/")), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFileToNewFolder() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, "/newDir"));
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "/newDir"));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "/newDir/")), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFileToNewFolderAndNewFile() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		String file2Name = "fileTwo.tmp";
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, "/newDir/"+file2Name));
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "/newDir/"+file2Name));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "/newDir/"+file2Name)), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFileToFolder() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		FileUtils.move(parentdirfile1, parentdir2);
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "FILE_1.tmp"));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "FILE_1.tmp")), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFolderToFolder() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirMove = Files.createDirectory(PathUtils.get(parentdir, "DIR_MOVE/"));
+		
+		Path parentdir2 = Files.createDirectory(PathUtils.get(parentdir, "DIR2"));
+		
+		FileUtils.move(parentdirMove, parentdir2);
+		
+		assertThat(exists(parentdirMove), is(false));
+		assertThat(exists(parentdir2), is(true));
+	}
+	
+	@Test
+	public void moveFolderToNewFolder() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirMove = Files.createDirectory(PathUtils.get(parentdir, "DIR_MOVE/"));
+			
+		FileUtils.move(parentdirMove, PathUtils.get(parentdir, "DIR2"));
+		
+		assertThat(exists(parentdirMove), is(false));
+		assertThat(exists(PathUtils.get(parentdir, "DIR2")), is(true));
+	}
+	
+	@Test
+	public void moveFolderWithContentToNewFolder() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirMove = Files.createDirectory(PathUtils.get(parentdir, "DIR_MOVE/"));
+		final String fileOne = "File one!!";
+		Path parentdirfile1 = FileUtils.createFile(parentdirMove, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+			
+		FileUtils.move(parentdirMove, PathUtils.get(parentdir, "DIR2"));
+		
+		assertThat(exists(parentdirMove), is(false));
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir, "DIR2")), is(true));
+		assertThat(exists(PathUtils.get(PathUtils.get(parentdir, "DIR2"), "FILE_1.tmp")), is(true));
+	}
+	
+	@Test
+	public void moveFolderWithContentToNewUrlFolder() throws IOException {
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirMove = Files.createDirectory(PathUtils.get(parentdir, "DIR_MOVE/"));
+		final String fileOne = "File one!!";
+		Path parentdirfile1 = FileUtils.createFile(parentdirMove, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		Path parentdirMoveTwo = Files.createDirectory(PathUtils.get(parentdirMove, "SUB_DIR_MOVE/"));
+		Path parentdirfile2 = FileUtils.createFile(parentdirMoveTwo, "FILE_2.tmp");
+			
+		FileUtils.move(parentdirMove, PathUtils.get(parentdir, "DIR2/SUB/"));
+		
+		assertThat(exists(parentdirMove), is(false));
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(parentdirMoveTwo), is(false));
+		assertThat(exists(parentdirfile2), is(false));
+		assertThat(exists(PathUtils.get(parentdir, "DIR2/SUB")), is(true));
+		assertThat(exists(PathUtils.get(PathUtils.get(parentdir, "DIR2/SUB"), "FILE_1.tmp")), is(true));
+		assertThat(exists(PathUtils.get(PathUtils.get(parentdir, "DIR2/SUB"), "SUB_DIR_MOVE")), is(true));
+		assertThat(exists(PathUtils.get(PathUtils.get(parentdir, "DIR2/SUB"), "SUB_DIR_MOVE/FILE_2.tmp")), is(true));
+	}
 }
-
