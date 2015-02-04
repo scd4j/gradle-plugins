@@ -35,14 +35,14 @@ public class Interaction {
 	/**
 	 * Return <code>true</code> if you would like to print the command being executed in the logs
 	 */
-	boolean shouldPrintCommand() {
+	public boolean shouldPrintCommand() {
 		return true;
 	}
 	
 	/**
 	 * Return <code>true</code> if you would like to print output of the command being executed in the logs
 	 */	
-	boolean shouldPrintOutput() {
+	public boolean shouldPrintOutput() {
 		return true;
 	}
 	
@@ -71,7 +71,7 @@ public class Interaction {
 	 *            {@link OutputStream#write(byte[])}) and then press ENTER
 	 *            (write("\n".getBytes()))
 	 */	
-	void interact(OutputStream out) throws Exception {
+	public void interact(OutputStream out) throws Exception {
 		// default: do nothing
 	}
 	
@@ -85,7 +85,7 @@ public class Interaction {
 	 * @return <code>true</code> if it was a successful execution,
 	 *         <code>false</code> otherwise
 	 */
-	boolean isTheExecutionSuccessful(int processReturn) {
+	public boolean isTheExecutionSuccessful(int processReturn) {
 		return 0 == processReturn;
 	}
 }

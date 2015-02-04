@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.datamaio.scd4j.cmd.UbuntuCommand;
+import com.datamaio.scd4j.cmd.linux.debian.UbuntuCommand;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
 import com.datamaio.scd4j.hooks.module.ModuleHook;

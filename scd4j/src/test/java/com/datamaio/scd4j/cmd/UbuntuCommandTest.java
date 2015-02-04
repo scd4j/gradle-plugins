@@ -10,6 +10,7 @@ import com.datamaio.junit.IsUbuntu;
 import com.datamaio.junit.IsWindows;
 import com.datamaio.junit.RunIfRule;
 import com.datamaio.junit.RunIfRule.RunIf;
+import com.datamaio.scd4j.cmd.linux.debian.UbuntuCommand;
 
 /**
  * <p>This class is responsable for Unit Tests on Ubuntu of the classes {@link Command} and {@link UbuntuCommand}</p>

@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Interaction;
-import com.datamaio.scd4j.cmd.LinuxCommand;
+import com.datamaio.scd4j.cmd.linux.LinuxCommand;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.conf.Env;
 import com.datamaio.scd4j.exception.DependencyNotFoundException;
