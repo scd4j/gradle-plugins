@@ -410,7 +410,7 @@ public class FileUtilsTest {
 	}
 	
 	@Test
-	public void moveFileToNewFolder() throws IOException {
+	public void moveFileToNewFolderWithName() throws IOException {
 		final String fileOne = "File one!!";
 		Path parentdir = Files.createTempDirectory("DIR");
 		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
@@ -423,7 +423,24 @@ public class FileUtilsTest {
 		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "/newDir/"+file2Name));
 		
 		assertThat(exists(parentdirfile1), is(false));
-		assertThat(exists(PathUtils.get(parentdir2, "/newDir/"+file2Name)), is(true));
+		assertThat(exists(PathUtils.get(parentdir2, "/newDir/")), is(true));
+		assertThat(fileTwo.equals(fileOne), is(true));
+	}
+	
+	@Test
+	public void moveFileToNewFolder() throws IOException {
+		final String fileOne = "File one!!";
+		Path parentdir = Files.createTempDirectory("DIR");
+		Path parentdirfile1 = FileUtils.createFile(parentdir, "FILE_1.tmp");
+		Files.write(parentdirfile1, fileOne.getBytes());
+		
+		Path parentdir2 = Files.createTempDirectory("DIR2");
+		
+		FileUtils.move(parentdirfile1,  PathUtils.get(parentdir2, "/newDir"));
+		String fileTwo = FileUtils.read(PathUtils.get(parentdir2, "/newDir"));
+		
+		assertThat(exists(parentdirfile1), is(false));
+		assertThat(exists(PathUtils.get(parentdir2, "/newDir/")), is(true));
 		assertThat(fileTwo.equals(fileOne), is(true));
 	}
 	
