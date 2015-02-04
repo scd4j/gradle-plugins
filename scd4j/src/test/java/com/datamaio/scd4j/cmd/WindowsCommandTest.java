@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.datamaio.junit.IsWindows;
 import com.datamaio.junit.RunIfRule;
 import com.datamaio.junit.RunIfRule.RunIf;
+import com.datamaio.scd4j.cmd.windows.WindowsCommand;
 import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 import com.datamaio.scd4j.util.io.ZipUtilsTest;

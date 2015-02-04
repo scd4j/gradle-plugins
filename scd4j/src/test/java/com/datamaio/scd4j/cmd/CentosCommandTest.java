@@ -10,6 +10,7 @@ import com.datamaio.junit.IsCentos;
 import com.datamaio.junit.IsUbuntu;
 import com.datamaio.junit.RunIfRule;
 import com.datamaio.junit.RunIfRule.RunIf;
+import com.datamaio.scd4j.cmd.linux.redhat.CentosCommand;
 
 
 /**
