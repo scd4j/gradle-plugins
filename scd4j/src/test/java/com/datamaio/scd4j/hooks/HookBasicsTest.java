@@ -302,11 +302,9 @@ public class HookBasicsTest {
 	@Test
 	public void moveDirToNonExistingDir() throws Exception {
 	
+		Path root = Files.createTempDirectory("ROOT");
+		Path file = FileUtils.createFile(root, "FILE.tmp");
 		Path tempDir = Files.createTempDirectory("DIR");
-		
-		final String fileOne = "File one!!";
-		Path file = FileUtils.createFile(tempDir, "FILE.tmp");
-		Files.write(file, fileOne.getBytes());
 		
 		try {	
 			Path targetDir = PathUtils.get(tempDir, "TO_BE_CREATED");	
