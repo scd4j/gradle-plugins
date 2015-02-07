@@ -302,23 +302,26 @@ public class HookBasicsTest {
 	@Test
 	public void moveDirToNonExistingDir() throws Exception {
 	
-		Path root = Files.createTempDirectory("ROOT");
-		Path file = FileUtils.createFile(root, "FILE.tmp");
-		Path tempDir = Files.createTempDirectory("DIR");
+		Path originRootDir = Files.createTempDirectory("ROOT");
+		Path originFile = FileUtils.createFile(originRootDir, "FILE.tmp");
+		Path targetRootDir = Files.createTempDirectory("DIR");		
 		
 		try {	
-			Path targetDir = PathUtils.get(tempDir, "TO_BE_CREATED");	
-			Path targetFile = PathUtils.get(targetDir, file.getFileName());
-			assertThat(exists(file), is(true));
+			
+			Path targetDir = PathUtils.get(targetRootDir, "TO_BE_CREATED");	
+			Path targetFile = PathUtils.get(targetDir, originFile.getFileName());
+			assertThat(exists(originFile), is(true));
 			assertThat(exists(targetDir), is(false));
 			assertThat(exists(targetFile), is(false));
-			hook.mv(file.getParent().toString(), targetDir.toString());
+			
+			hook.mv(originFile.getParent().toString(), targetDir.toString());
+			
 			assertThat(exists(targetFile), is(true));	
 		} finally {		
-			FileUtils.delete(file);
-			assertThat(exists(file), is(false));			
-			FileUtils.delete(tempDir);
-			assertThat(exists(tempDir), is(false));
+			FileUtils.delete(originRootDir);
+			assertThat(exists(originRootDir), is(false));			
+			FileUtils.delete(targetRootDir);
+			assertThat(exists(targetRootDir), is(false));
 		}
 	}
 
