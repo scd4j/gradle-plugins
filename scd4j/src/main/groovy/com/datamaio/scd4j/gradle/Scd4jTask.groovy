@@ -55,6 +55,9 @@ class Scd4jTask extends DefaultTask {
 		def modules = Input.modules(project)
 						
         println "==================== Running scd4j =============================="
+		println "Visit https://github.com/scd4j/gradle-plugins/wiki for documentation"
+		println "Visit https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples for examples"
+		println ""
 		println "====== Version Info ==================="
 		println "SCD4J Version : " + getScd4jVersion(project)		
 		println "Pack Name     : ${project.archivesBaseName} "
@@ -66,7 +69,7 @@ class Scd4jTask extends DefaultTask {
 		println "IP DESENV  LIST  	: [ANY OTHER]"
 		println "====== Instalation Configuration ======"
         println "CONFIG FILE   : $config" 
-        println "MODULE DIRS   : $modules" 
+        println "MODULE DIRS   : $modules"
 		println "=================================================================="
 		
 		if( Input.validate(modules, config) ) {
