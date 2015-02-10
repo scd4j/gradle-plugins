@@ -43,6 +43,15 @@ class NewProjectTask extends DefaultTask {
 		if(!Input.validateConfig(config)) {
 			println "Creating Config $config"
 			config.createNewFile();
+			config.text = """######## Required Property ###########
+# Must contain one of the following: #
+#    - development                   #
+#    - testing                       #
+#    - staging                       #
+#    - production                    #
+###################################### 
+env=development
+"""
 		}
 		
 		for( module in modules ){

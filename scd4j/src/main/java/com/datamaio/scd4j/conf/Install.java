@@ -79,6 +79,7 @@ public class Install {
 		this.config = config;
 		this.env = env;
 		this.props = loadProps();
+		this.env.setConfiguredEnvironment((String)this.props.get("env"));
 		this.tempProps = new HashMap<>();
 	}
 	
