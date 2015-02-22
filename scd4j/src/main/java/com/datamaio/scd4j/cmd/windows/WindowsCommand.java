@@ -149,8 +149,7 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void fixTextContent(String file) {
-		// do nothing.
-		// TODO: implement it
+		replaceLineSeparator(file);
 	}
 
 	@Override

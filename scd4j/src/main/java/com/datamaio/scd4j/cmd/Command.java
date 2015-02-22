@@ -47,6 +47,7 @@ import com.datamaio.scd4j.cmd.linux.redhat.FedoraCommand;
 import com.datamaio.scd4j.cmd.linux.redhat.RedhatCommand;
 import com.datamaio.scd4j.cmd.windows.WindowsCommand;
 import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
  * 
@@ -434,7 +435,16 @@ public abstract class Command {
 	private void logCmdJava(String msg) {
 		LOGGER.info(String.format("\tExecuting cmd: %s (JAVA) ", msg));
 	}
-
+	
+	protected void replaceLineSeparator(String file) {
+		String fileContent = FileUtils.read(PathUtils.get(file));
+		fileContent = fileContent.replaceAll("\n", "\r\n");
+		try {
+			Files.write(PathUtils.get(file), fileContent.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	private static class ThreadedStreamHandler extends Thread {
 

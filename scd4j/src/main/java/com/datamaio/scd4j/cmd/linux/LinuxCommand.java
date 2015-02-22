@@ -36,6 +36,8 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.cmd.Interaction;
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
  * 
@@ -128,9 +130,13 @@ public abstract class LinuxCommand extends Command {
 	@Override
 	public void fixTextContent(String file) {
 		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
-			installRemotePack("dos2unix");
+			if(whoami().equals("root")) {
+				installRemotePack("dos2unix");
+			}else {
+				replaceLineSeparator(file);
+			}
 		}
-		
+					
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("dos2unix");
 		cmd.add(file);
