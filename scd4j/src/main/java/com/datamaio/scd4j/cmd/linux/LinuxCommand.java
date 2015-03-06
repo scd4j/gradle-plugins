@@ -142,7 +142,7 @@ public abstract class LinuxCommand extends Command {
 		cmd.add(file);
 		run(cmd, false);
 	}
-
+	
 	@Override
 	public void chown(final String user, final String path) {
 		chown(user, path, false);	
@@ -271,6 +271,16 @@ public abstract class LinuxCommand extends Command {
 	@Override
 	public void installRemotePack(String pack) {
 		installRemotePack(pack, null);
-	}	
+	}
 	
+	@Override
+	protected void replaceLineSeparator(String file) {
+		String fileContent = FileUtils.read(PathUtils.get(file));
+		fileContent = fileContent.replaceAll("\r\n", "\n");
+		try {
+			Files.write(PathUtils.get(file), fileContent.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

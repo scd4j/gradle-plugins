@@ -134,6 +134,8 @@ public abstract class Command {
 
 	public abstract void ln(final String link, final String targetFile);
 	
+	protected abstract void replaceLineSeparator(String file);
+	
 	public boolean exists(final String file){
 		return Files.exists(Paths.get(file));
 	}
@@ -434,16 +436,6 @@ public abstract class Command {
 	
 	private void logCmdJava(String msg) {
 		LOGGER.info(String.format("\tExecuting cmd: %s (JAVA) ", msg));
-	}
-	
-	protected void replaceLineSeparator(String file) {
-		String fileContent = FileUtils.read(PathUtils.get(file));
-		fileContent = fileContent.replaceAll("\n", "\r\n");
-		try {
-			Files.write(PathUtils.get(file), fileContent.getBytes());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	private static class ThreadedStreamHandler extends Thread {
