@@ -56,7 +56,7 @@ class Scd4jTask extends DefaultTask {
 						
         println "==================== Running scd4j =============================="
 		println "Visit https://github.com/scd4j/gradle-plugins/wiki for documentation"
-		println "Visit https://github.com/scd4j/gradle-plugins/tree/master/scd4j-examples for examples"
+		println "Visit https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples for examples"
 		println ""
 		println "====== Version Info ==================="
 		println "SCD4J Version : " + getScd4jVersion(project)		
