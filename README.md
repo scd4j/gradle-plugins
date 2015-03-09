@@ -1,3 +1,5 @@
+![SCD4J](https://avatars0.githubusercontent.com/u/9500996?v=3&s=460)
+
 SCD4J stands for Simple Continuous Delivery for Java and Groovy Developer. 
 -----------
 
