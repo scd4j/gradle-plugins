@@ -140,6 +140,7 @@ public abstract class LinuxCommand extends Command {
 		List<String> cmd = new ArrayList<String>();
 		cmd.add("dos2unix");
 		cmd.add(file);
+		
 		run(cmd, false);
 	}
 	
