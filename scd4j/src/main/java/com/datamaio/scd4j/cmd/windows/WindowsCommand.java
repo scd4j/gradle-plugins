@@ -23,10 +23,14 @@
  */
 package com.datamaio.scd4j.cmd.windows;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import com.datamaio.scd4j.cmd.Command;
+import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 import com.datamaio.scd4j.util.io.ZipUtils;
 
 /**
@@ -149,8 +153,18 @@ public class WindowsCommand extends Command {
 
 	@Override
 	public void fixTextContent(String file) {
-		// do nothing.
-		// TODO: implement it
+		replaceLineSeparator(file);
+	}
+	
+	@Override
+	protected void replaceLineSeparator(String file) {
+		String fileContent = FileUtils.read(PathUtils.get(file));
+		fileContent = fileContent.replaceAll("\n", "\r\n");
+		try {
+			Files.write(PathUtils.get(file), fileContent.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

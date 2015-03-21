@@ -51,6 +51,7 @@ import com.datamaio.scd4j.cmd.linux.redhat.FedoraCommand;
 import com.datamaio.scd4j.cmd.linux.redhat.RedhatCommand;
 import com.datamaio.scd4j.cmd.windows.WindowsCommand;
 import com.datamaio.scd4j.util.io.FileUtils;
+import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
  * 
@@ -136,6 +137,8 @@ public abstract class Command {
 	public abstract void chown(final String user, final String group, final String path, final boolean recursive);
 
 	public abstract void ln(final String link, final String targetFile);
+	
+	protected abstract void replaceLineSeparator(String file);
 	
 	public boolean exists(final String file){
 		return Files.exists(Paths.get(file));
@@ -471,7 +474,6 @@ public abstract class Command {
 	private void logCmdJava(String msg) {
 		LOGGER.info(String.format("\tExecuting cmd: %s (JAVA) ", msg));
 	}
-
 	
 	private static class ThreadedStreamHandler extends Thread {
 
