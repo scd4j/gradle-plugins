@@ -139,6 +139,20 @@ public class HookBasicsTest {
 	}
 	
 	@Test @RunIf(IsWindows.class)
+	public void fixTextWindowsNoReplace() throws Exception {
+		Path tmp = Files.createDirectory(Paths.get("tmp"));
+		try {
+			Path file = PathUtils.get(tmp, "file.txt");
+			Files.write(file, "first line\nsecond line\r\n".getBytes());
+		    hook.fixText(file.toString()); 
+			String result = FileUtils.read(file);
+			assertThat(result, is("first line\r\nsecond line\r\n"));
+		} finally {
+			FileUtils.delete(tmp);
+		}
+	}
+	
+	@Test @RunIf(IsWindows.class)
 	public void fixTextWindows() throws Exception {
 		Path tmp = Files.createDirectory(Paths.get("tmp"));
 		try {
