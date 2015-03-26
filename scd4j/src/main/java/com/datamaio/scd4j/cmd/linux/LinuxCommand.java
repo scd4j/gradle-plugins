@@ -130,22 +130,24 @@ public abstract class LinuxCommand extends Command {
 	@Override
 	public void fixTextContent(String file) {
 		boolean runDos2unix = true;
-		
-		if(!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
-			if(whoami().equals("root")) {
+
+		if (!Files.exists(Paths.get("/usr/bin/dos2unix"))) {
+			if (whoami().equals("root")) {
 				installRemotePack("dos2unix");
-			}else {
+			} else {
 				runDos2unix = false;
-				replaceLineSeparator(file);
+
 			}
 		}
-		
-		if(runDos2unix){
+
+		if (runDos2unix) {
 			List<String> cmd = new ArrayList<String>();
 			cmd.add("dos2unix");
 			cmd.add(file);
-			
+
 			run(cmd, false);
+		} else {
+			replaceLineSeparator(file);
 		}
 	}
 	

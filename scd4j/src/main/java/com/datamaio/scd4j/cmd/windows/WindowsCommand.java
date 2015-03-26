@@ -159,7 +159,7 @@ public class WindowsCommand extends Command {
 	@Override
 	protected void replaceLineSeparator(String file) {
 		String fileContent = FileUtils.read(PathUtils.get(file));
-		fileContent = fileContent.replaceAll("\n", "\r\n");
+		fileContent = fileContent.replaceAll("(\r\n|\n)", "\r\n");
 		try {
 			Files.write(PathUtils.get(file), fileContent.getBytes());
 		} catch (IOException e) {
