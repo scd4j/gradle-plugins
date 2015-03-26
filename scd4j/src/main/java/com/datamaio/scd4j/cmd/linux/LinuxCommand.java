@@ -281,7 +281,6 @@ public abstract class LinuxCommand extends Command {
 		installRemotePack(pack, null);
 	}
 	
-	@Override
 	protected void replaceLineSeparator(String file) {
 		String fileContent = FileUtils.read(PathUtils.get(file));
 		fileContent = fileContent.replaceAll("\r\n", "\n");

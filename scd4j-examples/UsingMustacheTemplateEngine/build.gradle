@@ -15,7 +15,7 @@ apply plugin: 'com.datamaio.scd4j'
 */
 
 plugins {
-  id "com.datamaio.scd4j" version "0.7.3"
+  id "com.datamaio.scd4j" version "0.7.4"
 }
 
 archivesBaseName='UsingMustacheTemplateEngine'

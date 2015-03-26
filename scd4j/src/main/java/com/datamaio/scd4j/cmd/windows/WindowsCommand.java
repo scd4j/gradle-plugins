@@ -157,17 +157,6 @@ public class WindowsCommand extends Command {
 	}
 	
 	@Override
-	protected void replaceLineSeparator(String file) {
-		String fileContent = FileUtils.read(PathUtils.get(file));
-		fileContent = fileContent.replaceAll("(\r\n|\n)", "\r\n");
-		try {
-			Files.write(PathUtils.get(file), fileContent.getBytes());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public void chown(final String user, final String file) {
 		// TODO - Look at: http://technet.microsoft.com/pt-br/library/cc753525%28v=ws.10%29.aspx
 	}
@@ -234,5 +223,15 @@ public class WindowsCommand extends Command {
 	public void unzip(String from, String toDir) {
 		LOGGER.info("Unziping " + from + " to " + toDir + " ... ");
 		ZipUtils.unzip(Paths.get(from), Paths.get(toDir));
-	}		
+	}
+	
+	protected void replaceLineSeparator(String file) {
+		String fileContent = FileUtils.read(PathUtils.get(file));
+		fileContent = fileContent.replaceAll("(\r\n|\n)", "\r\n");
+		try {
+			Files.write(PathUtils.get(file), fileContent.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
