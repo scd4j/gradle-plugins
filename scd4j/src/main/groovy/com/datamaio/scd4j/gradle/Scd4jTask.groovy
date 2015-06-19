@@ -34,6 +34,7 @@ import com.datamaio.scd4j.conf.Env
 import com.datamaio.scd4j.conf.Install
 import com.datamaio.scd4j.conf.Settings
 import com.datamaio.scd4j.conf.Template
+import com.datamaio.scd4j.ui.AlertMessageDialog;
 
 /**
  * Task used to start SCD4J
@@ -84,8 +85,12 @@ class Scd4jTask extends DefaultTask {
 				}
 			} else if(console == null) {
 					//If console returns null it will open a dialog for requesting the confirmation
-					def msg = "Review the above config. Click YES to procceed and NO to abort: "
-					def option =JOptionPane.showConfirmDialog (null, msg ,"Warning", JOptionPane.YES_NO_OPTION);
+					AlertMessageDialog alertMessageDialog = 
+								new AlertMessageDialog
+										(getScd4jVersion(project), project.archivesBaseName, 
+											project.version, env.production, env.staging, env.testing, config, modules);
+			
+					def option = alertMessageDialog.showConfirmDialog();
 					if(option == JOptionPane.YES_OPTION){
 						run(settings, env, modules, config)
 					} else {
