@@ -29,6 +29,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import com.datamaio.scd4j.EnvConfigurator
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration
 import com.datamaio.scd4j.conf.Env
 import com.datamaio.scd4j.conf.Install
@@ -72,9 +73,11 @@ class Scd4jTask extends DefaultTask {
 		
 		if( Input.validate(modules, config) ) {
 			def console = System.console()
+			def isWindows = Command.get().windows;
+			
 			if (assumeYes(project)) {
 				run(settings, env, modules, config)
-			} else if(console) {
+			} else if(console && !isWindows) {
 				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
 				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
 					run(settings, env, modules, config)
@@ -83,7 +86,7 @@ class Scd4jTask extends DefaultTask {
 					println "=== Instalation aborted! ==="
 					println "============================"
 				}
-			} else if(console == null) {
+			} else {
 					//If console returns null it will open a dialog for requesting the confirmation
 					AlertMessageDialog alertMessageDialog = 
 								new AlertMessageDialog
