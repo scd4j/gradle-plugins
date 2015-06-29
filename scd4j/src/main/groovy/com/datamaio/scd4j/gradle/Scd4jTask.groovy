@@ -29,11 +29,13 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import com.datamaio.scd4j.EnvConfigurator
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration
 import com.datamaio.scd4j.conf.Env
 import com.datamaio.scd4j.conf.Install
 import com.datamaio.scd4j.conf.Settings
 import com.datamaio.scd4j.conf.Template
+import com.datamaio.scd4j.ui.AlertMessageDialog;
 
 /**
  * Task used to start SCD4J
@@ -74,6 +76,7 @@ class Scd4jTask extends DefaultTask {
 		
 		if( Input.validate(modules, config) ) {
 			def console = System.console()
+			
 			if (assumeYes(project)) {
 				run(settings, env, modules, config)
 			} else if(console) {
@@ -85,10 +88,14 @@ class Scd4jTask extends DefaultTask {
 					println "=== Instalation aborted! ==="
 					println "============================"
 				}
-			} else if(console == null) {
+			} else {
 					//If console returns null it will open a dialog for requesting the confirmation
-					def msg = "Review the above config. Click YES to procceed and NO to abort: "
-					def option =JOptionPane.showConfirmDialog (null, msg ,"Warning", JOptionPane.YES_NO_OPTION);
+					AlertMessageDialog alertMessageDialog = 
+								new AlertMessageDialog
+										(getScd4jVersion(project), project.archivesBaseName, 
+											project.version, env, config, modules);
+			
+					def option = alertMessageDialog.showConfirmDialog();
 					if(option == JOptionPane.YES_OPTION){
 						run(settings, env, modules, config)
 					} else {
