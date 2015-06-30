@@ -9,7 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
+import com.datamaio.scd4j.conf.Env;
+
+/** 
  * Class that helps the creation of {@link JOptionPane}
  * 
  * @author Mateus M. da Costa
@@ -19,15 +21,14 @@ public class AlertMessageDialog {
 	private JPanel panel;
 
 	public AlertMessageDialog(String version, String packName,
-			String packVersion, String production, String staging,
-			String testing, String config, String modules) {
+			String packVersion, Env env,  String config, String modules) {
 		panel = new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Running scd4j"));
 		panel.setLayout(new GridLayout(4, 1));
 
 		buildVersionInfoPanel(version, packName, packVersion);
 
-		buildEnvironmentPanel(production, staging, testing);
+		buildEnvironmentPanel(env.getProductionIps(), env.getStagingIps(), env.getTestingIps());
 
 		instalationPanel(config, modules);
 		JLabel question = new JLabel("Review the above config. Click YES to procceed and NO to abort: ", SwingConstants.LEFT);

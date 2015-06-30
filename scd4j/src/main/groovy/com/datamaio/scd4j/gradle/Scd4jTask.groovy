@@ -73,11 +73,10 @@ class Scd4jTask extends DefaultTask {
 		
 		if( Input.validate(modules, config) ) {
 			def console = System.console()
-			def isWindows = Command.get().windows;
 			
 			if (assumeYes(project)) {
 				run(settings, env, modules, config)
-			} else if(console && !isWindows) {
+			} else if(console) {
 				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
 				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
 					run(settings, env, modules, config)
@@ -91,7 +90,7 @@ class Scd4jTask extends DefaultTask {
 					AlertMessageDialog alertMessageDialog = 
 								new AlertMessageDialog
 										(getScd4jVersion(project), project.archivesBaseName, 
-											project.version, env.production, env.staging, env.testing, config, modules);
+											project.version, env, config, modules);
 			
 					def option = alertMessageDialog.showConfirmDialog();
 					if(option == JOptionPane.YES_OPTION){

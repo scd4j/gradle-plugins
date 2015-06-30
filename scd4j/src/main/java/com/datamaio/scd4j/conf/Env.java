@@ -66,6 +66,19 @@ public class Env {
         return testingIps.contains(address);
 	}
 	
+	
+	public String getProductionIps() {
+		return productionIps.toString();
+	}
+	
+	public String getStagingIps() {
+		return stagingIps.toString();
+	}
+	
+	public String getTestingIps() {
+		return testingIps.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return "{production:" + productionIps 
