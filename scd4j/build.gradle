@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	compile gradleApi(),localGroovy()
 	compile 'org.jasypt:jasypt:1.9.2', 
-			'org.codehaus.groovy:groovy-all:2.3.6',
+			'org.codehaus.groovy:groovy-all:2.3.10',
 			'commons-configuration:commons-configuration:+',
 			// other template engines
 			'com.github.spullara.mustache.java:compiler:+',
@@ -54,9 +54,9 @@ uploadArchives {
 	}
 }
 
-task wrapper (type: Wrapper) {
+task gwrapper (type: Wrapper) {
 	description = "Generate gradle wrapper"
-    gradleVersion = '2.2'
+    gradleVersion = '2.5-rc-2'
 }
 
 //--------- publish to bintray config -----------
