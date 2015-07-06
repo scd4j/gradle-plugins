@@ -1,3 +1,5 @@
 /.gradle/
 /backup/
 /log/
+/.settings/
+/.project
