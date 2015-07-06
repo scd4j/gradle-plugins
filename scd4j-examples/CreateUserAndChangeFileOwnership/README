@@ -2,7 +2,7 @@ Follow the below steps to run this example:
 
 Linux
 	* First you must be logged in a Linux machine with the root user
-	* Second, in the command line go to the 'RegistryServiceAtBoot' directory and type './gradlew'
+	* Second, in the command line go to the 'CreateUserAndChangeFileOwnership' directory and type './gradlew'
 
 Windows
 	* This example will do nothing on Windows because, currently, we have some methods that only have effect on Linux

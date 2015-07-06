@@ -83,7 +83,7 @@ class Scd4jPlugin implements Plugin<Project> {
 		// -- configure the wrapper to execute automatically and create directories
 		project.task('wrapper', type: Wrapper) {
 			description = "Generate gradle wrapper"
-			gradleVersion = '2.2'
+			gradleVersion = '2.5-rc-2'
 		}		
 		project.tasks["wrapper"].execute()
 		newDir (project, 'modules')

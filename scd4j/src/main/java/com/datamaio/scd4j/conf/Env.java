@@ -147,6 +147,19 @@ public class Env {
 	    }
 	}
 	
+	
+	public List<String> getProductionIps() {
+		return productionIps;
+	}
+	
+	public List<String> getStagingIps() {
+		return stagingIps;
+	}
+	
+	public List<String> getTestingIps() {
+		return testingIps;
+	}
+	
 	@Override
 	public String toString() {
 		return "{production:" + productionIps 

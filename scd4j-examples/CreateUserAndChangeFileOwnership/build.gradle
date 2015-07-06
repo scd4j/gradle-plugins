@@ -2,6 +2,7 @@
  * -- To run against your scd4j local dirctory --
  * -- You must first run scd4j uploadArchives to use this code --
  * -- You must comment plugins {..} structure to use this code --
+*/
 buildscript {
 	repositories {
 		mavenCentral()
@@ -12,11 +13,12 @@ buildscript {
 	}
 }
 apply plugin: 'com.datamaio.scd4j'
-*/
 
+/*
 plugins {
-  id "com.datamaio.scd4j" version "0.7.4"
+  id "com.datamaio.scd4j" version "0.7.5"
 }
+*/
 
 archivesBaseName='CreateUserAndChangeFileOwnership'
 version = 0.1

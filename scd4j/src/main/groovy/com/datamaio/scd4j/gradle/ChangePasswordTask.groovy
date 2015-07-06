@@ -27,6 +27,8 @@ import org.apache.commons.configuration.PropertiesConfiguration
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import com.datamaio.scd4j.ui.ChangePasswordDialog;
+import com.datamaio.scd4j.ui.ChangePasswordDialog.ChangePasswordDTO;
 import com.datamaio.scd4j.util.Encryptor
 
 /**
@@ -43,19 +45,30 @@ class ChangePasswordTask extends DefaultTask {
 		if( Input.validateConfig(config) ) {
 			if( config.text.contains(Encryptor.PREFIX) ) {
 				Console console = System.console()
+				def currentPass = null;
+				def newPass = null;
+				def cNewPass = null;
+				
 				if (console) {				
-					def currentPass = new String(console.readPassword('\nCurrent Password: '))
-					def newPass = new String(console.readPassword('New Password: '))
-					def cNewPass = new String(console.readPassword('Confirm New Password: '))
-					if (newPass==cNewPass) {
-						changePassword(currentPass, newPass, config);
-					} else {
-						println "==============================="
-						println "=== Password does not match ==="
-						println "==============================="
-					}
+					currentPass = new String(console.readPassword('\nCurrent Password: '))
+					newPass = new String(console.readPassword('New Password: '))
+					cNewPass = new String(console.readPassword('Confirm New Password: '))
+				}else if(console == null){
+					ChangePasswordDialog dialog = new ChangePasswordDialog();
+					ChangePasswordDTO dto = dialog.showDialog();
+					
+					currentPass = dto.getCurrentPassword();
+					newPass = dto.getNewPassword();
+					cNewPass = dto.getConfirmNewPassword();
+				
+				} 
+				
+				if (newPass==cNewPass) {
+					changePassword(currentPass, newPass, config);
 				} else {
-					println "ERROR: Cannot get console."
+					println "==============================="
+					println "=== Password does not match ==="
+					println "==============================="
 				}
 			} else {
 				println "Provided config file does not have any encrypted property"
