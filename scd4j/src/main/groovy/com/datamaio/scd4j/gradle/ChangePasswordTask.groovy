@@ -60,7 +60,6 @@ class ChangePasswordTask extends DefaultTask {
 					currentPass = dto.getCurrentPassword();
 					newPass = dto.getNewPassword();
 					cNewPass = dto.getConfirmNewPassword();
-				
 				} 
 				
 				if (newPass==cNewPass) {

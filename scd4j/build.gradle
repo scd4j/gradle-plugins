@@ -54,9 +54,8 @@ uploadArchives {
 	}
 }
 
-task gwrapper (type: Wrapper) {
-	description = "Generate gradle wrapper"
-    gradleVersion = '2.5-rc-2'
+wrapper {
+  	gradleVersion = '2.5'
 }
 
 //--------- publish to bintray config -----------

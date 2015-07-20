@@ -148,16 +148,16 @@ public class Env {
 	}
 	
 	
-	public List<String> getProductionIps() {
-		return productionIps;
+	public String getProductionIps() {
+		return productionIps.toString();
 	}
 	
-	public List<String> getStagingIps() {
-		return stagingIps;
+	public String getStagingIps() {
+		return stagingIps.toString();
 	}
 	
-	public List<String> getTestingIps() {
-		return testingIps;
+	public String getTestingIps() {
+		return testingIps.toString();
 	}
 	
 	@Override
