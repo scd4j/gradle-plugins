@@ -87,10 +87,11 @@ class Scd4jTask extends DefaultTask {
 				}
 			} else {
 					//If console returns null it will open a dialog for requesting the confirmation
+					def envObj = new Env(env.production, env.staging, env.testing)
 					AlertMessageDialog alertMessageDialog = 
 								new AlertMessageDialog
 										(getScd4jVersion(project), project.archivesBaseName, 
-											project.version, env, config, modules);
+											project.version, envObj, config, modules);
 			
 					def option = alertMessageDialog.showConfirmDialog();
 					if(option == JOptionPane.YES_OPTION){
