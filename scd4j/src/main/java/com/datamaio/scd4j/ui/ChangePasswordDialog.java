@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 
+import com.datamaio.scd4j.ui.dto.ChangePasswordDTO;
+
 /**
  * Creates a dialog for changing the password
  * 
@@ -55,35 +57,5 @@ public class ChangePasswordDialog {
 		dto.setConfirmNewPassword(new String(confirmNewPassword.getPassword()));
 		
 		return dto;
-	}
-	
-	class ChangePasswordDTO {
-		private String currentPassword;
-		private String newPassword;
-		private String confirmNewPassword;
-
-		public String getCurrentPassword() {
-			return currentPassword;
-		}
-
-		public void setCurrentPassword(String currentPassword) {
-			this.currentPassword = currentPassword;
-		}
-
-		public String getNewPassword() {
-			return newPassword;
-		}
-
-		public void setNewPassword(String newPassword) {
-			this.newPassword = newPassword;
-		}
-
-		public String getConfirmNewPassword() {
-			return confirmNewPassword;
-		}
-
-		public void setConfirmNewPassword(String confirmNewPassword) {
-			this.confirmNewPassword = confirmNewPassword;
-		}
 	}
 }

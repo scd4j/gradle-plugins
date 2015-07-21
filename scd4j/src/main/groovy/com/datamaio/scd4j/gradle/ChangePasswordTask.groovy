@@ -28,7 +28,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 import com.datamaio.scd4j.ui.ChangePasswordDialog;
-import com.datamaio.scd4j.ui.ChangePasswordDialog.ChangePasswordDTO;
+import com.datamaio.scd4j.ui.dto.ChangePasswordDTO;
 import com.datamaio.scd4j.util.Encryptor
 
 /**
