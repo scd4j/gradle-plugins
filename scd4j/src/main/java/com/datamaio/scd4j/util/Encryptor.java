@@ -28,6 +28,8 @@ import java.io.Console;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.BasicTextEncryptor;
 
+import com.datamaio.scd4j.ui.ReadPasswordDialog;
+
 /**
  * 
  * @author Fernando Rubbo
@@ -76,6 +78,10 @@ public class Encryptor {
 				System.setProperty(ENCRYPTOR_PASSWORD_PROPERTY, pass);
 				return pass;
 			}
+		}else {
+			String pass = new ReadPasswordDialog().showDialog();
+			System.setProperty(ENCRYPTOR_PASSWORD_PROPERTY, pass);
+			return pass;
 		}
 			
 		throw new RuntimeException("It was not possible to read password!");

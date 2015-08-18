@@ -23,6 +23,7 @@
  */
 package com.datamaio.scd4j.conf;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.tmpl.TemplateEngine;
 import com.datamaio.scd4j.tmpl.TemplateEngineConfig;
+import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
