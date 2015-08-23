@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.File;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
