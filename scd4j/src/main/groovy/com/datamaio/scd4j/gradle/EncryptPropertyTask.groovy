@@ -26,6 +26,8 @@ package com.datamaio.scd4j.gradle
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import com.datamaio.scd4j.ui.EncryptPropertyDialog;
+import com.datamaio.scd4j.ui.dto.EncryptPropertyDTO;
 import com.datamaio.scd4j.util.Encryptor
 
 /**
@@ -38,23 +40,35 @@ class EncryptPropertyTask extends DefaultTask {
     def action() {		
 		println "\nHelper tool to encrypt a property value"
 		
+		def name =  null
+		def value = null
+		def newPass = null
+		def cNewPass = null
+		
 		Console console = System.console()
 		if (console) {
-			def name = console.readLine('\nProperty Name: ')
-			def value = new String(console.readPassword('Propert Value: '))
-			def newPass = new String(console.readPassword('New Password: '))
-			def cNewPass = new String(console.readPassword('Confirm New Password: '))
-			if (newPass==cNewPass) {			
-				def encrypted = Encryptor.get(newPass).encryptProp(value)
-				println "\nPut the property bellow in your configuration file"
-				println "$name=$encrypted"
-			} else {
-				println "==============================="
-				println "=== Password does not match ==="
-				println "==============================="
-			}
+			 name = console.readLine('\nProperty Name: ')
+			 value = new String(console.readPassword('Propert Value: '))
+			 newPass = new String(console.readPassword('New Password: '))
+			 cNewPass = new String(console.readPassword('Confirm New Password: '))
 		} else {
-			println "ERROR: Cannot get console."
-		}		
+			EncryptPropertyDialog dialog = new EncryptPropertyDialog();
+			EncryptPropertyDTO dto = dialog.showDialog();
+			
+			name = dto.getProperty();
+			value = dto.getPropertyValue();
+			newPass = dto.getNewPassword();
+			cNewPass = dto.getConfirmNewPassword();
+		}
+		
+		if (newPass==cNewPass) {
+			def encrypted = Encryptor.get(newPass).encryptProp(value)
+			println "\nPut the property bellow in your configuration file"
+			println "$name=$encrypted"
+		} else {
+			println "==============================="
+			println "=== Password does not match ==="
+			println "==============================="
+		}
     }
 }
