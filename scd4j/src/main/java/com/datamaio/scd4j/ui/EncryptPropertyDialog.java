@@ -10,7 +10,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import com.datamaio.scd4j.ui.dto.ChangePasswordDTO;
 import com.datamaio.scd4j.ui.dto.EncryptPropertyDTO;
 /**
  * 

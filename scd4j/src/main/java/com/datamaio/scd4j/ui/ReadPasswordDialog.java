@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 
-import com.datamaio.scd4j.ui.dto.ChangePasswordDTO;
-
 public class ReadPasswordDialog {
 	
 	private JPasswordField currentPassword;
