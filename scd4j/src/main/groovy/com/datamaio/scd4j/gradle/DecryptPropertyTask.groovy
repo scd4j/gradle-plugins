@@ -26,6 +26,8 @@ package com.datamaio.scd4j.gradle
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+import com.datamaio.scd4j.ui.DecryptPropertyDialog;
+import com.datamaio.scd4j.ui.dto.EncryptPropertyDTO;
 import com.datamaio.scd4j.util.Encryptor
 
 /**
@@ -38,19 +40,27 @@ class DecryptPropertyTask extends DefaultTask {
     def action() {		
 		println "\nHelper tool to decrypt an existing property value"
 		
+		def encrypted =  null
+		def pass = null
+		
 		Console console = System.console()
 		if (console) {
-			def encrypted = console.readLine('\nProvide the encrypted Property Value: ')
-			def pass = new String(console.readPassword('Password: '))
+			 encrypted = console.readLine('\nProvide the encrypted Property Value: ')
+			 pass = new String(console.readPassword('Password: '))
 			
-			try {
-				def value = Encryptor.get(pass).decrypt(encrypted);
-				println("\nDecrypted value is : $value");
-			} catch (Exception e) {
-				println("\nIt was not possible to decrypt the property value. Check the password!");
-			}			
+			
 		} else {
-			println "ERROR: Cannot get console."
-		}		
+			DecryptPropertyDialog dialog = new DecryptPropertyDialog();
+			EncryptPropertyDTO dto = dialog.showDialog();
+			encrypted = dto.getProperty();
+			pass = dto.getConfirmNewPassword();
+		}
+		
+		try {
+			def value = Encryptor.get(pass).decrypt(encrypted);
+			println("\nDecrypted value is : $value");
+		} catch (Exception e) {
+			println("\nIt was not possible to decrypt the property value. Check the password!");
+		}
     }
 }
