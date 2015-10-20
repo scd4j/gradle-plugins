@@ -31,6 +31,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.datamaio.scd4j.exception.MissingPropertyException;
@@ -60,7 +61,7 @@ public class MustacheTemplateEngine extends TemplateEngine implements Template, 
 	      public ObjectHandler getObjectHandler() { 
 	        return new ReflectionObjectHandler() { 
 	          @Override 
-	          public Wrapper find(String name, Object[] scopes) { 
+	          public Wrapper find(String name,  List<Object> scopes) { 
 	            Wrapper wrapper = super.find(name, scopes); 
 	            if (wrapper instanceof MissingWrapper) { 
 	              throw new MissingPropertyException("Failed to find " + name); 

@@ -11,7 +11,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.7.5'
+version = '0.7.6'
 
 jar {
     manifest {
@@ -55,7 +55,7 @@ uploadArchives {
 }
 
 wrapper {
-  	gradleVersion = '2.6'
+  	gradleVersion = '2.7'
 }
 
 //--------- publish to bintray config -----------
