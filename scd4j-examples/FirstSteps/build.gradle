@@ -15,7 +15,7 @@ apply plugin: 'com.datamaio.scd4j'
 */
 
 plugins {
-  id "com.datamaio.scd4j" version "0.7.6"
+  id "com.datamaio.scd4j" version "0.7.7"
 }
 
 archivesBaseName='FirstSteps'
