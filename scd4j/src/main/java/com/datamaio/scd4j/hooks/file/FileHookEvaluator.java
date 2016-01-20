@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration;
 import com.datamaio.scd4j.hooks.HookEvaluator;
 import com.datamaio.scd4j.util.PathHelper;
@@ -42,11 +43,13 @@ import com.datamaio.scd4j.util.PathHelper;
  * @author Fernando Rubbo
  */
 public class FileHookEvaluator extends HookEvaluator {
-    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private Path src;
-    private PathHelper pathHelper;
-    
-	public FileHookEvaluator(final Path src, final Path target, final Configuration conf) {
+	private static final Logger LOGGER = Logger
+			.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private Path src;
+	private PathHelper pathHelper;
+
+	public FileHookEvaluator(final Path src, final Path target,
+			final Configuration conf) {
 		super(Paths.get(src + HOOK_SUFFIX), buildBinding(src, target), conf);
 		this.src = src;
 		this.pathHelper = new PathHelper(conf);
@@ -55,24 +58,25 @@ public class FileHookEvaluator extends HookEvaluator {
 	@Override
 	protected String getScriptBaseClass() {
 		return FileHook.class.getName();
-	}	
-	
-	public boolean pre(){
-		LOGGER.info("INSTALLING: " + relativize() );
-		LOGGER.info(" :PRE");		
+	}
+
+	public boolean pre() {
+		LOGGER.info("INSTALLING: " + relativize());
+		LOGGER.info(" :PRE");
 		boolean pre = super.pre();
-		if(!pre) {
+		if (!pre) {
 			LOGGER.info(" :POST (Skipped)");
 		}
 		return pre;
 	}
-	
-	public void post(){
+
+	public void post() {
 		LOGGER.info(" :POST");
-		super.post();		
+		super.post();
 	}
-	
-	private static Map<String, Object> buildBinding(final Path src, final Path target) {
+
+	private static Map<String, Object> buildBinding(final Path src,
+			final Path target) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("src", src.toString());
 		map.put("target", target.toString());
@@ -81,8 +85,11 @@ public class FileHookEvaluator extends HookEvaluator {
 
 	private String relativize() {
 		String relative = src.toString();
-		Path p = Paths.get(relative.substring(relative.indexOf(MODULES_FOLDER + File.separator)));
+		Path p = Paths.get(relative.substring(relative.indexOf(MODULES_FOLDER
+				+ File.separator)));
+
 		String path = p.subpath(2, p.getNameCount()).toString();
+
 		return pathHelper.replaceVars(path);
 	}
 }
