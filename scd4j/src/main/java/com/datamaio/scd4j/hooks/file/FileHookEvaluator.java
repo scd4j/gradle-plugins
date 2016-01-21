@@ -82,7 +82,7 @@ public class FileHookEvaluator extends HookEvaluator {
 	private String relativize() {
 		String relative = src.toString();
 		Path p = Paths.get(relative.substring(relative.indexOf(MODULES_FOLDER + File.separator)));
-		String path = p.subpath(2, p.getNameCount()).toString();
+		String path = p.subpath(p.getNameCount() == 2 ? 1 : 2, p.getNameCount()).toString();
 		return pathHelper.replaceVars(path);
 	}
 }
