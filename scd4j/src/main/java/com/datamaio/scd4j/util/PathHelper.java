@@ -23,41 +23,41 @@
  */
 package com.datamaio.scd4j.util;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration;
 
 /**
- * 
+ *
  * @author Fernando Rubbo
  */
 public final class PathHelper {
-	private Map<String, Object> properties;
-	private Path module;
+	private final Map<String, Object> properties;
+	private final Path module;
 
-	public PathHelper(Configuration conf){
+	public PathHelper(final Configuration conf){
 		this(conf.getProps(), conf.getModule());
 	}
-	
-	PathHelper(Map<String, Object> properties, Path module){
+
+	PathHelper(final Map<String, Object> properties, final Path module){
 		this.properties = properties;
 		this.module = module;
 	}
-	
-	public final Path getTargetWithoutSuffix(Path path, String sufix) {
+
+	public final Path getTargetWithoutSuffix(Path path, final String sufix) {
 		// remove o .delete do final
 		String fileName = path.getFileName().toString();
 		fileName = fileName.replaceAll(sufix, "");
 		path = path.resolveSibling(fileName);
 		return getTarget(path);
 	}
-	
-	public final Path getTarget(Path path) {
+
+	public final Path getTarget(final Path path) {
 		// gets the destination path, based on module
 		final Path relativized = this.module.relativize(path);
 		final Path resolved = Paths.get("/").resolve(relativized);
@@ -66,21 +66,26 @@ public final class PathHelper {
 		return replaceVars(resolved);
     }
 
-	public final Path replaceVars(Path path) {
+	public final Path replaceVars(final Path path) {
     	String resolvedPath = replaceVars(path.toString());
-    	return Paths.get(resolvedPath);		
+    	return Paths.get(resolvedPath);
 	}
-	
+
 	public String replaceVars(String srcPath) {
 		final Pattern p = Pattern.compile("@([^@])*@");
     	final Matcher m = p.matcher(srcPath);
-    	while(m.find()) {
+    	while (m.find()) {
     		final String key = m.group();
 			final Object value = properties.get(key.replaceAll("@", ""));
-			if(value!=null)
-				srcPath = srcPath.replace(key, value.toString());
-			else 
-				throw new IllegalStateException("Variable " + key.replaceAll("@", "") + " was not declared.");
+			if (value != null) {
+			    Path valuePath = Paths.get(value.toString());
+			    while (valuePath.getRoot() != null) {
+			        valuePath = valuePath.getRoot().relativize(valuePath);
+			    }
+                srcPath = srcPath.replace(key, valuePath.toString().replace(File.separatorChar, '/'));
+            } else {
+                throw new IllegalStateException("Variable " + key.replaceAll("@", "") + " was not declared.");
+            }
     	}
 		return srcPath;
 	}
