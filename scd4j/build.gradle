@@ -11,7 +11,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.7.7'
+version = '0.7.9'
 
 jar {
     manifest {
@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	compile gradleApi(),localGroovy()
 	compile 'org.jasypt:jasypt:1.9.2', 
-			'org.codehaus.groovy:groovy-all:2.3.10',
+			'org.codehaus.groovy:groovy-all:2.4.4',
 			'commons-configuration:commons-configuration:+',
 			// other template engines
 			'com.github.spullara.mustache.java:compiler:+',
@@ -43,7 +43,7 @@ dependencies {
 			'org.apache.velocity:velocity:+'
 			
     testCompile 'junit:junit:4.+',
-				'org.mockito:mockito-core:+'
+				'org.mockito:mockito-core:2.0.36-beta'
 }
 
 uploadArchives {
@@ -55,7 +55,7 @@ uploadArchives {
 }
 
 wrapper {
-  	gradleVersion = '2.7'
+  	gradleVersion = '2.10'
 }
 
 //--------- publish to bintray config -----------
