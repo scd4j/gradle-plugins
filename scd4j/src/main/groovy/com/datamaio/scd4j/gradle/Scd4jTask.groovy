@@ -27,6 +27,8 @@ import javax.swing.JOptionPane
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.util.GradleVersion
+import org.gradle.internal.jvm.Jvm
 
 import com.datamaio.scd4j.EnvConfigurator
 import com.datamaio.scd4j.cmd.Command;
@@ -61,7 +63,9 @@ class Scd4jTask extends DefaultTask {
 		println "Visit https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples for examples"
 		println ""
 		println "====== Version Info ==================="
-		println "SCD4J Version : " + getScd4jVersion(project)		
+		println "SCD4J Version : " + getScd4jVersion(project)
+		println "Gradle Version: " + GradleVersion.current().getVersion() 
+		println "Jvm Version   : " + Jvm.current()
 		println "Pack Name     : ${project.archivesBaseName} "
 		println "Pack Version  : ${project.version} "
 		println "====== Environment Configuration ======"
@@ -93,8 +97,14 @@ class Scd4jTask extends DefaultTask {
 					def envObj = new Env(env.production, env.staging, env.testing)
 					AlertMessageDialog alertMessageDialog = 
 								new AlertMessageDialog
-										(getScd4jVersion(project), project.archivesBaseName, 
-											project.version, envObj, config, modules);
+										(getScd4jVersion(project), 
+											GradleVersion.current().getVersion(),
+											Jvm.current().toString(), 
+											project.archivesBaseName, 
+											project.version,
+											envObj, 
+											config, 
+											modules);
 			
 					def option = alertMessageDialog.showConfirmDialog();
 					if(option == JOptionPane.YES_OPTION){

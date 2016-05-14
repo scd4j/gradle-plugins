@@ -22,13 +22,13 @@ public class AlertMessageDialog {
 
 	private JPanel panel;
 
-	public AlertMessageDialog(String version, String packName,
+	public AlertMessageDialog(String version, String gradleVersion, String javaVersion, String packName,
 			BigDecimal packVersion, Env env, File config, File[] modules) {
 		panel = new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder("Running scd4j"));
 		panel.setLayout(new GridLayout(4, 1));
 
-		buildVersionInfoPanel(version, packName, packVersion.toEngineeringString());
+		buildVersionInfoPanel(version, gradleVersion, javaVersion, packName, packVersion.toEngineeringString());
 
 		buildEnvironmentPanel(env.getProductionIps(), env.getStagingIps(), env.getTestingIps());
 
@@ -88,17 +88,23 @@ public class AlertMessageDialog {
 		environment.add(new JLabel("[ANY OTHER]", SwingConstants.LEFT));
 	}
 
-	private void buildVersionInfoPanel(String version, String packName,
+	private void buildVersionInfoPanel(String version, String gradleVersion, String javaVersion, String packName,
 			String packVersion) {
 		JPanel versionInfoPanel = new JPanel();
 		versionInfoPanel.setBorder(BorderFactory
 				.createTitledBorder("Version Info"));
 		panel.add(versionInfoPanel);
-		versionInfoPanel.setLayout(new GridLayout(3, 2));
+		versionInfoPanel.setLayout(new GridLayout(5, 2));
 
 		versionInfoPanel
 				.add(new JLabel("SCD4J Version :", SwingConstants.LEFT));
 		versionInfoPanel.add(new JLabel(version, SwingConstants.LEFT));
+		versionInfoPanel
+		.add(new JLabel("Gradle Version:", SwingConstants.LEFT));
+		versionInfoPanel.add(new JLabel(gradleVersion, SwingConstants.LEFT));
+		versionInfoPanel
+		.add(new JLabel("Jvm Version   :", SwingConstants.LEFT));
+		versionInfoPanel.add(new JLabel(javaVersion, SwingConstants.LEFT));		
 		versionInfoPanel
 				.add(new JLabel("Pack Name     :", SwingConstants.LEFT));
 		versionInfoPanel.add(new JLabel(packName, SwingConstants.LEFT));
