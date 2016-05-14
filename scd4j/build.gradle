@@ -77,11 +77,11 @@ bintray {
 		labels = ['Continuous Delivery', 'Java', 'Groovy', 'Gradle', 'DevOps', 'Automation', 'Linux', 'Windows', 'Debian', 'Red Hat', 'Ubuntu', 'CentOs']
 		publicDownloadNumbers = true
 		
-		githubRepo = "https://github.com/scd4j/gradle-plugins"
+		githubRepo = "scd4j/gradle-plugins"
 		githubReleaseNotesFile = "release_note.md"
 		
 		version {
-			desc = 'SCD4J'
+			desc = 'Simple Continuous Delivery for Java and Groovy Developers - version: $project.version'
 			released  = new java.util.Date()
 			attributes = ['gradle-plugin': 'com.datamaio.scd4j:com.datamaio:scd4j']
 		}
