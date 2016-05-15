@@ -44,7 +44,7 @@ To start a new project, first we must create a file called `build.gradle`, as sh
 
 ```
 plugins {
-    id "com.datamaio.scd4j" version "0.7.12"
+    id "com.datamaio.scd4j" version "0.7.16"
 }
 
 scd4j {
