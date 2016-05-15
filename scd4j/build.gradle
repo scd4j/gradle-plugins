@@ -11,7 +11,7 @@ apply plugin: 'maven'
 group = 'com.datamaio'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = '0.7.10'
+version = buildVersion()
 
 jar {
     manifest {
@@ -58,7 +58,37 @@ wrapper {
   	gradleVersion = '2.13'
 }
 
+// ---------- automatically updates gradle version in scd4j plugin according to what is defined in this project ------- 
+
+def scd4jPluginPath = 'src/main/groovy/com/datamaio/scd4j/gradle/Scd4jPlugin.groovy'
+def bkpFolder = 'build/tmp/bkpFolder'
+
+compileJava.doFirst {
+    copy {
+        from(scd4jPluginPath)
+        into(bkpFolder)
+    } 
+    ant.replace(file: scd4jPluginPath, token: '@GRADLE_VERSION@', value: project.wrapper.gradleVersion)
+}
+
+compileGroovy.doLast {
+	def f = file(scd4jPluginPath)
+    copy {
+        from("${bkpFolder}/${f.name}")
+        into(f.parent)
+    }
+}
+
 //--------- publish to bintray config -----------
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(':bintrayUpload')) { 
+		version = buildVersion(1)
+		println "************************************************"
+		println "**** Publishing version '$version' to Bintray ****"
+		println "************************************************"
+    }
+}
 
 bintray {
 	user = project.hasProperty('bintray_user') ? bintray_user : ''
@@ -84,6 +114,27 @@ bintray {
 		}
 	}
 }
+
+//--------- Utility --------
+
+def buildVersion(increment) {
+    def f = file('version.properties') 
+    if (f.canRead()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(f))
+        def deployNumber = props['DEPLOY_NUMBER'].toInteger()
+        if(increment) {
+        	deployNumber++;
+        	props['DEPLOY_NUMBER'] = deployNumber.toString()
+        	props.store(f.newWriter(), null)
+        }
+        
+        return  "${props['VERSION_NAME']}.${deployNumber}"
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
 
 //--------- Create DEB and RPM packages --------
 
