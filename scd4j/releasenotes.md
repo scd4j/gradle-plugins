@@ -1,4 +1,4 @@
-![SCD4J](https://avatars0.githubusercontent.com/u/9500996?v=3&s=80) | Release Notes for: <br> Simple Continuous Delivery for Java and Groovy Developers
+![SCD4J](https://avatars0.githubusercontent.com/u/9500996?v=3&s=80) | <p>Release Notes for: <br> Simple Continuous Delivery for Java and Groovy Developers</p>
 ------------- |:-------------
 &nbsp;        | <div align='center'> To learn how to use scd4j see details on [wiki page](https://github.com/scd4j/gradle-plugins "Visit SCD4J Docs")</div>
 
