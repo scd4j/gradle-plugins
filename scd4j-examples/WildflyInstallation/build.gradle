@@ -15,7 +15,7 @@ apply plugin: 'com.datamaio.scd4j'
 */
 
 plugins {
-    id "com.datamaio.scd4j" version "0.7.16"
+    id "com.datamaio.scd4j" version "0.7.20"
 }
 
 archivesBaseName='WildflyInstallation'

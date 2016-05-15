@@ -59,7 +59,7 @@ uploadArchives {
 }
 
 wrapper {
-  	gradleVersion = '2.13'
+  	gradleVersion = '2.14'
 }
 
 // ---------- automatically updates gradle version in scd4j plugin according to what is defined in this project ------- 
@@ -67,20 +67,30 @@ wrapper {
 def scd4jPluginPath = 'src/main/groovy/com/datamaio/scd4j/gradle/Scd4jPlugin.groovy'
 def bkpFolder = 'build/tmp/bkpFolder'
 
+compileJava {
+	outputs.upToDateWhen { false }
+}
+
 compileJava.doFirst {
     copy {
         from(scd4jPluginPath)
         into(bkpFolder)
     } 
     ant.replace(file: scd4jPluginPath, token: '@GRADLE_VERSION@', value: project.wrapper.gradleVersion)
+    println "Updating Scd4jPlugin.groovy variable @GRADLE_VERSION@ to ${project.wrapper.gradleVersion}"
 }
 
-compileGroovy.doLast {
+sourceJar {
+	outputs.upToDateWhen { false }
+}
+
+sourceJar.doLast {
 	def f = file(scd4jPluginPath)
     copy {
         from("${bkpFolder}/${f.name}")
         into(f.parent)
     }
+    println "Updating Scd4jPlugin.groovy version ${project.wrapper.gradleVersion} back to variable @GRADLE_VERSION@"
 }
 
 //--------- publish to bintray config -----------
@@ -116,6 +126,7 @@ bintrayUpload.doLast {
 	println "**** Published version '$version' to Bintray ****"
 	println "************************************************"
 	
+	updateReadmeMd()
 	incrementDeployNumber()
 }
 
@@ -130,6 +141,11 @@ def buildVersionName() {
     } else {
         throw new GradleException("Could not read version.properties!")
     }
+}
+
+def updateReadmeMd() {
+    def f = file('../README.md') 
+   	f.text = f.text.replaceAll("id \"com.datamaio.scd4j\" version \".*\"", "id \"com.datamaio.scd4j\" version \"$version\"")
 }
 
 def incrementDeployNumber() {

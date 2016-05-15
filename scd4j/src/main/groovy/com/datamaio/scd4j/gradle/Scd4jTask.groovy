@@ -57,14 +57,17 @@ class Scd4jTask extends DefaultTask {
     	def env = project.scd4j.install.env		
 		def config = Input.config(project);
 		def modules = Input.modules(project)
-						
+
+		def currentGradleVersion = GradleVersion.current().getVersion()
+		def configuredGradleVersion = project.wrapper.gradleVersion
+								
         println "==================== Running scd4j =============================="
 		println "Visit https://github.com/scd4j/gradle-plugins/wiki for documentation"
 		println "Visit https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples for examples"
 		println ""
 		println "====== Version Info ==================="
 		println "SCD4J Version : " + getScd4jVersion(project)
-		println "Gradle Version: " + GradleVersion.current().getVersion() 
+		println "Gradle Version: " + currentGradleVersion 
 		println "Jvm Version   : " + Jvm.current()
 		println "Pack Name     : ${project.archivesBaseName} "
 		println "Pack Version  : ${project.version} "
@@ -78,48 +81,57 @@ class Scd4jTask extends DefaultTask {
         println "MODULE DIRS   : $modules"
 		println "=================================================================="
 		
-		if( Input.validate(modules, config) ) {
-			def console = System.console()
-			
-			if (assumeYes(project)) {
-				run(settings, env, modules, config)
-			} else if(console) {
-				def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
-				if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
+		if ( configuredGradleVersion != currentGradleVersion ) {
+			println ""
+			println "===================================================="
+			println "===================== ATENTION ====================="
+			println " Gradle Version was updated from $currentGradleVersion to $configuredGradleVersion"
+			println " RE-EXECUTE YOUR SCD4J INSTALATION "
+			println "===================================================="		
+    	} else {
+			if( Input.validate(modules, config) ) {
+				def console = System.console()
+				
+				if (assumeYes(project)) {
 					run(settings, env, modules, config)
-				} else {
-					println "============================"
-					println "=== Instalation aborted! ==="
-					println "============================"
-				}
-			} else {
-					//If console returns null it will open a dialog for requesting the confirmation
-					def envObj = new Env(env.production, env.staging, env.testing)
-					AlertMessageDialog alertMessageDialog = 
-								new AlertMessageDialog
-										(getScd4jVersion(project), 
-											GradleVersion.current().getVersion(),
-											Jvm.current().toString(), 
-											project.archivesBaseName, 
-											project.version,
-											envObj, 
-											config, 
-											modules);
-			
-					def option = alertMessageDialog.showConfirmDialog();
-					if(option == JOptionPane.YES_OPTION){
+				} else if(console) {
+					def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
+					if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
 						run(settings, env, modules, config)
 					} else {
 						println "============================"
 						println "=== Instalation aborted! ==="
 						println "============================"
 					}
+				} else {
+						//If console returns null it will open a dialog for requesting the confirmation
+						def envObj = new Env(env.production, env.staging, env.testing)
+						AlertMessageDialog alertMessageDialog = 
+									new AlertMessageDialog
+											(getScd4jVersion(project), 
+												GradleVersion.current().getVersion(),
+												Jvm.current().toString(), 
+												project.archivesBaseName, 
+												project.version,
+												envObj, 
+												config, 
+												modules);
+				
+						def option = alertMessageDialog.showConfirmDialog();
+						if(option == JOptionPane.YES_OPTION){
+							run(settings, env, modules, config)
+						} else {
+							println "============================"
+							println "=== Instalation aborted! ==="
+							println "============================"
+						}
+				}
+			} else {
+				println "============================"
+				println "=== Instalation aborted! ==="
+				println "============================"
 			}
-		} else {
-			println "============================"
-			println "=== Instalation aborted! ==="
-			println "============================"
-		}		
+		}
     }
 
 	def run(sett, envs, modules, config) {
