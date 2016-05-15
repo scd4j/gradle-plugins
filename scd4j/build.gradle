@@ -116,6 +116,7 @@ bintrayUpload.doLast {
 	println "**** Published version '$version' to Bintray ****"
 	println "************************************************"
 	
+	updateReadmeMd()
 	incrementDeployNumber()
 }
 
@@ -130,6 +131,11 @@ def buildVersionName() {
     } else {
         throw new GradleException("Could not read version.properties!")
     }
+}
+
+def updateReadmeMd() {
+    def f = file('../README.md') 
+   	f.text = f.text.replaceAll("id \"com.datamaio.scd4j\" version \".*\"", "id \"com.datamaio.scd4j\" version \"$version\"")
 }
 
 def incrementDeployNumber() {
