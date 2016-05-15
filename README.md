@@ -1,4 +1,4 @@
-![SCD4J](https://avatars0.githubusercontent.com/u/9500996?v=3&s=80) | SCD4J St2ands for: <br> Simple Continuous Delivery for Java and Groovy Developers 
+![SCD4J](https://avatars0.githubusercontent.com/u/9500996?v=3&s=80) | SCD4J Stands for: <br> Simple Continuous Delivery for Java and Groovy Developers 
 ------------- |:-------------
 
 In short, SCD4J is an automation platform for configuring and installing your Web IT infrastructure. With just one command you can install clusters and deploy applications. Note that SCD4J is not another option for Puppet or Chef. It is, actually, a SIMPLER option than those tools 
