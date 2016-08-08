@@ -59,7 +59,7 @@ uploadArchives {
 }
 
 wrapper {
-  	gradleVersion = '2.14'
+  	gradleVersion = '2.12'
 }
 
 // ---------- automatically updates gradle version in scd4j plugin according to what is defined in this project ------- 
