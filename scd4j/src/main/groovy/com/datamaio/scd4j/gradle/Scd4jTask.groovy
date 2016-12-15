@@ -27,10 +27,11 @@ import javax.swing.JOptionPane
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.jvm.Jvm
 import org.gradle.util.GradleVersion
+import org.gradle.internal.jvm.Jvm
 
 import com.datamaio.scd4j.EnvConfigurator
+import com.datamaio.scd4j.cmd.Command;
 import com.datamaio.scd4j.conf.Configuration
 import com.datamaio.scd4j.conf.Env
 import com.datamaio.scd4j.conf.Install
@@ -41,142 +42,143 @@ import com.datamaio.scd4j.ui.AlertMessageDialog;
 /**
  * Task used to start SCD4J
  * <p>
- * In order to avoid prompting for confirmation use <code>./gradlew -PassumeYes=true</code>. In other words,
+ * In order to avoid prompting for confirmation use <code>./gradlew -PassumeYes=true</code>. In other words, 
  * this config automatic answer "yes" all prompts and run non-interactively.
- * <p>
+ * <p> 
  *
  * @author Fernando Rubbo
  * @author Mateus M. da Costa
+ * @author Estevão Cavinato
  */
 class Scd4jTask extends DefaultTask {
+	
+	@TaskAction
+    def action() {		
+		def settings = project.scd4j.settings;
+    	def env = project.scd4j.install.env		
+		def config = Input.config(project);
+		def modules = Input.modules(project)
 
-    @TaskAction
-    def action() {
-        def settings = project.scd4j.settings;
-        def env = project.scd4j.install.env
-        def config = Input.config(project);
-        def modules = Input.modules(project)
-
-        def currentGradleVersion = GradleVersion.current().getVersion()
-        def configuredGradleVersion = project.wrapper.gradleVersion
-
+		def currentGradleVersion = GradleVersion.current().getVersion()
+		def configuredGradleVersion = project.wrapper.gradleVersion
+								
         println "==================== Running scd4j =============================="
-        println "Visit https://github.com/scd4j/gradle-plugins/wiki for documentation"
-        println "Visit https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples for examples"
-        println ""
-        println "====== Version Info ==================="
-        println "SCD4J Version : " + getScd4jVersion(project)
-        println "Gradle Version: " + currentGradleVersion
-        println "Jvm Version   : " + Jvm.current()
-        println "Pack Name     : ${project.archivesBaseName}"
-        println "Pack Version  : ${project.version}"
-        println "====== Environment Configuration ======"
-        println "IP PRODUCTION LIST     : ${env.production}"
-        println "IP STAGING LIST    : ${env.staging}"
-        println "IP TESTING LIST    : ${env.testing}"
-        println "IP DESENV  LIST    : [ANY OTHER]"
-        println "====== Instalation Configuration ======"
-        println "CONFIG FILE   : $config"
+		println "Visit https://github.com/scd4j/gradle-plugins/wiki for documentation"
+		println "Visit https://github.com/scd4j/gradle-plugins/wiki/11.-SCD4J-Examples for examples"
+		println ""
+		println "====== Version Info ==================="
+		println "SCD4J Version : " + getScd4jVersion(project)
+		println "Gradle Version: " + currentGradleVersion 
+		println "Jvm Version   : " + Jvm.current()
+		println "Pack Name     : ${project.archivesBaseName} "
+		println "Pack Version  : ${project.version} "
+		println "====== Environment Configuration ======"
+        println "IP PRODUCTION LIST 	: ${env.production}" 
+        println "IP STAGING LIST  	: ${env.staging}" 
+        println "IP TESTING LIST  	: ${env.testing}" 
+		println "IP DESENV  LIST  	: [ANY OTHER]"
+		println "====== Instalation Configuration ======"
+        println "CONFIG FILE   : $config" 
         println "MODULE DIRS   : $modules"
-        println "=================================================================="
-
-        if ( configuredGradleVersion != currentGradleVersion ) {
-            println ""
-            println "===================================================="
-            println "===================== ATENTION ====================="
-            println " Gradle Version was updated from $currentGradleVersion to $configuredGradleVersion"
-            println " RE-EXECUTE YOUR SCD4J INSTALATION "
-            println "===================================================="
-        } else {
-            if( Input.validate(modules, config) ) {
-                def console = System.console()
-
-                if (assumeYes(project)) {
-                    run(settings, env, modules, config)
-                } else if(console) {
-                    def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
-                    if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
-                        run(settings, env, modules, config)
-                    } else {
-                        println "============================"
-                        println "=== Instalation aborted! ==="
-                        println "============================"
-                    }
-                } else {
-                    //If console returns null it will open a dialog for requesting the confirmation
-                    def envObj = new Env(env.production, env.staging, env.testing)
-                    AlertMessageDialog alertMessageDialog =
-                        new AlertMessageDialog(
-                            getScd4jVersion(project),
-                            GradleVersion.current().getVersion(),
-                            Jvm.current().toString(),
-                            project.archivesBaseName,
-                            project.version,
-                            envObj,
-                            config,
-                            modules);
-
-                    def option = alertMessageDialog.showConfirmDialog();
-                    if(option == JOptionPane.YES_OPTION){
-                        run(settings, env, modules, config)
-                    } else {
-                        println "============================"
-                        println "=== Instalation aborted! ==="
-                        println "============================"
-                    }
-                }
-            } else {
-                println "============================"
-                println "=== Instalation aborted! ==="
-                println "============================"
-            }
-        }
+		println "=================================================================="
+		
+		if ( configuredGradleVersion != currentGradleVersion ) {
+			println ""
+			println "===================================================="
+			println "===================== ATENTION ====================="
+			println " Gradle Version was updated from $currentGradleVersion to $configuredGradleVersion"
+			println " RE-EXECUTE YOUR SCD4J INSTALATION "
+			println "===================================================="		
+    	} else {
+			if( Input.validate(modules, config) ) {
+				def console = System.console()
+				
+				if (assumeYes(project)) {
+					run(settings, env, modules, config)
+				} else if(console) {
+					def ok = console.readLine('\nReview the above config. Type "yes/y" to procceed or anything else to abort: ')
+					if("yes".equalsIgnoreCase(ok) || "y".equalsIgnoreCase(ok) ) {
+						run(settings, env, modules, config)
+					} else {
+						println "============================"
+						println "=== Instalation aborted! ==="
+						println "============================"
+					}
+				} else {
+						//If console returns null it will open a dialog for requesting the confirmation
+						def envObj = new Env(env.production, env.staging, env.testing)
+						AlertMessageDialog alertMessageDialog = 
+									new AlertMessageDialog
+											(getScd4jVersion(project), 
+												GradleVersion.current().getVersion(),
+												Jvm.current().toString(), 
+												project.archivesBaseName, 
+												project.version,
+												envObj, 
+												config, 
+												modules);
+				
+						def option = alertMessageDialog.showConfirmDialog();
+						if(option == JOptionPane.YES_OPTION){
+							run(settings, env, modules, config)
+						} else {
+							println "============================"
+							println "=== Instalation aborted! ==="
+							println "============================"
+						}
+				}
+			} else {
+				println "============================"
+				println "=== Instalation aborted! ==="
+				println "============================"
+			}
+		}
     }
 
-    def run(sett, envs, modules, config) {
-        def env = new Env(envs.production, envs.staging, envs.testing)
-        def dependencies = mapDependencies2Path();
-        for (module in modules) {
-            Install install = new Install(module.toPath(), config.toPath(), env);
-            Settings settings = new Settings();
-            settings.setTemplate(new Template(sett.template.engine));
-            Configuration conf = new Configuration(install, settings, dependencies, project.projectDir);
-            new EnvConfigurator(conf).execute();
-        }
-    }
+	def run(sett, envs, modules, config) {
+		def env = new Env(envs.production, envs.staging, envs.testing)
+		def dependencies = mapDependencies2Path();
+		for(module in modules) {	
+			Install install = new Install(module.toPath(), config.toPath(), env);
+			Settings settings = new Settings();
+			settings.setTemplate(new Template(sett.template.engine));
+			Configuration conf = new Configuration(install, settings, dependencies, project.projectDir);
+			new EnvConfigurator(conf).execute();
+		}
+	}
 
-
-    def assumeYes(project) {
-        return project.hasProperty("assumeYes") ? "true".equals(project.assumeYes) : false
-    }
-
-    def mapDependencies2Path(){
-        def map = [:]
-        def set = []
-        project.configurations.scd4j.resolvedConfiguration.firstLevelModuleDependencies?.each {d ->
-            d.moduleArtifacts.each { a ->
-                def key = "${d.moduleGroup}:${d.moduleName}:${d.moduleVersion}@${a.extension}"
-                def file = a.file
-                map.putAt(key, file.toPath())
-                set.add(file)
-            }
-        }
-
-        project.configurations.scd4j.files?.each { File f ->
-            if(!set.contains(f)){
-                map.putAt(f.name, f.toPath())
-            }
-        }
-
-        return map
-    }
-
-    def getScd4jVersion(project) {
-        def plugin = project.buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies?.find({ it.moduleName.equals("scd4j") })
-        if(plugin!=null) {
-            return plugin.moduleVersion
-        }
-
-        return "N/A"
-    }
+	
+	def assumeYes(project) {
+		return project.hasProperty("assumeYes") ? "true".equals(project.assumeYes) : false
+	}
+	
+	def mapDependencies2Path(){
+		def map = [:]
+		def set = []
+		project.configurations.scd4j.resolvedConfiguration.firstLevelModuleDependencies?.each {d ->
+			d.moduleArtifacts.each { a ->
+				def key = "${d.moduleGroup}:${d.moduleName}:${d.moduleVersion}@${a.extension}"
+				def file = a.file			
+				map.putAt(key, file.toPath())
+				set.add(file)
+			}
+		}
+		
+		project.configurations.scd4j.files?.each { File f ->
+			if(!set.contains(f)){
+				map.putAt(f.name, f.toPath())
+			}
+		}
+	
+		return map
+	}
+	
+	def getScd4jVersion(project) {
+		def plugin = project.buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies?.find({ it.moduleName.equals("scd4j") })
+		if(plugin!=null) {
+			return plugin.moduleVersion
+		}
+	
+		return "N/A"
+	}
 }
