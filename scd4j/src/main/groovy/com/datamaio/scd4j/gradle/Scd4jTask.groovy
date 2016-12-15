@@ -48,6 +48,7 @@ import com.datamaio.scd4j.ui.AlertMessageDialog;
  *
  * @author Fernando Rubbo
  * @author Mateus M. da Costa
+ * @author Estevão Cavinato
  */
 class Scd4jTask extends DefaultTask {
 	
@@ -141,7 +142,7 @@ class Scd4jTask extends DefaultTask {
 			Install install = new Install(module.toPath(), config.toPath(), env);
 			Settings settings = new Settings();
 			settings.setTemplate(new Template(sett.template.engine));
-			Configuration conf = new Configuration(install, settings, dependencies);
+			Configuration conf = new Configuration(install, settings, dependencies, project.projectDir);
 			new EnvConfigurator(conf).execute();
 		}
 	}
