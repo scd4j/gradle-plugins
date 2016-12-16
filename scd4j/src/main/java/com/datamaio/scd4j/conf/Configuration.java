@@ -23,7 +23,7 @@
  */
 package com.datamaio.scd4j.conf;
 
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 
 import com.datamaio.scd4j.tmpl.TemplateEngine;
 import com.datamaio.scd4j.tmpl.TemplateEngineConfig;
-import com.datamaio.scd4j.util.io.FileUtils;
 import com.datamaio.scd4j.util.io.PathUtils;
 
 /**
@@ -58,6 +57,7 @@ public class Configuration {
 	private final Settings settings;
 	/** Dependencies. Where the key is the gradle dependency and the value is the file path */
 	private final Map<String, Path> dependencies;
+	private final Path projectDir;
 	
 	public static final Configuration build(Path module){
 		Install install = new Install(module);
@@ -74,17 +74,21 @@ public class Configuration {
 		return new Configuration(install);
 	}
 	
-	private Configuration(Install install) {
-		this(install, new Settings(), new HashMap<>());
-	}
+    private Configuration(final Install install) {
+        this(install, new Settings(), new HashMap<>(), Paths.get(".").toAbsolutePath().toFile());
+    }
 	
-	public Configuration(Install install, Settings settings, Map<String, Path> dependencies) {
+	public Configuration(Install install, Settings settings, Map<String, Path> dependencies, final File projectDir) {
 		this.install = install;
 		this.settings = settings;
 		this.dependencies = dependencies;
+		this.projectDir = projectDir != null ? projectDir.toPath() : null;
 	}
 
 	public Path getConfig() {
+		if (install != null && install.getConfig() == null) {
+			throw new IllegalStateException("Install config file cannot be null!"); 
+		}
 		return install.getConfig();
 	}
 
@@ -147,7 +151,10 @@ public class Configuration {
 	}
 
 	private Path workspace() {
-		return Paths.get(".").toAbsolutePath();
+		if (this.projectDir == null) {
+            throw new IllegalStateException("Project base path ('projectDir') cannot be null!");
+        }
+        return this.projectDir.toAbsolutePath();
 	}
 	
 	private String currentExecutionPath;
@@ -156,21 +163,14 @@ public class Configuration {
 			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 			
 			Path workspace = workspace();
-			Path config = getConfig();
-			String fileName;
-			if(config!=null) {
-				fileName = workspace.relativize(config).toString().replace("config/", "");
-			} else {
-				fileName = workspace.toString().replace("config/", "");
-			}
-			
+			String fileName = this.getConfig().getFileName().toString();
 			if(fileName.endsWith(".conf")) {
 				fileName = fileName.replace(".conf", "");
 			}
 			if(fileName.endsWith(".properties")) {
 				fileName = fileName.replace(".properties", "");
 			}
-			String module = getModule().getFileName().toString();
+			final String module = workspace.relativize(this.getModule().toAbsolutePath()).toString().replace(Configuration.MODULES_FOLDER + File.separator, "");
 			currentExecutionPath = Paths.get(module, fileName + "_" + df.format(new Date())).toString();
 		}
 		
