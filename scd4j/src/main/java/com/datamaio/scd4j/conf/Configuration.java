@@ -86,6 +86,9 @@ public class Configuration {
 	}
 
 	public Path getConfig() {
+		if (install != null && install.getConfig() == null) {
+			throw new IllegalStateException("Install config file cannot be null!"); 
+		}
 		return install.getConfig();
 	}
 
